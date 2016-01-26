@@ -27,6 +27,8 @@
 
 	<body>
 		<div id="info">CadaVR</div>
+		<div id="loaded"></div>
+		
 
 		<script src="js/three.js"></script>
 		<script src="js/loaders/OBJLoader.js"></script>
@@ -69,6 +71,7 @@
 				// texture
 
 				var manager = new THREE.LoadingManager();
+				var loadedDiv = document.getElementById("loaded");
 				manager.onProgress = function ( item, loaded, total ) {
 
 					console.log( item, loaded, total );
@@ -78,7 +81,9 @@
 				var onProgress = function ( xhr ) {
 					if ( xhr.lengthComputable ) {
 						var percentComplete = xhr.loaded / xhr.total * 100;
-						console.log( Math.round(percentComplete, 2) + '% downloaded' );
+						var percentCompleteStr = Math.round(percentComplete, 2) + '% downloaded'
+						console.log( percentCompleteStr );
+						loadedDiv.innerHTML = percentCompleteStr;
 					}
 				};
 
