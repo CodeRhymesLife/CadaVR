@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/drryanjames/CadaVR",
   "dependencies": {
-    "hapi": "^12.1.0"
+    "hapi": "^12.1.0",
+    "inert": "^3.2.0"
   }
 }

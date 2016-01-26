@@ -10,13 +10,30 @@ server.connection({
 });
 
 // Add the route
-server.route({
-    method: 'GET',
-    path:'/', 
-    handler: function (request, reply) {
-
-        return reply('hello world');
+server.register(require('inert'), (err) => {
+    if (err) {
+        throw err;
     }
+
+	// Look for files in public dir
+	server.route({
+		method: 'GET',
+		path: '/{param*}',
+		handler: {
+			directory: {
+				path: 'public',
+				listing: true
+			}
+		}
+	});
+	
+    server.route({
+        method: 'GET',
+        path: '/',
+        handler: function (request, reply) {
+            reply.file('./public/webgl_loader_obj.html');
+        }
+    });
 });
 
 // Start the server
