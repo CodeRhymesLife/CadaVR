@@ -31,7 +31,7 @@ server.register(require('inert'), (err) => {
         method: 'GET',
         path: '/',
         handler: function (request, reply) {
-            reply.file('./public/webgl_loader_obj.html');
+            reply.file('./public/index.html');
         }
     });
 });
