@@ -205,7 +205,7 @@
 
 			var container;
 
-			var camera, scene, renderer, manager, controls;
+			var camera, scene, renderer, manager, controls, heart;
 
 			var mouseX = 0, mouseY = 0;
 
@@ -223,7 +223,6 @@
 				document.body.appendChild( container );
 
 				camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10000);
-				camera.position.z = 100;
 				
 				// Apply VR headset positional data to camera.
 				controls = new THREE.VRControls(camera);
@@ -265,8 +264,10 @@
 
 				var loader = new THREE.OBJLoader( loadingManager );
 				loader.load( 'models/heart/Heart.obj', function ( object ) {
-					object.position.y = - 80;
-					scene.add( object );
+					heart = object;
+					heart.position.y = -20;
+					heart.position.z = -150;
+					scene.add( heart );
 
 				}, onProgress, onError );
 
@@ -288,53 +289,25 @@
 				};
 				manager = new WebVRManager(renderer, effect, params);
 
-				document.addEventListener( 'mousemove', onDocumentMouseMove, false );
-
-				//
-
-				window.addEventListener( 'resize', onWindowResize, false );
-
 			}
-
-			function onWindowResize() {
-
-				windowHalfX = window.innerWidth / 2;
-				windowHalfY = window.innerHeight / 2;
-
-				camera.aspect = window.innerWidth / window.innerHeight;
-				camera.updateProjectionMatrix();
-
-				renderer.setSize( window.innerWidth, window.innerHeight );
-
-			}
-
-			function onDocumentMouseMove( event ) {
-
-				mouseX = ( event.clientX - windowHalfX ) / 2;
-				mouseY = ( event.clientY - windowHalfY ) / 2;
-
-			}
-
-			//
-
+			
+			// Request animation frame loop function
+			var lastRender = 0;
 			function animate(timestamp) {
+			  var delta = Math.min(timestamp - lastRender, 500);
+			  lastRender = timestamp;
 
-				requestAnimationFrame( animate );
-				render(timestamp);
-				// Update VR headset position and apply to camera.
-				controls.update();
-			}
+			  // Apply rotation to cube mesh
+			  if(heart)
+				heart.rotation.y += delta * 0.0006;
 
-			function render(timestamp) {
+			  // Update VR headset position and apply to camera.
+			  controls.update();
 
-				camera.position.x += ( mouseX - camera.position.x ) * .05;
-				camera.position.y += ( - mouseY - camera.position.y ) * .05;
+			  // Render the scene through the manager.
+			  manager.render(scene, camera, timestamp);
 
-				camera.lookAt( scene.position );
-
-				// Render the scene through the manager.
-				manager.render(scene, camera, timestamp);
-
+			  requestAnimationFrame(animate);
 			}
 
 		</script>
