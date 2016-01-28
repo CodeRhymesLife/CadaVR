@@ -5,8 +5,8 @@
       <author>Blender User</author>
       <authoring_tool>Blender 2.76.0 commit date:2015-11-03, commit time:10:56, hash:f337fea</authoring_tool>
     </contributor>
-    <created>2016-01-28T04:01:42</created>
-    <modified>2016-01-28T04:01:42</modified>
+    <created>2016-01-28T04:28:33</created>
+    <modified>2016-01-28T04:28:33</modified>
     <unit name="meter" meter="1"/>
     <up_axis>Z_UP</up_axis>
   </asset>
@@ -50,7 +50,7 @@
   <library_visual_scenes>
     <visual_scene id="Scene" name="Scene">
       <node id="operatingTable" name="operatingTable" type="NODE">
-        <matrix sid="transform">1 0 0 0 0 7.54979e-8 -1 0 0 1 7.54979e-8 0 0 0 0 1</matrix>
+        <matrix sid="transform">1 0 0 0 0 7.54979e-8 -1 0 0 1 7.54979e-8 74.32592 0 0 0 1</matrix>
         <instance_geometry url="#operatingTable-mesh" name="operatingTable"/>
       </node>
     </visual_scene>
