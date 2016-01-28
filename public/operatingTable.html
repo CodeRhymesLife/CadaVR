@@ -9,7 +9,7 @@
 
 		<script>
 			$(window).load(function () {
-				$(".menu .item").click(function () {
+				$(".contextMenu .item").click(function () {
 					$( this ).attr("color", "black");
 				});
 			});
@@ -22,7 +22,7 @@
 			<a-model scale="0.015 0.015 0.015" position="0 1.2 -0.6" src="models/operatingTable.dae"></a-model>
 			<a-root position="0 1.2 -0.5">
 				<a-model scale="0.0015 0.0015 0.0015" src="models/heart/Heart.dae"></a-model>
-				<a-root>
+				<a-root class="contextMenu">
 					<a-sphere class="item" color="yellow" radius="0.03" position="0.2 0.1 0"></a-sphere>
 					<a-sphere class="item" color="yellow" radius="0.03" position="0 0.25 0"></a-sphere>
 					<a-sphere class="item" color="yellow" radius="0.03" position="-0.2 0.1 0"></a-sphere>
