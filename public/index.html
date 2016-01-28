@@ -205,7 +205,9 @@
 
 			var container;
 
-			var camera, scene, renderer, manager, controls, heart;
+			var camera, scene, renderer, manager, controls;
+			
+			var loadedObjects = [];
 
 			var mouseX = 0, mouseY = 0;
 
@@ -234,9 +236,13 @@
 				var ambient = new THREE.AmbientLight( 0x101030 );
 				scene.add( ambient );
 
-				var directionalLight = new THREE.DirectionalLight( 0xffeedd );
-				directionalLight.position.set( 0, 0, 1 );
-				scene.add( directionalLight );
+				var heartLight = new THREE.DirectionalLight( 0xffeedd );
+				heartLight.position.set( 0, 0, 1 );
+				scene.add( heartLight );
+				
+				var lungLight = new THREE.DirectionalLight( 0xffeedd );
+				lungLight.position.set( 0, 0, -1 );
+				scene.add( lungLight );
 
 				// texture
 
@@ -260,18 +266,32 @@
 				var onError = function ( xhr ) {
 				};
 
-				// model
-
+				// heart
 				var loader = new THREE.OBJLoader( loadingManager );
 				loader.load( 'models/heart/Heart.obj', function ( object ) {
-					heart = object;
+					var heart = object;
 					heart.position.y = -20;
 					heart.position.z = -150;
 					scene.add( heart );
 					
+					loadedObjects.push( heart );
+					
 					var box = new THREE.Box3().setFromObject( heart );
 					console.log( box.min, box.max, box.size() );
 
+				}, onProgress, onError );
+				
+				// lungs
+				var loader = new THREE.OBJLoader( loadingManager );
+				loader.load( 'models/lungs/Lungs.obj', function ( lungs ) {
+					lungs.position.y = -20;
+					lungs.position.z = 150;
+					scene.add( lungs );
+					
+					loadedObjects.push( lungs );
+					
+					var box = new THREE.Box3().setFromObject( lungs );
+					console.log( box.min, box.max, box.size() );
 				}, onProgress, onError );
 
 				renderer = new THREE.WebGLRenderer();
@@ -328,20 +348,23 @@
 			// Request animation frame loop function
 			var lastRender = 0;
 			function animate(timestamp) {
-			  var delta = Math.min(timestamp - lastRender, 500);
-			  lastRender = timestamp;
+				var delta = Math.min(timestamp - lastRender, 500);
+				lastRender = timestamp;
 
-			  // Apply rotation to cube mesh
-			  if(heart)
-				heart.rotation.y += delta * 0.0006;
+				// Apply rotation to each loaded object
+				if(loadedObjects) {
+					loadedObjects.forEach(function (o) {
+						o.rotation.y += delta * 0.0006;
+					});
+				}
 
-			  // Update VR headset position and apply to camera.
-			  controls.update();
+				// Update VR headset position and apply to camera.
+				controls.update();
 
-			  // Render the scene through the manager.
-			  manager.render(scene, camera, timestamp);
+				// Render the scene through the manager.
+				manager.render(scene, camera, timestamp);
 
-			  requestAnimationFrame(animate);
+				requestAnimationFrame(animate);
 			}
 
 		</script>
