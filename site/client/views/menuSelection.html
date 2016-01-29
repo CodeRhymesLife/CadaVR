@@ -1,0 +1,43 @@
+<head>
+	<meta charset="utf-8">
+	<title>Menu Selection Test</title>
+	<meta name="description" content="Tests menu selection">
+</head>
+
+<template name="menuSelection">
+	<a-scene>
+		<a-camera position="0 1.8 0"></a-camera>
+
+		<a-plane width="100" height="100" rotation="90 0 0" color="grey"></a-plane>
+		
+		<a-root class="menu" position="0 0 -2">
+			<a-plane class="globalActions" color="red" width="1" height="0.5" position="-1.5 2.25" >
+				<a-sphere class="item" color="yellow" radius="0.1" position="-0.2 0 0.1"></a-sphere>
+				<a-sphere class="item" color="yellow" radius="0.1" position="0.2 0 0.1"></a-sphere>
+			</a-plane>
+			<a-plane class="contextualActions" color="purple" width="3" height="0.5" position="0.5 2.25">
+				<a-sphere class="item" color="yellow" radius="0.1" position="-1.2 0 0.1"></a-sphere>
+				<a-sphere class="item" color="yellow" radius="0.1" position="-0.8 0 0.1"></a-sphere>
+				<a-sphere class="item" color="yellow" radius="0.1" position="-0.4 0 0.1"></a-sphere>
+				<a-sphere class="item" color="yellow" radius="0.1" position="0 0 0.1"></a-sphere>
+				<a-sphere class="item" color="yellow" radius="0.1" position="0.4 0 0.1"></a-sphere>
+				<a-sphere class="item" color="yellow" radius="0.1" position="0.8 0 0.1"></a-sphere>
+				<a-sphere class="item" color="yellow" radius="0.1" position="1.2 0 0.1"></a-sphere>
+			</a-plane>
+			<a-plane class="content" color="blue" width="4" height="2" position="0 1">
+				<a-sphere class="item" color="yellow" radius="0.2" position="-1.6 0.5 0.2"></a-sphere>
+				<a-sphere class="item" color="yellow" radius="0.2" position="-0.8 0.5 0.2"></a-sphere>
+				<a-sphere class="item" color="yellow" radius="0.2" position="-0 0.5 0.2"></a-sphere>
+				<a-sphere class="item" color="yellow" radius="0.2" position="0.8 0.5 0.2"></a-sphere>
+				<a-sphere class="item" color="yellow" radius="0.2" position="1.6 0.5 0.2"></a-sphere>
+				<a-sphere class="item" color="yellow" radius="0.2" position="-1.6 -0.5 0.2"></a-sphere>
+				<a-sphere class="item" color="yellow" radius="0.2" position="-0.8 -0.5 0.2"></a-sphere>
+				<a-sphere class="item" color="yellow" radius="0.2" position="-0 -0.5 0.2"></a-sphere>
+				<a-sphere class="item" color="yellow" radius="0.2" position="0.8 -0.5 0.2"></a-sphere>
+				<a-sphere class="item" color="yellow" radius="0.2" position="1.6 -0.5 0.2"></a-sphere>
+			</a-plane>
+		</a-root>
+  
+		<a-sky color="#ECECEC"></a-sky>
+	</a-scene>
+</template>
