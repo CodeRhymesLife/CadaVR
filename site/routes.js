@@ -17,3 +17,7 @@ Router.route('/operatingTable', function () {
 Router.route('/views', function () {
   this.render('views');
 });
+
+Router.route('/moveObject', function () {
+  this.render('moveObject');
+});
