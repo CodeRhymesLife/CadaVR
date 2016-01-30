@@ -3,7 +3,7 @@ Template.moveObject.onRendered(function () {
 	var scene = $("a-scene").get(0)
 	var camera = $("a-scene").get(0).cameraEl;
 
-    $(".moveableObject").mousedown(function (e) {
+    $( ".moveableObject" ).mousedown( function (e) {
 		if(dragging != null)
 			return;
 
@@ -13,8 +13,8 @@ Template.moveObject.onRendered(function () {
 		THREE.SceneUtils.attach( dragging.object3D, scene.object3D, camera.object3D );
     });
 	
-	$(".moveableObject").mouseup(function (e) {
-		if(dragging == null || dragging != $( this ).get(0))
+	$( scene.canvas ).mouseup( function (e) {
+		if(dragging == null)
 			return;
 
 		dragging.object3D.parent.updateMatrixWorld();
