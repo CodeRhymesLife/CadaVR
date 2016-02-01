@@ -57,11 +57,17 @@ if (Meteor.isClient) {
 		});
 	});
 	
-	Template.watchPresentation.onRendered(function () {
+	Template.watchPresentation1stPerson.onRendered(function () {
 		// Disable controls since we're just watching
 		$("a-camera").get(0).sceneEl.cameraEl.components["look-controls"].data.enabled = false;
 		$("a-camera").get(0).sceneEl.cameraEl.components["wasd-controls"].data.eanbled = false;
 		
+		listenForChanges();
+	});
+	
+	Template.watchPresentation3rdPerson.onRendered(listenForChanges);
+	
+	function listenForChanges() {
 		// Cache that maps an object's data to it's visual element
 		var idToObjMap = {};
 		
@@ -83,5 +89,5 @@ if (Meteor.isClient) {
 				}
 			},
 		});
-	});
+	}
 }

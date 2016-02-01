@@ -9,7 +9,8 @@ Views = [
 	"operatingTable",
 	"present",
 	"views",
-	"watchPresentation",
+	"watchPresentation1stPerson",
+	"watchPresentation3rdPerson",
 ];
 
 Views.forEach( function (page) {
