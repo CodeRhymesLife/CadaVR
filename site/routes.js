@@ -7,7 +7,9 @@ Views = [
 	"menuSelection",
 	"moveObject",
 	"operatingTable",
+	"present",
 	"views",
+	"watchPresentation",
 ];
 
 Views.forEach( function (page) {
