@@ -20,8 +20,10 @@ if (Meteor.isServer) {
 	});
 	
 	Meteor.methods({
-		addEvent: function (selector, data) {
-			Events.upsert( selector, data );
+		addEvent: function (name, attributeName, data) {
+			var insertAttributeModifier = {};
+			insertAttributeModifier[attributeName] = data;
+			Events.upsert( { name: name }, { $set: insertAttributeModifier } );
 		}
 	});
 }
@@ -30,33 +32,52 @@ if (Meteor.isClient) {
 	Meteor.subscribe("events");
 
 	Template.present.onRendered(function () {
-		var camera = $( "a-camera" ).get(0);
-
-		var hasSameRotation = function (obj1, obj2) { 
-			return JSON.stringify(obj1) === JSON.stringify(obj2);
-		}
-
-		var lastCameraRotation;
-		var cameraRotation = camera.sceneEl.cameraEl.components.rotation
-		function checkCameraRotation () {
-			if( !hasSameRotation( lastCameraRotation, cameraRotation.getData() ) ) {
-				Meteor.call("addEvent", { name: "camera" }, { name: "camera", rotation: cameraRotation.getData() } );
-				lastCameraRotation = cameraRotation.getData();
-			}
+		$(".contextMenu .item").click(function () {
+			$( this ).toggleClass( "selected" );
 			
-			window.requestAnimationFrame(checkCameraRotation);
-		}
-		checkCameraRotation();
+			if($( this ).hasClass( "selected" )){
+				if($( this ).hasClass( "sagital" )) {
+					$( "a-sphere a-plane" ).get(0).emit( "sagital" );
+				}
+				if($( this ).hasClass( "frontal" )) {
+					$( "a-sphere a-plane" ).get(0).emit( "frontal" );
+				}
+				if($( this ).hasClass( "traverse" )) {
+					$( "a-sphere a-plane" ).get(0).emit( "traverse" );
+				}
+			}
+		});
+
+		// Sync any object with the sync attribute set
+		$( "[sync]" ).on("componentchanged", function (e) {
+			var name = $( this ).attr( "sync" );
+			var attributeName = e.detail.name;
+			var newData = e.detail.newData;
+			Meteor.call("addEvent", name, attributeName, newData );
+		});
 	});
 	
 	Template.watchPresentation.onRendered(function () {
-		var camera = $( "a-camera" ).get(0);
+		// Cache that maps an object's data to it's visual element
+		var idToObjMap = {};
 		
-		Tracker.autorun(function () {
-			var cameraData = Events.findOne({ name: "camera" });
-			if(cameraData != null) {
-				camera.setAttribute("rotation", cameraData.rotation);
-			}
+		// Listen for changes on all objects
+		var query = Events.find({});
+		var handle = query.observeChanges({
+			changed: function (id, fields) {
+				var aframeObj = idToObjMap[id];
+				
+				// Find the object if it's not cached
+				if(!aframeObj) {
+					var name = Events.findOne( id, { fields: { name: 1 } } ).name;
+					aframeObj = idToObjMap[id] = $( "[sync='" + name + "']" ).get(0);
+				}
+
+				// Set the changed fields on the visual object
+				for( key in fields ) {				
+					aframeObj.setAttribute( key, fields[key] );
+				}
+			},
 		});
 	});
 }
