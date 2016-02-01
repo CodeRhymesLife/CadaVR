@@ -12,9 +12,8 @@
 
 <template name="index">
 	<ul>
-		<li><a href="/menuSelection">Menu Selection Test</a></li>
-		<li><a href="/operatingTable">Operating Table Test</a></li>
-		<li><a href="/views">Views Test</a></li>
-		<li><a href="/moveObject">Move Object Test</a></li>
+		{{#each views}}
+			<li><a href="/{{this}}" >{{this}}</a></li>
+		{{/each}}
 	</ul>
 </template>
