@@ -58,6 +58,10 @@ if (Meteor.isClient) {
 	});
 	
 	Template.watchPresentation.onRendered(function () {
+		// Disable controls since we're just watching
+		$("a-camera").get(0).sceneEl.cameraEl.components["look-controls"].data.enabled = false;
+		$("a-camera").get(0).sceneEl.cameraEl.components["wasd-controls"].data.eanbled = false;
+		
 		// Cache that maps an object's data to it's visual element
 		var idToObjMap = {};
 		
