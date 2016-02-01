@@ -7,6 +7,7 @@ Views = [
 	"menuSelection",
 	"moveObject",
 	"operatingTable",
+	"pitch",
 	"present",
 	"views",
 	"watchPresentation1stPerson",
