@@ -10,7 +10,7 @@ Views = [
 	"present",
 	"views",
 	"watchPresentation1stPerson",
-	"watchPresentation3rdPerson",
+	"watchPresentationOwnPerspective",
 ];
 
 Views.forEach( function (page) {

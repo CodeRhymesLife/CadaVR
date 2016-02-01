@@ -65,7 +65,7 @@ if (Meteor.isClient) {
 		listenForChanges();
 	});
 	
-	Template.watchPresentation3rdPerson.onRendered(listenForChanges);
+	Template.watchPresentationOwnPerspective.onRendered(listenForChanges);
 	
 	function listenForChanges() {
 		// Cache that maps an object's data to it's visual element
