@@ -11,7 +11,7 @@ Template.pitch.onRendered(function () {
 		if(slideIndex < 0 || slideIndex > slides.length - 1)
 			return;
 
-		$(".slideShow a-image").get(0).setAttribute("src", "images/pitch/" + slides[slideIndex]);
+		$(".slideShow a-image.slides").get(0).setAttribute("src", "images/pitch/" + slides[slideIndex]);
 		currentSlide = slideIndex;
 	}
 	
