@@ -104,5 +104,16 @@ if (Meteor.isClient) {
 		PresentationMode.listenForChanges();
 	});
 	
-	Template.watchPresentationOwnPerspective.onRendered(PresentationMode.listenForChanges);
+	Template.watchPresentationOwnPerspective.onRendered( function () {
+		// Remove the sync attribute so we don't change the camera's perspective
+		$("a-camera").removeAttr("sync");
+		
+		// Move our camera since we're watching the other person present
+		$("a-camera").get(0).setAttribute( "position", {
+			x: 1,
+			y: 1.8,
+			z: 0,
+		});
+		PresentationMode.listenForChanges();
+	});
 }

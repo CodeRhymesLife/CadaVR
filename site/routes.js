@@ -3,7 +3,6 @@ Router.route('/', function () {
 });
 
 Views = [
-	"aframeTest",
 	"menuSelection",
 	"moveObject",
 	"operatingTable",
@@ -17,6 +16,7 @@ Views = [
 
 Views.forEach( function (page) {
 	Router.route('/' + page, function () {
+		this.layout('viewLayout');
 		this.render(page);
 	});
 });

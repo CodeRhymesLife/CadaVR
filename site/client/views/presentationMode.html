@@ -1,38 +1,18 @@
-<head>
-	<meta charset="utf-8">
-	<title>Presentation Mode Test</title>
-	<meta name="description" content="Tests context menu selection">
-</head>
-
 <template name="present">
-	<a-scene>
-		<a-camera sync="presenterCamera" position="-0.1 1.8 0" cursor-color="black" near="0.1"></a-camera>
-		
-		{{ > presentationScene}}
-	</a-scene>
+	{{ > presentationScene}}
 </template>
 
 <template name="watchPresentation1stPerson">
-	<a-scene>
-		<a-camera sync="presenterCamera" position="-0.1 1.8 0" cursor-color="black" near="0.1"></a-camera>
-		
-		{{ > presentationScene}}
-	</a-scene>
+	{{ > presentationScene}}
 </template>
 
 <template name="watchPresentationOwnPerspective">
-	<a-scene>
-		<a-cube sync="presenterCamera" position="-0.1 1.8 0" scale="0.1 0.1 0.1" color="#C68E17"></a-cube>
-		
-		<a-camera position="1 1.8 0" cursor-color="black" near="0.1"></a-camera>
-		
-		{{ > presentationScene}}
-	</a-scene>
+	<a-cube sync="playerOne" position="-0.1 1.8 0" scale="0.1 0.1 0.1" color="#C68E17"></a-cube>
+
+	{{ > presentationScene}}
 </template>
 
 <template name="presentationScene">
-	<a-plane width="100" height="100" rotation="90 0 0" color="grey"></a-plane>
-	
 	<a-root position="0 1.6 -1.2">
 		<a-sphere class="source" radius="0.1">
 			<a-plane sync="view" class="sagital" width="0.25" height="0.25" rotation="0 0 90" color="brown">
@@ -59,9 +39,4 @@
 			<a-sphere class="item traverse" color="yellow" radius="0.03" position="-0.2 0.1 0"></a-sphere>
 		</a-root>
 	</a-root>
-	
-	<a-sky color="#ECECEC"></a-sky>
 </template>
-<body>
-
-</body>
