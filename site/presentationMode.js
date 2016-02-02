@@ -20,6 +20,9 @@ if (Meteor.isServer) {
 	});
 	
 	Meteor.methods({
+		resetEvemts: function () {
+			Events.remove({});
+		},
 		addEvent: function (name, attributeName, data) {
 			var insertAttributeModifier = {};
 			insertAttributeModifier[attributeName] = data;
@@ -36,39 +39,51 @@ if (Meteor.isClient) {
 		// When a component changes fire the attribute changed event
 		// Non-components don't fire events, so to make syncing generic
 		// I'm creating a new event
-		$( "[sync]" ).on("componentchanged", function (e) {
+		$( "body" ).on("componentchanged", "[sync]", function (e) {
 			$( this ).get(0).emit("attrchanged", e.detail);
 		});
 		
 		// Sync any object with the sync attribute set
-		$( "[sync]" ).on("attrchanged", function (e) {
+		$( "body" ).on("attrchanged", "[sync]", function (e) {
 			var name = $( this ).attr( "sync" );
 			var attributeName = e.detail.name;
 			var newData = e.detail.newData;
 			Meteor.call("addEvent", name, attributeName, newData );
 		});
+		
+		// Reset the collection
+		Meteor.call( "resetEvemts" );
 	}
 	
 	PresentationMode.listenForChanges = function () {
 		// Cache that maps an object's data to it's visual element
 		var idToObjMap = {};
 		
+		var updateAframeObjects = function (id, fields) {
+			var aframeObj = idToObjMap[id];
+				
+			// Find the object if it's not cached
+			if(!aframeObj) {
+				var name = Events.findOne( id, { fields: { name: 1 } } ).name;
+				aframeObj = idToObjMap[id] = $( "[sync='" + name + "']" ).get(0);
+			}
+
+			// Set the changed fields on the visual object
+			for( key in fields ) {	
+				aframeObj.setAttribute( key, fields[key] );
+			}
+		}
+		
 		// Listen for changes on all objects
 		var query = Events.find({});
 		var handle = query.observeChanges({
+			added: function ( id ) {
+				var attributesToUpdate = Events.findOne( id, { fields: { _id: 0, name: 0 } } )
+				updateAframeObjects(id, attributesToUpdate);
+			},
+			
 			changed: function (id, fields) {
-				var aframeObj = idToObjMap[id];
-				
-				// Find the object if it's not cached
-				if(!aframeObj) {
-					var name = Events.findOne( id, { fields: { name: 1 } } ).name;
-					aframeObj = idToObjMap[id] = $( "[sync='" + name + "']" ).get(0);
-				}
-
-				// Set the changed fields on the visual object
-				for( key in fields ) {				
-					aframeObj.setAttribute( key, fields[key] );
-				}
+				updateAframeObjects(id, fields);
 			},
 		});
 	}

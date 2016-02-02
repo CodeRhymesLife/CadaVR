@@ -1,7 +1,7 @@
 <template name="views">
 	<a-root position="0 1.6 -1.2">
 		<a-sphere class="source" radius="0.1">
-			<a-plane class="sagital" width="0.25" height="0.25" rotation="0 0 90" color="brown">
+			<a-plane sync="view" class="viewPlane sagital" width="0.25" height="0.25" rotation="0 0 90" color="brown">
 				<a-animation begin="sagital"
 					attribute="rotation"
 					to="0 0 90"

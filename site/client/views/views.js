@@ -4,13 +4,13 @@ Template.views.onRendered(function () {
 		
 		if($( this ).hasClass( "selected" )){
 			if($( this ).hasClass( "sagital" )) {
-				$( "a-sphere a-plane" ).get(0).emit( "sagital" );
+				$( ".viewPlane" ).get(0).emit( "sagital" );
 			}
 			if($( this ).hasClass( "frontal" )) {
-				$( "a-sphere a-plane" ).get(0).emit( "frontal" );
+				$( ".viewPlane" ).get(0).emit( "frontal" );
 			}
 			if($( this ).hasClass( "traverse" )) {
-				$( "a-sphere a-plane" ).get(0).emit( "traverse" );
+				$( ".viewPlane" ).get(0).emit( "traverse" );
 			}
 		}
 	});

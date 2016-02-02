@@ -13,31 +13,11 @@
 		<a-curvedimage sync="slides" class="slides" position="0 0.45 2.85" radius="5.7" theta-length="72" height="3.02" rotation="0 36 0" scale="0.8 0.8 0.8"></a-curvedimage>
 	</a-root>
 	
-	<a-entity visible="false" position="0 0 -5" class="objectInteractionContainer">
+	<a-entity rotation="0 -90 0" class="objectInteractionContainer">
 		{{> views}}
-		<a-animation begin="startAnimation"
-					attribute="rotation"
-					to="0 -90 0"
-					dur="3000"
-					fill="forwards"></a-animation>
-		<a-animation begin="startAnimation"
-					attribute="position"
-					to="-0.1 0 0"
-					dur="3000"
-					fill="forwards"></a-animation>
 	</a-entity>
 	
-	<a-entity visible="false" position="0 0 -5" class="menuSelectionContainer">
+	<a-entity rotation="0 90 0" class="menuSelectionContainer">
 		{{> menuSelection}}
-		<a-animation begin="startAnimation"
-					attribute="rotation"
-					to="0 90 0"
-					dur="3000"
-					fill="forwards"></a-animation>
-		<a-animation begin="startAnimation"
-					attribute="position"
-					to="-0.1 0 0"
-					dur="3000"
-					fill="forwards"></a-animation>
 	</a-entity>
 </template>

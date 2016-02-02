@@ -1,42 +1,13 @@
 <template name="present">
-	{{ > presentationScene}}
+	{{ > views}}
 </template>
 
 <template name="watchPresentation1stPerson">
-	{{ > presentationScene}}
+	{{ > views}}
 </template>
 
 <template name="watchPresentationOwnPerspective">
 	<a-cube sync="playerOne" position="-0.1 1.8 0" scale="0.1 0.1 0.1" color="#C68E17"></a-cube>
 
-	{{ > presentationScene}}
-</template>
-
-<template name="presentationScene">
-	<a-root position="0 1.6 -1.2">
-		<a-sphere class="source" radius="0.1">
-			<a-plane sync="view" class="sagital" width="0.25" height="0.25" rotation="0 0 90" color="brown">
-				<a-animation begin="sagital"
-					attribute="rotation"
-					to="0 0 90"
-					dur="1000"
-					fill="forwards"></a-animation>
-				<a-animation begin="frontal"
-					attribute="rotation"
-					to="0 90 0"
-					dur="1000"
-					fill="forwards"></a-animation>
-				<a-animation begin="traverse"
-					attribute="rotation"
-					to="90 0 0"
-					dur="1000"
-					fill="forwards"></a-animation>
-			</a-plane>
-		</a-sphere>
-		<a-root class="contextMenu">
-			<a-sphere class="item sagital" color="yellow" radius="0.03" position="0.2 0.1 0"></a-sphere>
-			<a-sphere class="item frontal" color="yellow" radius="0.03" position="0 0.25 0"></a-sphere>
-			<a-sphere class="item traverse" color="yellow" radius="0.03" position="-0.2 0.1 0"></a-sphere>
-		</a-root>
-	</a-root>
+	{{ > views}}
 </template>
