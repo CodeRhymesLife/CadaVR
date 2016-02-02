@@ -33,8 +33,15 @@ if (Meteor.isClient) {
 
 	PresentationMode = {};
 	PresentationMode.syncChanges = function () {
-		// Sync any object with the sync attribute set
+		// When a component changes fire the attribute changed event
+		// Non-components don't fire events, so to make syncing generic
+		// I'm creating a new event
 		$( "[sync]" ).on("componentchanged", function (e) {
+			$( this ).get(0).emit("attrchanged", e.detail);
+		});
+		
+		// Sync any object with the sync attribute set
+		$( "[sync]" ).on("attrchanged", function (e) {
 			var name = $( this ).attr( "sync" );
 			var attributeName = e.detail.name;
 			var newData = e.detail.newData;

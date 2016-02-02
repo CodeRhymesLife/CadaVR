@@ -21,7 +21,16 @@ function loadPitch () {
 		if(slideIndex < 0 || slideIndex > slides.length - 1)
 			return;
 
-		$(".slideShow a-image.slides").get(0).setAttribute("src", "images/pitch/" + slides[slideIndex]);
+		var slidesEl = $(".slideShow a-image.slides").get(0);
+		var oldSrc = slidesEl.getAttribute("src");
+		slidesEl.setAttribute("src", "images/pitch/" + slides[slideIndex]);
+		
+		// Non components don't fire events when attributes change, so we need to do it ourselves
+		slidesEl.emit('attrchanged', {
+			name: "src",
+			newData: slidesEl.getAttribute("src"),
+			oldData: oldSrc,
+		})
 		currentSlide = slideIndex;
 	}
 	
