@@ -45,5 +45,17 @@ function loadPitch () {
 		showSlide(currentSlide + 1);
 	});
 	
+	$("body").on("attrchanged", ".slideShow .slides", function (e) {
+		if(e.detail.name != "src")
+			return;
+		
+		if( e.detail.newData.indexOf("menuSelection.png") > -1 ) {
+			$( ".menuSelectionContainer" ).get(0).emit( "startAnimation" )
+		}
+		else if( e.detail.newData.indexOf("objectInteraction.png") > -1 ) {
+			$( ".objectInteractionContainer" ).get(0).emit( "startAnimation" )
+		}
+	});
+	
 	showSlide(currentSlide);
 }

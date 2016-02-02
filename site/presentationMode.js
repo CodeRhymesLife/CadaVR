@@ -69,8 +69,14 @@ if (Meteor.isClient) {
 			}
 
 			// Set the changed fields on the visual object
-			for( key in fields ) {	
+			for( key in fields ) {
+				var oldValue = aframeObj.getAttribute( key );
 				aframeObj.setAttribute( key, fields[key] );
+				aframeObj.emit('attrchanged', {
+					name: key,
+					newData: fields[key],
+					oldData: oldValue,
+				});
 			}
 		}
 		
