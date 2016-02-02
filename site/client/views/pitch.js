@@ -5,6 +5,7 @@ Template.pitchPresent.onRendered(function () {
 
 Template.pitchWatch1stPerson.onRendered(function () {
 	loadPitch();
+	PresentationMode.disableControls();
 	PresentationMode.listenForChanges();
 });
 
