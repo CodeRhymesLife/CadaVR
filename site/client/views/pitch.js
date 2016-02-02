@@ -1,4 +1,14 @@
-Template.pitch.onRendered(function () {
+Template.pitchPresent.onRendered(function () {
+	loadPitch();
+	PresentationMode.syncChanges();
+});
+
+Template.pitchWatch1stPerson.onRendered(function () {
+	loadPitch();
+	PresentationMode.listenForChanges();
+});
+
+function loadPitch () {
 	var slides = [
 		"vrlearning.png",
 		"cadavr.png",
@@ -24,4 +34,4 @@ Template.pitch.onRendered(function () {
 	});
 	
 	showSlide(currentSlide);
-});
+}

@@ -31,23 +31,8 @@ if (Meteor.isServer) {
 if (Meteor.isClient) {
 	Meteor.subscribe("events");
 
-	Template.present.onRendered(function () {
-		$(".contextMenu .item").click(function () {
-			$( this ).toggleClass( "selected" );
-			
-			if($( this ).hasClass( "selected" )){
-				if($( this ).hasClass( "sagital" )) {
-					$( "a-sphere a-plane" ).get(0).emit( "sagital" );
-				}
-				if($( this ).hasClass( "frontal" )) {
-					$( "a-sphere a-plane" ).get(0).emit( "frontal" );
-				}
-				if($( this ).hasClass( "traverse" )) {
-					$( "a-sphere a-plane" ).get(0).emit( "traverse" );
-				}
-			}
-		});
-
+	PresentationMode = {};
+	PresentationMode.syncChanges = function () {
 		// Sync any object with the sync attribute set
 		$( "[sync]" ).on("componentchanged", function (e) {
 			var name = $( this ).attr( "sync" );
@@ -55,19 +40,9 @@ if (Meteor.isClient) {
 			var newData = e.detail.newData;
 			Meteor.call("addEvent", name, attributeName, newData );
 		});
-	});
+	}
 	
-	Template.watchPresentation1stPerson.onRendered(function () {
-		// Disable controls since we're just watching
-		$("a-camera").get(0).sceneEl.cameraEl.components["look-controls"].data.enabled = false;
-		$("a-camera").get(0).sceneEl.cameraEl.components["wasd-controls"].data.eanbled = false;
-		
-		listenForChanges();
-	});
-	
-	Template.watchPresentationOwnPerspective.onRendered(listenForChanges);
-	
-	function listenForChanges() {
+	PresentationMode.listenForChanges = function () {
 		// Cache that maps an object's data to it's visual element
 		var idToObjMap = {};
 		
@@ -90,4 +65,34 @@ if (Meteor.isClient) {
 			},
 		});
 	}
+	
+	Template.present.onRendered(function () {
+		$(".contextMenu .item").click(function () {
+			$( this ).toggleClass( "selected" );
+			
+			if($( this ).hasClass( "selected" )){
+				if($( this ).hasClass( "sagital" )) {
+					$( "a-sphere a-plane" ).get(0).emit( "sagital" );
+				}
+				if($( this ).hasClass( "frontal" )) {
+					$( "a-sphere a-plane" ).get(0).emit( "frontal" );
+				}
+				if($( this ).hasClass( "traverse" )) {
+					$( "a-sphere a-plane" ).get(0).emit( "traverse" );
+				}
+			}
+		});
+
+		PresentationMode.syncChanges();
+	});
+	
+	Template.watchPresentation1stPerson.onRendered(function () {
+		// Disable controls since we're just watching
+		$("a-camera").get(0).sceneEl.cameraEl.components["look-controls"].data.enabled = false;
+		$("a-camera").get(0).sceneEl.cameraEl.components["wasd-controls"].data.eanbled = false;
+		
+		PresentationMode.listenForChanges();
+	});
+	
+	Template.watchPresentationOwnPerspective.onRendered(PresentationMode.listenForChanges);
 }
