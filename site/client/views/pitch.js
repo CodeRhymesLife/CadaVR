@@ -13,6 +13,7 @@ function loadPitch () {
 	var showUserTest = function (selector) {
 		return function () {
 			$( selector ).get(0).setAttribute("visible", true);
+			$( selector ).get(0).emit("startAnimation");
 		}
 	}
 	
@@ -65,7 +66,7 @@ function loadPitch () {
 		showSlide(currentSlide - 1);
 	});
 	
-	$(".slideShow .next").click( function () {
+	$(".slideShow .next, .slideShow a-image.slides").click( function () {
 		showSlide(currentSlide + 1);
 	});
 	

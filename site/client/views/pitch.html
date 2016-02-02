@@ -13,11 +13,31 @@
 		<a-image sync="slides" class="slides" width="1.9" height="1.2"></a-image>
 	</a-root>
 	
-	<a-entity visible="false" class="objectInteractionContainer" rotation="0 -90 0">
+	<a-entity visible="false" position="0 0 -5" class="objectInteractionContainer">
 		{{> views}}
+		<a-animation begin="startAnimation"
+					attribute="rotation"
+					to="0 -90 0"
+					dur="3000"
+					fill="forwards"></a-animation>
+		<a-animation begin="startAnimation"
+					attribute="position"
+					to="-0.1 0 0"
+					dur="3000"
+					fill="forwards"></a-animation>
 	</a-entity>
 	
-	<a-entity visible="false" class="menuSelectionContainer" rotation="0 90 0">
+	<a-entity visible="false" position="0 0 -5" class="menuSelectionContainer">
 		{{> menuSelection}}
+		<a-animation begin="startAnimation"
+					attribute="rotation"
+					to="0 90 0"
+					dur="3000"
+					fill="forwards"></a-animation>
+		<a-animation begin="startAnimation"
+					attribute="position"
+					to="-0.1 0 0"
+					dur="3000"
+					fill="forwards"></a-animation>
 	</a-entity>
 </template>
