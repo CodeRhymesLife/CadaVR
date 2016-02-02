@@ -11,11 +11,13 @@ Template.pitchWatch1stPerson.onRendered(function () {
 
 function loadPitch () {
 	var slides = [
-		"vrlearning.png",
-		"cadavr.png",
+		"intro.png",
+		"accomplishments.png",
 		"menuSelection.png",
 		"objectInteraction.png",
+		"summaryOfFindings.png",
 		"team.png",
+		"cadavrMockup.png",
 	];
 	
 	var currentSlide = 0;
