@@ -46,7 +46,7 @@ function loadPitch () {
 		var slideImage = slides[slideIndex].image;
 		var onLoad = slides[slideIndex].onLoad;
 		
-		var slidesEl = $(".slideShow a-image.slides").get(0);
+		var slidesEl = $(".slideShow .slides").get(0);
 		var oldSrc = slidesEl.getAttribute("src");
 		slidesEl.setAttribute("src", "images/pitch/" + slideImage);
 		
@@ -66,7 +66,7 @@ function loadPitch () {
 		showSlide(currentSlide - 1);
 	});
 	
-	$(".slideShow .next, .slideShow a-image.slides").click( function () {
+	$(".slideShow .next, .slideShow .slides").click( function () {
 		showSlide(currentSlide + 1);
 	});
 	

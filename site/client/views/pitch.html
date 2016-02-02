@@ -8,9 +8,9 @@
 
 <template name="pitchScene">
 	<a-root class="slideShow" position="0 3 -5" scale="4 4 4">
-		<a-image class="previous" src="images/pitch/leftArrow.png" width="0.2" height="0.2" position="-1.1 0 0"></a-image>
-		<a-image class="next" src="images/pitch/leftArrow.png" rotation="0 0 180" width="0.2" height="0.2" position="1.1 0 0"></a-image>
-		<a-image sync="slides" class="slides" width="1.9" height="1.2"></a-image>
+		<a-image class="previous" src="images/pitch/leftArrow.png" width="0.2" height="0.2" position="-3 0.5 -1"></a-image>
+		<a-image class="next" src="images/pitch/leftArrow.png" rotation="0 0 180" width="0.2" height="0.2" position="3 0.5 -1"></a-image>
+		<a-curvedimage sync="slides" class="slides" position="0 0.45 2.85" radius="5.7" theta-length="72" height="3.02" rotation="0 36 0" scale="0.8 0.8 0.8"></a-curvedimage>
 	</a-root>
 	
 	<a-entity visible="false" position="0 0 -5" class="objectInteractionContainer">
