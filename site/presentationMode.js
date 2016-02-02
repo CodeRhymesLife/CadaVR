@@ -73,6 +73,12 @@ if (Meteor.isClient) {
 		});
 	}
 	
+	PresentationMode.disableControls = function () {
+		// Disable controls since we're just watching
+		$("a-camera").get(0).sceneEl.cameraEl.components["look-controls"].data.enabled = false;
+		$("a-camera").get(0).sceneEl.cameraEl.components["wasd-controls"].data.eanbled = false;
+	}
+	
 	Template.present.onRendered(function () {
 		$(".contextMenu .item").click(function () {
 			$( this ).toggleClass( "selected" );
@@ -94,10 +100,7 @@ if (Meteor.isClient) {
 	});
 	
 	Template.watchPresentation1stPerson.onRendered(function () {
-		// Disable controls since we're just watching
-		$("a-camera").get(0).sceneEl.cameraEl.components["look-controls"].data.enabled = false;
-		$("a-camera").get(0).sceneEl.cameraEl.components["wasd-controls"].data.eanbled = false;
-		
+		PresentationMode.disableControls();
 		PresentationMode.listenForChanges();
 	});
 	
