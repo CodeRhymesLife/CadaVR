@@ -64,7 +64,16 @@ function loadPitch () {
 			oldDataHandler: function () {
 				$( ".objectInteractionContainer" ).get(0).emit( "backwardAnimation" )
 			},
-		}
+		},
+		
+		"images/pitch/summaryOfFindings.png": {
+			newDataHandler: function () {
+				$( ".audioContainer" ).get(0).emit( "forwardAnimation" )
+			},
+			oldDataHandler: function () {
+				$( ".audioContainer" ).get(0).emit( "backwardAnimation" )
+			},
+		},
 	}	
 	$("body").on("attrchanged", ".slideShow .slides", function (e) {
 		if(e.detail.name != "src")

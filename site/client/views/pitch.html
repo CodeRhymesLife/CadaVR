@@ -60,4 +60,33 @@
 					dur="3000"
 					fill="forwards"></a-animation>
 	</a-entity>
+	
+	<a-entity class="audioContainer" scale="0.2 0.2 0.2" position="-0 0 -13">
+		<a-entity geometry="primitive: box" position="-6 0 0"
+			material="src: url(images/pitch/hand reaching.jpg)"
+			sound="src: audio/pitch/reach out and touch it.mp3; on: click"></a-entity>
+
+		<a-entity geometry="primitive: box" position="-2 0 0"
+			material="src: url(images/pitch/crosshair.png)"
+			sound="src: audio/pitch/crosshairs.mp3; on: click"></a-entity>
+		
+		<a-entity geometry="primitive: box" position="2 0 0" 
+			material="src: url(images/pitch/steering wheel.png)"
+			sound="src: audio/pitch/more motor control.mp3; on: click"></a-entity>
+
+		<a-entity geometry="primitive: box" position="6 0 0" 
+			material="src: url(images/pitch/thumbs-up.jpg)"
+			sound="src: audio/pitch/supplement current cadaver lab.mp3; on: click"></a-entity>
+
+		<a-animation begin="forwardAnimation"
+					attribute="position"
+					to="-0.1 1.5 -2"
+					dur="3000"
+					fill="forwards"></a-animation>
+		<a-animation begin="backwardAnimation"
+					attribute="position"
+					to="0 0 -13"
+					dur="3000"
+					fill="forwards"></a-animation>
+	</a-entity>
 </template>
