@@ -88,5 +88,24 @@ function loadPitch () {
 			srcChangeHandlers[oldData].oldDataHandler();
 	});
 	
+	$("body").on("click", ".audioClip", function () {
+		$( this ).get(0).setAttribute("play", "true");
+		$( this ).get(0).emit('attrchanged', {
+			name: "play",
+			newData: "true",
+			oldData: "false",
+		})
+	});
+	
+	// Play the audio when the audio clip's play attribute changes
+	// This is mainly to get things working remotely
+	$("body").on("attrchanged", ".audioClip", function (e) {
+		if(e.detail.name != "play")
+			return;
+
+		// Play this audio clip
+		$( this ).get(0).components.sound.play();
+	});
+	
 	showSlide(currentSlide);
 }
