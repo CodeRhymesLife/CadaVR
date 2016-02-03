@@ -47,16 +47,36 @@ function loadPitch () {
 		showSlide(currentSlide + 1);
 	});
 	
+	var srcChangeHandlers = {
+		"images/pitch/menuSelection.png": {
+			newDataHandler: function () {
+				$( ".menuSelectionContainer" ).get(0).emit( "forwardAnimation" )
+			},
+			oldDataHandler: function () {
+				$( ".menuSelectionContainer" ).get(0).emit( "backwardAnimation" )
+			},
+		},
+		
+		"images/pitch/objectInteraction.png": {
+			newDataHandler: function () {
+				$( ".objectInteractionContainer" ).get(0).emit( "forwardAnimation" )
+			},
+			oldDataHandler: function () {
+				$( ".objectInteractionContainer" ).get(0).emit( "backwardAnimation" )
+			},
+		}
+	}	
 	$("body").on("attrchanged", ".slideShow .slides", function (e) {
 		if(e.detail.name != "src")
 			return;
 		
-		if( e.detail.newData.indexOf("menuSelection.png") > -1 ) {
-			$( ".menuSelectionContainer" ).get(0).emit( "startAnimation" )
-		}
-		else if( e.detail.newData.indexOf("objectInteraction.png") > -1 ) {
-			$( ".objectInteractionContainer" ).get(0).emit( "startAnimation" )
-		}
+		var newData = e.detail.newData;
+		if(srcChangeHandlers[newData])
+			srcChangeHandlers[newData].newDataHandler();
+		
+		var oldData = e.detail.oldData;
+		if(srcChangeHandlers[oldData])
+			srcChangeHandlers[oldData].oldDataHandler();
 	});
 	
 	showSlide(currentSlide);

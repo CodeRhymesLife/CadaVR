@@ -15,28 +15,48 @@
 	
 	<a-entity position="0 0 -12" class="objectInteractionContainer">
 		{{> views}}
-		<a-animation begin="startAnimation"
+		<a-animation begin="forwardAnimation"
 					attribute="rotation"
 					to="0 -90 0"
 					dur="3000"
 					fill="forwards"></a-animation>
-		<a-animation begin="startAnimation"
+		<a-animation begin="forwardAnimation"
 					attribute="position"
 					to="-0.1 0 0"
+					dur="3000"
+					fill="forwards"></a-animation>
+		<a-animation begin="backwardAnimation"
+					attribute="rotation"
+					to="0 0 0"
+					dur="3000"
+					fill="forwards"></a-animation>
+		<a-animation begin="backwardAnimation"
+					attribute="position"
+					to="0 0 -12"
 					dur="3000"
 					fill="forwards"></a-animation>
 	</a-entity>
 	
 	<a-entity position="0 0 -12" class="menuSelectionContainer">
 		{{> menuSelection}}
-		<a-animation begin="startAnimation"
+		<a-animation begin="forwardAnimation"
 					attribute="rotation"
 					to="0 90 0"
 					dur="3000"
 					fill="forwards"></a-animation>
-		<a-animation begin="startAnimation"
+		<a-animation begin="forwardAnimation"
 					attribute="position"
 					to="-0.1 0 0"
+					dur="3000"
+					fill="forwards"></a-animation>
+		<a-animation begin="backwardAnimation"
+					attribute="rotation"
+					to="0 0 0"
+					dur="3000"
+					fill="forwards"></a-animation>
+		<a-animation begin="backwardAnimation"
+					attribute="position"
+					to="0 0 -12"
 					dur="3000"
 					fill="forwards"></a-animation>
 	</a-entity>
