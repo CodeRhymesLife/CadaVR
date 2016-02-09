@@ -1,0 +1,22 @@
+<template name="displayMenu">
+	<a-root class="menu" position="0 2.5 -3">
+		<a-plane color="red" class="plane" width="6" height="0.5">
+			<a-entity id="pin" class="pins" position="-2.8 -0.1 0" text="text: Pin Tests" scale="0.3 0.3 0.3"></a-entity>
+
+			<a-entity class="organ" scale="0.3 0.3 0.3" position="-1.3 -0.1 0" text="text: Organ"></a-entity>
+			<a-entity id="" position="0 -0.1 0" text="text: Lessons" scale="0.3 0.3 0.3"></a-entity>
+			<a-entity id="" position="1.5 -0.1 0" text="text: Collaborate" scale="0.3 0.3 0.3"></a-entity>
+
+		</a-plane>
+	</a-root>
+	<a-root class="card" position="0 2.5 -3">
+	</a-root>
+	<!-- Left side -->
+	<a-plane position="-2 0 -3" class="left" height="20" width="1" color="blue" visible="false"></a-plane>
+	<a-plane position="-3 0 -3" class="farLeft" height="20" width="1" color="green" visible="false"></a-plane>
+
+	<!-- right side -->
+
+	<a-plane position="2 0 -3" class="right" height="20" width="1" color="blue" visible="false"></a-plane>
+	<a-plane position="3 0 -3" class="farRight" height="20" width="1" color="green" visible="false"></a-plane>
+</template>
