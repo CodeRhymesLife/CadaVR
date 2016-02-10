@@ -52,7 +52,7 @@ Template.displayMenu.onRendered(function () {
 			lessons: [
 				{
 					title: "Lesson 1",
-					body: "Learn about the muscles in the    neck"
+					body: "Learn about the muscles of the neck"
 				},
 				{
 					title: "Lesson 2",
@@ -99,21 +99,21 @@ Template.displayMenu.onRendered(function () {
 
 		$('.organ').click(function() {
 			$('.underline').remove();
-			$('.plane').append('<a-entity class="underline" position="-1.3 -0.1 0" text="text: _______" scale="0.3 0.3 0.3"></a-entity>');
+			$('.plane').append('<a-entity class="underline" position="-1.3 -0.1 0" text="text: _______" mixin="underlineColor" scale="0.3 0.3 0.3"></a-entity>');
 			console.log("clicked");
 			moveUp(cards["organs"]);
 		});
 
 		$('#lesson').click(function() {
 			$('.underline').remove();
-			$('.plane').append('<a-entity class="underline" position="0 -0.1 0" text="text: _______" scale="0.3 0.3 0.3"></a-entity>');
+			$('.plane').append('<a-entity class="underline" position="0 -0.1 0" text="text: _______" mixin="underlineColor" scale="0.3 0.3 0.3"></a-entity>');
 			console.log("clicked");
 			moveUp(cards["lessons"]);
 		});
 
 		$('#collaborate').click(function() {
 			$('.underline').remove();
-			$('.plane').append('<a-entity class="underline" position="1.5 -0.1 0" text="text: _______" scale="0.3 0.3 0.3"></a-entity>');
+			$('.plane').append('<a-entity class="underline" position="1.5 -0.1 0" text="text: _______" mixin="underlineColor" scale="0.3 0.3 0.3"></a-entity>');
 			console.log("clicked");
 			moveUp(cards["collaborate"]);
 		});
@@ -287,11 +287,11 @@ Template.displayMenu.onRendered(function () {
 							newSpace + ' 0" scale="0.3 0.3 0.3" text="text: ' + 
 							str + '" mixin="textColor"></a-entity>';
 						numAppended += 1;
-						str = "";
+						str = body[j];
 					}
 				}
 				if (str.length != 0) {
-					html += '<a-entity position="-0.9 ' + (0.5 - (0.25 * numAppended)) + ' 0" scale="0.3 0.3 0.3" text="text: ' + str + '" mixin="textColor"> </a-entity>';
+					html += '<a-entity position="-0.9 ' + (0.3 - (0.25 * numAppended)) + ' 0" scale="0.3 0.3 0.3" text="text: ' + str + '" mixin="textColor"> </a-entity>';
 				}
 				html += '</a-plane>';
 				$('.card').append(html);
