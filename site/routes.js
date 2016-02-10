@@ -5,6 +5,7 @@ Router.route('/', function () {
 Views = [
 	"menuSelection",
 	"moveObject",
+	"neckLesson",
 	"operatingTable",
 	"pitchPresent",
 	"pitchWatch1stPerson",
