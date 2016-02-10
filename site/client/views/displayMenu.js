@@ -31,14 +31,14 @@ Template.displayMenu.onRendered(function () {
 
 		$('#lesson').click(function() {
 			$('.underline').remove();
-			$('.plane').append('<a-entity class="underline" position="-1.3 -0.1 0" text="text: _______" scale="0.3 0.3 0.3"></a-entity>');
+			$('.plane').append('<a-entity class="underline" position="0 -0.1 0" text="text: _______" scale="0.3 0.3 0.3"></a-entity>');
 			console.log("clicked");
 			moveUp(lessonTitle, lessonBody);
 		});
 
 		$('#collaborate').click(function() {
 			$('.underline').remove();
-			$('.plane').append('<a-entity class="underline" position="-1.3 -0.1 0" text="text: _______" scale="0.3 0.3 0.3"></a-entity>');
+			$('.plane').append('<a-entity class="underline" position="1.5 -0.1 0" text="text: _______" scale="0.3 0.3 0.3"></a-entity>');
 			console.log("clicked");
 			moveUp(lessonTitle, lessonBody);
 		});
