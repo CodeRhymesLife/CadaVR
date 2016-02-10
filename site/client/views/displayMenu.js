@@ -195,6 +195,8 @@ Template.displayMenu.onRendered(function () {
 				var location = "" + (-4 + 2.2 * i);
 				console.log(location);
 				html += '<a-plane color="red" class="plane" position="' + location + '0 0" width="2" height="3">';
+				html += '<a-mouseenter scale="1.2 1.2 1.2"></a-mouseenter>';
+				html += '<a-mouseleave scale="1 1 1"></a-mouseleave>';
 				html += '<a-entity position="-0.9 1 0" scale="0.35 0.35 0.35" text="text: ' + arrTitle[i - 1] + '"> </a-entity>';
 				var body = arrBody[i - 1].split(" ");
 				var numAppended = 0;
