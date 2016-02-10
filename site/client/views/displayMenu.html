@@ -1,14 +1,19 @@
 <template name="displayMenu">
+	<a-assets>
+		<a-mixin id="textColor" material="color: black"></a-mixin>
+		<a-mixin id="underlineColor" material="color: blue"></a-mixin>
+	</a-assets>
+
 	<a-entity id="menu" class="menu" position="0 2 -3">
-		<a-plane color="red" class="plane" width="6" height="0.5">
-			<a-entity id="pin" class="pins" position="-2.8 -0.1 0" text="text: Pin Tests" scale="0.3 0.3 0.3" width="1" height="0.5">
+		<a-plane color="white" class="plane" width="6" height="0.5">
+			<a-entity id="pin" class="pins" position="-2.8 -0.1 0" text="text: Pin Tests" mixin="textColor" scale="0.3 0.3 0.3" width="1" height="0.5">
 			</a-entity>
 
-			<a-entity class="organ" scale="0.3 0.3 0.3" position="-1.3 -0.1 0" text="text: Organ" width="1" height="0.5">
+			<a-entity class="organ" scale="0.3 0.3 0.3" position="-1.3 -0.1 0" text="text: Organs" mixin="textColor" width="1" height="0.5">
 			</a-entity>
-			<a-entity id="lesson" position="0 -0.1 0" text="text: Lessons" scale="0.3 0.3 0.3" width="1" height="0.5">
+			<a-entity id="lesson" position="0 -0.1 0" text="text: Lessons" mixin="textColor" scale="0.3 0.3 0.3" width="1" height="0.5">
 			</a-entity>
-			<a-entity id="collaborate" position="1.5 -0.1 0" text="text: Collaborate" scale="0.3 0.3 0.3" width="1" height="0.5">
+			<a-entity id="collaborate" position="1.5 -0.1 0" text="text: Collaborate" mixin="textColor" scale="0.3 0.3 0.3" width="1" height="0.5">
 			</a-entity>
 
 		</a-plane>

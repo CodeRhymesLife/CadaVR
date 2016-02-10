@@ -92,7 +92,7 @@ Template.displayMenu.onRendered(function () {
 
 		$('.pins').click(function() {
 			$('.underline').remove();
-			$('.plane').append('<a-entity class="underline" position="-2.8 -0.1 0" text="text: _______" scale="0.3 0.3 0.3"></a-entity>');
+			$('.plane').append('<a-entity class="underline" position="-2.8 -0.1 0" text="text: _______" mixin="underlineColor" scale="0.3 0.3 0.3"></a-entity>');
 			console.log("clicked");
 			moveUp(cards["pinTests"]);
 		});
@@ -268,10 +268,10 @@ Template.displayMenu.onRendered(function () {
 				var html = "";
 				var location = "" + (-6 + 2.4 * i);
 				console.log(location);
-				html += '<a-plane color="red" class="plane" position="' + location + ' 0.5 0" width="2" height="2">';
+				html += '<a-plane color="white" class="plane" position="' + location + ' 0.5 0" width="2" height="2">';
 				html += '<a-mouseenter scale="1.1 1.1 1.1"></a-mouseenter>';
 				html += '<a-mouseleave scale="1 1 1"></a-mouseleave>';
-				html += '<a-entity position="-0.9 0.7 0" scale="0.35 0.35 0.35" text="text: ' + cardsInfo[i - 1].title + '"> </a-entity>';
+				html += '<a-entity position="-0.9 0.7 0" scale="0.35 0.35 0.35" text="text: ' + cardsInfo[i - 1].title + '" mixin="textColor"> </a-entity>';
 				var body = cardsInfo[i - 1].body.split(" ");
 				var numAppended = 0;
 				var str = "";
@@ -285,13 +285,13 @@ Template.displayMenu.onRendered(function () {
 						var newSpace = (0.3 - (0.25 * numAppended));
 						html += '<a-entity position="-0.9 ' + 
 							newSpace + ' 0" scale="0.3 0.3 0.3" text="text: ' + 
-							str + '"></a-entity>';
+							str + '" mixin="textColor"></a-entity>';
 						numAppended += 1;
 						str = "";
 					}
 				}
 				if (str.length != 0) {
-					html += '<a-entity position="-0.9 ' + (0.5 - (0.25 * numAppended)) + ' 0" scale="0.3 0.3 0.3" text="text: ' + str + '"> </a-entity>';
+					html += '<a-entity position="-0.9 ' + (0.5 - (0.25 * numAppended)) + ' 0" scale="0.3 0.3 0.3" text="text: ' + str + '" mixin="textColor"> </a-entity>';
 				}
 				html += '</a-plane>';
 				$('.card').append(html);
