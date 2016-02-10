@@ -12,6 +12,81 @@ Template.displayMenu.onRendered(function () {
 		var position = 0;
 		var usingCards = false;
 
+		var cards = {
+			pinTests: [
+				{
+					title: "Lesson 1",
+					body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit"
+				},
+				{
+					title: "Lesson 2",
+					body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit"
+				},
+				{
+					title: "Lesson 3",
+					body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit"
+				},
+				{
+					title: "Lesson 4",
+					body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit"
+				},
+			],
+			organs: [
+				{
+					title: "Lesson 1",
+					body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit"
+				},
+				{
+					title: "Lesson 2",
+					body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit"
+				},
+				{
+					title: "Lesson 3",
+					body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit"
+				},
+				{
+					title: "Lesson 4",
+					body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit"
+				},
+			],
+			lessons: [
+				{
+					title: "Lesson 1",
+					body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit"
+				},
+				{
+					title: "Lesson 2",
+					body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit"
+				},
+				{
+					title: "Lesson 3",
+					body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit"
+				},
+				{
+					title: "Lesson 4",
+					body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit"
+				},
+			],
+			collaborate: [
+				{
+					title: "Lesson 1",
+					body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit"
+				},
+				{
+					title: "Lesson 2",
+					body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit"
+				},
+				{
+					title: "Lesson 3",
+					body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit"
+				},
+				{
+					title: "Lesson 4",
+					body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit"
+				},
+			],
+		}
+		
 		var lessonTitle = ['Lesson 1', 'Lesson 2', 'Lesson 3', 'Lesson 4'];
 		var lessonBody = ["Do something fun I guess?", "Do more fun things!", "Even more fun things!", "the most fun things!"];
 
@@ -19,28 +94,28 @@ Template.displayMenu.onRendered(function () {
 			$('.underline').remove();
 			$('.plane').append('<a-entity class="underline" position="-2.8 -0.1 0" text="text: _______" scale="0.3 0.3 0.3"></a-entity>');
 			console.log("clicked");
-			moveUp(lessonTitle, lessonBody);
+			moveUp(cards["pinTests"]);
 		});
 
 		$('.organ').click(function() {
 			$('.underline').remove();
 			$('.plane').append('<a-entity class="underline" position="-1.3 -0.1 0" text="text: _______" scale="0.3 0.3 0.3"></a-entity>');
 			console.log("clicked");
-			moveUp(lessonTitle, lessonBody);
+			moveUp(cards["organs"]);
 		});
 
 		$('#lesson').click(function() {
 			$('.underline').remove();
 			$('.plane').append('<a-entity class="underline" position="0 -0.1 0" text="text: _______" scale="0.3 0.3 0.3"></a-entity>');
 			console.log("clicked");
-			moveUp(lessonTitle, lessonBody);
+			moveUp(cards["lessons"]);
 		});
 
 		$('#collaborate').click(function() {
 			$('.underline').remove();
 			$('.plane').append('<a-entity class="underline" position="1.5 -0.1 0" text="text: _______" scale="0.3 0.3 0.3"></a-entity>');
 			console.log("clicked");
-			moveUp(lessonTitle, lessonBody);
+			moveUp(cards["collaborate"]);
 		});
 
 
@@ -168,11 +243,10 @@ Template.displayMenu.onRendered(function () {
 			this.iid = null;
 		});
 
-		function moveUp(arrTitle, arrBody) {
+		function moveUp(cardsInfo) {
 			// only move up for the first time
 			if (!usingCards) {
-				console.log(arrTitle);
-				console.log(body);
+				console.log(cardsInfo);
 				var size = $('.menu')[0].getAttribute('position');
 				$('.menu')[0].setAttribute('position', "" + size.x + " " + (size.y + 2) + " " + size.z);
 				console.log($('.menu')[0].getAttribute('position'));
@@ -188,7 +262,7 @@ Template.displayMenu.onRendered(function () {
 			$('.card').empty();
 
 			// add new cards
-			for (var i = 1; i <= menu.length; i++) {
+			for (var i = 1; i <= cardsInfo.length; i++) {
 				// unsure why, but if we just use -2
 				// the first card wouldn't be appended in
 				var html = "";
@@ -197,8 +271,8 @@ Template.displayMenu.onRendered(function () {
 				html += '<a-plane color="red" class="plane" position="' + location + '0 0" width="2" height="3">';
 				html += '<a-mouseenter scale="1.2 1.2 1.2"></a-mouseenter>';
 				html += '<a-mouseleave scale="1 1 1"></a-mouseleave>';
-				html += '<a-entity position="-0.9 1 0" scale="0.35 0.35 0.35" text="text: ' + arrTitle[i - 1] + '"> </a-entity>';
-				var body = arrBody[i - 1].split(" ");
+				html += '<a-entity position="-0.9 1 0" scale="0.35 0.35 0.35" text="text: ' + cardsInfo[i - 1].title + '"> </a-entity>';
+				var body = cardsInfo[i - 1].body.split(" ");
 				var numAppended = 0;
 				var str = "";
 
