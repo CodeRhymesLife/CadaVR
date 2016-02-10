@@ -2,6 +2,18 @@
 	
 	<!-- Task container -->
 	<a-entity class="task" position="0.7 2 -0.8" rotation="0 -30 0" visible="false">
+		<!-- Vertical menu container -->
+		<a-entity scale="0.03 0.03 0.03" position="-0.35 0.25 0">
+			<a-entity geometry="primitive: box"
+				material="src: url(images/neckLesson/simulate.png)"></a-entity>
+			<a-entity geometry="primitive: box"
+				position="0 -3 0"
+				material="src: url(images/neckLesson/quiz.png)"></a-entity>
+			<a-entity geometry="primitive: box"
+				position="0 -6 0"
+				material="src: url(images/neckLesson/audio.png)"></a-entity>
+		</a-entity>
+		
 		<a-entity scale="0.3 0.3 0"  geometry="primitive: plane" material="color: grey">
 		
 			<!-- Text container -->
