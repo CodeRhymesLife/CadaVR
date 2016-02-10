@@ -52,7 +52,7 @@ Template.displayMenu.onRendered(function () {
 			lessons: [
 				{
 					title: "Lesson 1",
-					body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit"
+					body: "Learn about the muscles in the    neck"
 				},
 				{
 					title: "Lesson 2",
@@ -248,7 +248,7 @@ Template.displayMenu.onRendered(function () {
 			if (!usingCards) {
 				console.log(cardsInfo);
 				var size = $('.menu')[0].getAttribute('position');
-				$('.menu')[0].setAttribute('position', "" + size.x + " " + (size.y + 2) + " " + size.z);
+				$('.menu')[0].setAttribute('position', "" + size.x + " " + (size.y + 0.5) + " " + size.z);
 				console.log($('.menu')[0].getAttribute('position'));
 				
 				// move the card transparent control foward
@@ -266,12 +266,12 @@ Template.displayMenu.onRendered(function () {
 				// unsure why, but if we just use -2
 				// the first card wouldn't be appended in
 				var html = "";
-				var location = "" + (-4 + 2.2 * i);
+				var location = "" + (-6 + 2.4 * i);
 				console.log(location);
-				html += '<a-plane color="red" class="plane" position="' + location + '0 0" width="2" height="3">';
-				html += '<a-mouseenter scale="1.2 1.2 1.2"></a-mouseenter>';
+				html += '<a-plane color="red" class="plane" position="' + location + ' 0.5 0" width="2" height="2">';
+				html += '<a-mouseenter scale="1.1 1.1 1.1"></a-mouseenter>';
 				html += '<a-mouseleave scale="1 1 1"></a-mouseleave>';
-				html += '<a-entity position="-0.9 1 0" scale="0.35 0.35 0.35" text="text: ' + cardsInfo[i - 1].title + '"> </a-entity>';
+				html += '<a-entity position="-0.9 0.7 0" scale="0.35 0.35 0.35" text="text: ' + cardsInfo[i - 1].title + '"> </a-entity>';
 				var body = cardsInfo[i - 1].body.split(" ");
 				var numAppended = 0;
 				var str = "";
@@ -282,7 +282,7 @@ Template.displayMenu.onRendered(function () {
 					if (str.length + body[j].length + 1 <= 15) {
 						str += " " + body[j];
 					} else {
-						var newSpace = (0.5 - (0.25 * numAppended));
+						var newSpace = (0.3 - (0.25 * numAppended));
 						html += '<a-entity position="-0.9 ' + 
 							newSpace + ' 0" scale="0.3 0.3 0.3" text="text: ' + 
 							str + '"></a-entity>';
@@ -310,5 +310,8 @@ Template.displayMenu.onRendered(function () {
 		}
 
 		console.log($('.organ')[0].getAttribute('scale'));
+		
+		// Show the pins by default
+		$('.pins').click();
 	});
 });
