@@ -185,7 +185,7 @@ Template.displayMenu.onRendered(function () {
 				usingCards = true;
 			}			
 			// clear cards first
-			$('.cards').empty();
+			$('.card').empty();
 
 			// add new cards
 			for (var i = 1; i <= menu.length; i++) {
