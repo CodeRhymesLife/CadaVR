@@ -6,6 +6,12 @@ Template.neckLesson.onRendered(function () {
 	$(".rightarrow").click( function () {
 		rotateBody(30)
 	});
+	
+	$('body').keyup(function(e){
+		if( e.keyCode == 32 ) { // Spacebar
+			$( ".leftSternohyoid" ).get(0).setAttribute("material", "color: #FFD700;");
+		}
+	});
 });
 
 function rotateBody(amount) {
