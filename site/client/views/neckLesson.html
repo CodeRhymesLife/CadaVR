@@ -1,4 +1,57 @@
 <template name="neckLesson">
+	
+	<!-- Task container -->
+	<a-entity class="task" position="0.7 2 -0.8" rotation="0 -30 0" visible="false">
+		<a-entity scale="0.3 0.3 0"  geometry="primitive: plane" material="color: grey">
+		
+			<!-- Text container -->
+			<a-entity position="-0.9 0.75 0.2" scale="0.3 0.3 0.3">
+				<a-entity class="header" text="text: Task:" material="color: blue"></a-entity>
+				<a-entity class="task"
+					position="1.8 0 0"
+					scale="0.5 0.5 0.5"
+					text="text: Locate the Left Sternohyoid"
+					material="color: white"></a-entity>
+				<a-entity class="description"
+					position="0 -1 0"
+					scale="0.4 0.4 0.4"
+					text="text: Lorem ipsum dolor sit amet, consectetur"
+					material="color: white"></a-entity>
+				<a-entity class="description"
+					position="0 -1.5 0"
+					scale="0.4 0.4 0.4"
+					text="text: adipiscing elit, sed do eiusmod tempor incididunt"
+					material="color: white"></a-entity>
+				<a-entity class="description"
+					position="0 -2 0"
+					scale="0.4 0.4 0.4"
+					text="text: ut labore et dolore magna aliqua."
+					material="color: white"></a-entity>
+				<a-entity class="description"
+					position="0 -2.5 0"
+					scale="0.4 0.4 0.4"
+					text="text: Lorem ipsum dolor sit amet, consectetur"
+					material="color: white"></a-entity>
+				<a-entity class="description"
+					position="0 -3 0"
+					scale="0.4 0.4 0.4"
+					text="text: adipiscing elit, sed do eiusmod tempor incididunt"
+					material="color: white"></a-entity>
+				<a-entity class="description"
+					position="0 -3.5 0"
+					scale="0.4 0.4 0.4"
+					text="text: ut labore et dolore magna aliqua."
+					material="color: white"></a-entity>
+			</a-entity>
+		</a-entity>
+		
+		<a-animation begin="8000"
+						attribute="visible"
+						to="true"
+						dur="1000"
+						fill="forwards"></a-animation>
+	</a-entity>
+	
 	<!--
 		The skin model (and all other 3d Part models) are based off a human that is ~1000m tall.
 		So we need to counteract this by scaling down the models
