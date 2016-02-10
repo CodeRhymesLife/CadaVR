@@ -4,4 +4,7 @@ if(Meteor.isClient) {
 			return Views;
 		},
 	});
+
+	/*AFrame = require('aframe-core');
+	AFrame.registerComponent('text', require('aframe-text-component').component);*/
 }

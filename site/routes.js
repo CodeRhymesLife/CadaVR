@@ -13,6 +13,7 @@ Views = [
 	"views",
 	"watchPresentation1stPerson",
 	"watchPresentationOwnPerspective",
+	"displayMenu",
 ];
 
 Views.forEach( function (page) {
