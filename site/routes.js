@@ -3,6 +3,8 @@ Router.route('/', function () {
 });
 
 Views = [
+	"displayMenu",
+	"firstDemo",
 	"menuSelection",
 	"moveObject",
 	"neckLesson",
@@ -13,7 +15,6 @@ Views = [
 	"views",
 	"watchPresentation1stPerson",
 	"watchPresentationOwnPerspective",
-	"displayMenu",
 ];
 
 Views.forEach( function (page) {

@@ -52,7 +52,7 @@ Template.displayMenu.onRendered(function () {
 			lessons: [
 				{
 					title: "Lesson 1",
-					body: "Learn about the muscles of the neck"
+					body: "Learn about the muscles of the neck",
 				},
 				{
 					title: "Lesson 2",
@@ -259,7 +259,7 @@ Template.displayMenu.onRendered(function () {
 				usingCards = true;
 			}			
 			// clear cards first
-			$('.card').empty();
+			$('.cards').empty();
 
 			// add new cards
 			for (var i = 1; i <= cardsInfo.length; i++) {
@@ -268,7 +268,7 @@ Template.displayMenu.onRendered(function () {
 				var html = "";
 				var location = "" + (-6 + 2.4 * i);
 				console.log(location);
-				html += '<a-plane color="white" class="plane" position="' + location + ' 0.5 0" width="2" height="2">';
+				html += '<a-plane color="white" class="card" position="' + location + ' 0.5 0" width="2" height="2">';
 				html += '<a-mouseenter scale="1.1 1.1 1.1"></a-mouseenter>';
 				html += '<a-mouseleave scale="1 1 1"></a-mouseleave>';
 				html += '<a-entity position="-0.9 0.7 0" scale="0.35 0.35 0.35" text="text: ' + cardsInfo[i - 1].title + '" mixin="textColor"> </a-entity>';
@@ -294,14 +294,14 @@ Template.displayMenu.onRendered(function () {
 					html += '<a-entity position="-0.9 ' + (0.3 - (0.25 * numAppended)) + ' 0" scale="0.3 0.3 0.3" text="text: ' + str + '" mixin="textColor"> </a-entity>';
 				}
 				html += '</a-plane>';
-				$('.card').append(html);
+				$('.cards').append(html);
 				console.log($('card'));
 			}
 		}
 
 		function moveCards(value) {
-			for (var i = 0; i < $('.card').children().length; i++) {
-				var obj = $('.card').children()[i];
+			for (var i = 0; i < $('.cards').children().length; i++) {
+				var obj = $('.cards').children()[i];
 				var size = $(obj)[0].getAttribute('position');
 				$(obj)[0].setAttribute('position', '' + (size.x + value) + ' ' + size.y + ' ' + size.z );	
 			}

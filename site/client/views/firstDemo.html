@@ -1,0 +1,24 @@
+<template name="firstDemo">
+	
+	<!-- Menu container -->
+	<a-entity class="menuContainer">
+		{{> displayMenu}}
+		
+		<a-animation begin="loadLesson"
+					attribute="position"
+					to="0 10 0"
+					dur="3000"
+					fill="forwards"></a-animation>
+	</a-entity>
+	
+	<!-- Lesson container -->
+	<a-entity class="lessonContainer" visible="false" position="0 -10 0">
+		{{> neckLesson}}
+
+		<a-animation begin="loadLesson"
+					attribute="position"
+					to="0 0 0"
+					dur="3000"
+					fill="forwards"></a-animation>
+	</a-entity>
+</template>

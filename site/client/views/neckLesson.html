@@ -1,7 +1,7 @@
 <template name="neckLesson">
 	
 	<!-- Task container -->
-	<a-entity class="task" position="0.7 2 -0.8" rotation="0 -30 0" visible="false">
+	<a-entity class="task" position="0.7 2 -0.8" rotation="0 -30 0">
 		<!-- Vertical menu container -->
 		<a-entity scale="0.03 0.03 0.03" position="-0.35 0.25 0">
 			<a-entity geometry="primitive: box"
@@ -56,88 +56,57 @@
 					material="color: white"></a-entity>
 			</a-entity>
 		</a-entity>
-		
-		<a-animation begin="8000"
-						attribute="visible"
-						to="true"
-						dur="1000"
-						fill="forwards"></a-animation>
 	</a-entity>
 	
 	<a-entity position="0 1.8 -1.2">
-	
-		<!-- Animation container -->
-		<a-entity>
-	
-			<!-- Arrows container -->
-			<a-entity scale="0.05 0.05 0.05">
-				<a-entity class="leftarrow" position="1 0 0" text="text: >" material="color: blue"></a-entity>
-				<a-entity class="rightarrow" position="-1.4 0 0" text="text: <" material="color: blue"></a-entity>
+
+		<!-- Arrows container -->
+		<a-entity scale="0.3 0.3 0.3">
+			<a-entity class="leftarrow" position="1 0 0" text="text: >" material="color: blue"></a-entity>
+			<a-entity class="rightarrow" position="-1.4 0 0" text="text: <" material="color: blue"></a-entity>
+		</a-entity>
+		
+		<!--
+			The skin model (and all other 3d Part models) are based off a human that is ~1000m tall.
+			So we need to counteract this by scaling down the models
+		-->
+		<a-entity class="human" scale="0.006 0.006 0.006">
+			
+			<!-- Neck muscles -->
+			<a-entity>
+				<a-model material="color: #FFF0F5;" loader="src: url(models\neck muscles\2097.obj); format: obj"></a-model>
+				<a-model class="leftSternohyoid" material="color: #FFF0F5;" loader="src: url(models\neck muscles\2098.obj); format: obj"></a-model>
+				<a-model material="color: #FFF0F5;" loader="src: url(models\neck muscles\2099.obj); format: obj"></a-model>
+				<a-model material="color: #FFF0F5;" loader="src: url(models\neck muscles\2100.obj); format: obj"></a-model>
+				<a-model material="color: #FFF0F5;" loader="src: url(models\neck muscles\2101.obj); format: obj"></a-model>
+				<a-model material="color: #FFF0F5;" loader="src: url(models\neck muscles\2102.obj); format: obj"></a-model>
+				<a-model material="color: #FFF0F5;" loader="src: url(models\neck muscles\2103.obj); format: obj"></a-model>
+				<a-model material="color: #FFF0F5;" loader="src: url(models\neck muscles\2104.obj); format: obj"></a-model>
+				<a-model material="color: #FFF0F5;" loader="src: url(models\neck muscles\2115.obj); format: obj"></a-model>
+				<a-model material="color: #FFF0F5;" loader="src: url(models\neck muscles\2116.obj); format: obj"></a-model>
+				<a-model material="color: #FFF0F5;" loader="src: url(models\neck muscles\2117.obj); format: obj"></a-model>
+				<a-model material="color: #FFF0F5;" loader="src: url(models\neck muscles\2118.obj); format: obj"></a-model>
+				<a-model material="color: #FFF0F5;" loader="src: url(models\neck muscles\2119.obj); format: obj"></a-model>
+				<a-model material="color: #FFF0F5;" loader="src: url(models\neck muscles\2120.obj); format: obj"></a-model>
+				<a-model material="color: #FFF0F5;" loader="src: url(models\neck muscles\2129.obj); format: obj"></a-model>
+				<a-model material="color: #FFF0F5;" loader="src: url(models\neck muscles\2130.obj); format: obj"></a-model>
+				<a-model material="color: #FFF0F5;" loader="src: url(models\neck muscles\2584.obj); format: obj"></a-model>
+				<a-model material="color: #FFF0F5;" loader="src: url(models\neck muscles\2585.obj); format: obj"></a-model>
+				<a-model material="color: #FFF0F5;" loader="src: url(models\neck muscles\2622.obj); format: obj"></a-model>
+				<a-model material="color: #FFF0F5;" loader="src: url(models\neck muscles\2623.obj); format: obj"></a-model>
+				<a-model material="color: #FFF0F5;" loader="src: url(models\neck muscles\2624.obj); format: obj"></a-model>
+				<a-model material="color: #FFF0F5;" loader="src: url(models\neck muscles\2625.obj); format: obj"></a-model>
+				<a-model material="color: #FFF0F5;" loader="src: url(models\neck muscles\2632.obj); format: obj"></a-model>
+				<a-model material="color: #FFF0F5;" loader="src: url(models\neck muscles\2633.obj); format: obj"></a-model>
+				<a-model material="color: #FFF0F5;" loader="src: url(models\neck muscles\2634.obj); format: obj"></a-model>
+				<a-model material="color: #FFF0F5;" loader="src: url(models\neck muscles\2635.obj); format: obj"></a-model>
+				<a-model material="color: #FFF0F5;" loader="src: url(models\neck muscles\2727.obj); format: obj"></a-model>
 			</a-entity>
 			
-			<!--
-				The skin model (and all other 3d Part models) are based off a human that is ~1000m tall.
-				So we need to counteract this by scaling down the models
-			-->
-			<a-entity class="human" scale="0.001 0.001 0.001">
-				
-				<!-- Neck muscles -->
-				<a-entity>
-					<a-model material="color: #FFF0F5;" loader="src: url(models\neck muscles\2097.obj); format: obj"></a-model>
-					<a-model class="leftSternohyoid" material="color: #FFF0F5;" loader="src: url(models\neck muscles\2098.obj); format: obj"></a-model>
-					<a-model material="color: #FFF0F5;" loader="src: url(models\neck muscles\2099.obj); format: obj"></a-model>
-					<a-model material="color: #FFF0F5;" loader="src: url(models\neck muscles\2100.obj); format: obj"></a-model>
-					<a-model material="color: #FFF0F5;" loader="src: url(models\neck muscles\2101.obj); format: obj"></a-model>
-					<a-model material="color: #FFF0F5;" loader="src: url(models\neck muscles\2102.obj); format: obj"></a-model>
-					<a-model material="color: #FFF0F5;" loader="src: url(models\neck muscles\2103.obj); format: obj"></a-model>
-					<a-model material="color: #FFF0F5;" loader="src: url(models\neck muscles\2104.obj); format: obj"></a-model>
-					<a-model material="color: #FFF0F5;" loader="src: url(models\neck muscles\2115.obj); format: obj"></a-model>
-					<a-model material="color: #FFF0F5;" loader="src: url(models\neck muscles\2116.obj); format: obj"></a-model>
-					<a-model material="color: #FFF0F5;" loader="src: url(models\neck muscles\2117.obj); format: obj"></a-model>
-					<a-model material="color: #FFF0F5;" loader="src: url(models\neck muscles\2118.obj); format: obj"></a-model>
-					<a-model material="color: #FFF0F5;" loader="src: url(models\neck muscles\2119.obj); format: obj"></a-model>
-					<a-model material="color: #FFF0F5;" loader="src: url(models\neck muscles\2120.obj); format: obj"></a-model>
-					<a-model material="color: #FFF0F5;" loader="src: url(models\neck muscles\2129.obj); format: obj"></a-model>
-					<a-model material="color: #FFF0F5;" loader="src: url(models\neck muscles\2130.obj); format: obj"></a-model>
-					<a-model material="color: #FFF0F5;" loader="src: url(models\neck muscles\2584.obj); format: obj"></a-model>
-					<a-model material="color: #FFF0F5;" loader="src: url(models\neck muscles\2585.obj); format: obj"></a-model>
-					<a-model material="color: #FFF0F5;" loader="src: url(models\neck muscles\2622.obj); format: obj"></a-model>
-					<a-model material="color: #FFF0F5;" loader="src: url(models\neck muscles\2623.obj); format: obj"></a-model>
-					<a-model material="color: #FFF0F5;" loader="src: url(models\neck muscles\2624.obj); format: obj"></a-model>
-					<a-model material="color: #FFF0F5;" loader="src: url(models\neck muscles\2625.obj); format: obj"></a-model>
-					<a-model material="color: #FFF0F5;" loader="src: url(models\neck muscles\2632.obj); format: obj"></a-model>
-					<a-model material="color: #FFF0F5;" loader="src: url(models\neck muscles\2633.obj); format: obj"></a-model>
-					<a-model material="color: #FFF0F5;" loader="src: url(models\neck muscles\2634.obj); format: obj"></a-model>
-					<a-model material="color: #FFF0F5;" loader="src: url(models\neck muscles\2635.obj); format: obj"></a-model>
-					<a-model material="color: #FFF0F5;" loader="src: url(models\neck muscles\2727.obj); format: obj"></a-model>
-				</a-entity>
-				
-				<!-- Skin -->
-				<a-entity position="0 -625 0">
-					<a-entity material="opacity: 0.1; color: #F5DEB3" loader="src: url(models\skin\Skin.obj); format: obj"></a-entity>
-				</a-entity>
+			<!-- Skin -->
+			<a-entity position="0 -625 0">
+				<a-entity material="opacity: 0.1; color: #F5DEB3" loader="src: url(models\skin\Skin.obj); format: obj"></a-entity>
 			</a-entity>
-			
-			<a-animation begin="5000"
-					attribute="position"
-					to="0 0 0"
-					dur="3000"
-					fill="forwards"></a-animation>
-			<a-animation begin="5000"
-						attribute="scale"
-						to="6 6 6"
-						dur="3000"
-						fill="forwards"></a-animation>
-			<a-animation begin="backwardAnimation"
-						attribute="position"
-						to="0 0 0"
-						dur="3000"
-						fill="forwards"></a-animation>
-			<a-animation begin="backwardAnimation"
-						attribute="scale"
-						to="1 1 1"
-						dur="3000"
-						fill="forwards"></a-animation>
 		</a-entity>
 	</a-entity>
 </template>
