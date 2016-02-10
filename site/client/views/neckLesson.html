@@ -4,40 +4,74 @@
 		So we need to counteract this by scaling down the models
 	-->
 	<a-entity position="0 1.8 -1.2" scale="0.001 0.001 0.001">
-		<!-- Neck muscles -->
+	
+		<!-- Scaling container -->
 		<a-entity>
-			<a-model src="models\neck muscles\2097.dae"></a-model>
-			<a-model src="models\neck muscles\2098.dae"></a-model>
-			<a-model src="models\neck muscles\2099.dae"></a-model>
-			<a-model src="models\neck muscles\2100.dae"></a-model>
-			<a-model src="models\neck muscles\2101.dae"></a-model>
-			<a-model src="models\neck muscles\2102.dae"></a-model>
-			<a-model src="models\neck muscles\2103.dae"></a-model>
-			<a-model src="models\neck muscles\2104.dae"></a-model>
-			<a-model src="models\neck muscles\2115.dae"></a-model>
-			<a-model src="models\neck muscles\2116.dae"></a-model>
-			<a-model src="models\neck muscles\2117.dae"></a-model>
-			<a-model src="models\neck muscles\2118.dae"></a-model>
-			<a-model src="models\neck muscles\2119.dae"></a-model>
-			<a-model src="models\neck muscles\2120.dae"></a-model>
-			<a-model src="models\neck muscles\2129.dae"></a-model>
-			<a-model src="models\neck muscles\2130.dae"></a-model>
-			<a-model src="models\neck muscles\2584.dae"></a-model>
-			<a-model src="models\neck muscles\2585.dae"></a-model>
-			<a-model src="models\neck muscles\2622.dae"></a-model>
-			<a-model src="models\neck muscles\2623.dae"></a-model>
-			<a-model src="models\neck muscles\2624.dae"></a-model>
-			<a-model src="models\neck muscles\2625.dae"></a-model>
-			<a-model src="models\neck muscles\2632.dae"></a-model>
-			<a-model src="models\neck muscles\2633.dae"></a-model>
-			<a-model src="models\neck muscles\2634.dae"></a-model>
-			<a-model src="models\neck muscles\2635.dae"></a-model>
-			<a-model src="models\neck muscles\2727.dae"></a-model>
-		</a-entity>
-		
-		<!-- Skin -->
-		<a-entity position="0 -625 0">
-			<a-model src="models\skin\Skin.dae"></a-model>
+
+			<!-- Neck muscles -->
+			<a-entity>
+				<a-model src="models\neck muscles\2097.dae"></a-model>
+				<a-model src="models\neck muscles\2098.dae"></a-model>
+				<a-model src="models\neck muscles\2099.dae"></a-model>
+				<a-model src="models\neck muscles\2100.dae"></a-model>
+				<a-model src="models\neck muscles\2101.dae"></a-model>
+				<a-model src="models\neck muscles\2102.dae"></a-model>
+				<a-model src="models\neck muscles\2103.dae"></a-model>
+				<a-model src="models\neck muscles\2104.dae"></a-model>
+				<a-model src="models\neck muscles\2115.dae"></a-model>
+				<a-model src="models\neck muscles\2116.dae"></a-model>
+				<a-model src="models\neck muscles\2117.dae"></a-model>
+				<a-model src="models\neck muscles\2118.dae"></a-model>
+				<a-model src="models\neck muscles\2119.dae"></a-model>
+				<a-model src="models\neck muscles\2120.dae"></a-model>
+				<a-model src="models\neck muscles\2129.dae"></a-model>
+				<a-model src="models\neck muscles\2130.dae"></a-model>
+				<a-model src="models\neck muscles\2584.dae"></a-model>
+				<a-model src="models\neck muscles\2585.dae"></a-model>
+				<a-model src="models\neck muscles\2622.dae"></a-model>
+				<a-model src="models\neck muscles\2623.dae"></a-model>
+				<a-model src="models\neck muscles\2624.dae"></a-model>
+				<a-model src="models\neck muscles\2625.dae"></a-model>
+				<a-model src="models\neck muscles\2632.dae"></a-model>
+				<a-model src="models\neck muscles\2633.dae"></a-model>
+				<a-model src="models\neck muscles\2634.dae"></a-model>
+				<a-model src="models\neck muscles\2635.dae"></a-model>
+				<a-model src="models\neck muscles\2727.dae"></a-model>
+			</a-entity>
+			
+			<!-- Skin -->
+			<a-entity position="0 -625 0">
+				
+				<a-model class="skin" src="models\skin\SkinNoNeck.dae"></a-model>
+				<a-model class="skin" src="models\skin\Neck.dae">
+					<a-animation begin="8000"
+						attribute="visible"
+						to="false"
+						dur="1"
+						fill="forwards"></a-animation>
+				</a-model>
+			</a-entity>
+			
+			<a-animation begin="5000"
+							attribute="position"
+							to="0 0 1"
+							dur="3000"
+							fill="forwards"></a-animation>
+			<a-animation begin="5000"
+						attribute="scale"
+						to="4 4 4"
+						dur="3000"
+						fill="forwards"></a-animation>
+			<a-animation begin="backwardAnimation"
+						attribute="position"
+						to="0 0 0"
+						dur="3000"
+						fill="forwards"></a-animation>
+			<a-animation begin="backwardAnimation"
+						attribute="scale"
+						to="1 1 1"
+						dur="3000"
+						fill="forwards"></a-animation>
 		</a-entity>
 	</a-entity>
 </template>
