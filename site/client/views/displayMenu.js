@@ -315,6 +315,8 @@ Template.displayMenu.onRendered(function () {
 		$('.pins').click();
 
 
+		var cursor = $("a-camera").get(0).components.cursor;
+
 		var controller = LeapUtils.createController();
 		controller.on("gesture", function (gesture) {
 		    switch (gesture.type) {
@@ -326,8 +328,14 @@ Template.displayMenu.onRendered(function () {
 		            break;
 		        case "screenTap":
 		            console.log("Screen Tap Gesture");
+
+		            if (cursor.intersectedEl) {
+		                cursor.emit("click");
+		            }
 		            break;
 		        case "swipe":
+		            console.log("Swipe Gesture");
+
 		            // Classify swipe as either horizontal or vertical
 		            var isHorizontal = Math.abs(gesture.direction[0]) > Math.abs(gesture.direction[1]);
 
