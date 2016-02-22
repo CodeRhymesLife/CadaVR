@@ -4,6 +4,7 @@ Template.leapTest.onRendered(function () {
     var camera = sceneEl.cameraEl.components.camera.camera;
 
     window.controller = controller = new Leap.Controller({
+        host: Cookies.get('leapHost'),
         background: true,
         optimizeHMD: true
     });
