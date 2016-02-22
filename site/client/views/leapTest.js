@@ -11,7 +11,7 @@ Template.leapTest.onRendered(function () {
 
     controller.use('transform', {
         quaternion: (new THREE.Quaternion).setFromEuler(new THREE.Euler(Math.PI * -0.3, 0, Math.PI, 'ZXY')),
-        position: new THREE.Vector3(0, 1.2, -0.3),
+        position: new THREE.Vector3(0, 1, -0.3),
         scale: 0.001
     });
 
