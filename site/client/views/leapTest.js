@@ -64,7 +64,7 @@ Template.leapTest.onRendered(function () {
 
                 // CylinderGeometry(radiusTop, radiusBottom, height, radiusSegments, heightSegments, openEnded)
                 var boneMesh = new THREE.Mesh(
-                    new THREE.CylinderGeometry(1, 1, bone.length),
+                    new THREE.CylinderGeometry(5, 5, bone.length),
                     new THREE.MeshPhongMaterial()
                 );
 
