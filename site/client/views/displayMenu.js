@@ -313,5 +313,46 @@ Template.displayMenu.onRendered(function () {
 		
 		// Show the pins by default
 		$('.pins').click();
+
+
+		var controller = LeapUtils.createController();
+		controller.on("gesture", function (gesture) {
+		    switch (gesture.type) {
+		        case "circle":
+		            console.log("Circle Gesture");
+		            break;
+		        case "keyTap":
+		            console.log("Key Tap Gesture");
+		            break;
+		        case "screenTap":
+		            console.log("Screen Tap Gesture");
+		            break;
+		        case "swipe":
+		            // Classify swipe as either horizontal or vertical
+		            var isHorizontal = Math.abs(gesture.direction[0]) > Math.abs(gesture.direction[1]);
+
+		            // Classify as right-left or up-down
+		            if (isHorizontal) {
+		                if (gesture.direction[0] > 0) {
+		                    swipeDirection = "right";
+		                } else {
+		                    swipeDirection = "left";
+		                }
+
+		                var vector = swipeDirection == "left" ? -0.2 : 0.2;
+		                var speed = gesture.speed * 0.001;
+		                moveCards(vector * speed);
+		            } else { //vertical
+		                if (gesture.direction[1] > 0) {
+		                    swipeDirection = "up";
+		                } else {
+		                    swipeDirection = "down";
+		                }
+		            }
+
+		            console.log(swipeDirection)
+		            break;
+		    }
+		});
 	});
 });
