@@ -325,13 +325,13 @@ Template.displayMenu.onRendered(function () {
 		            break;
 		        case "keyTap":
 		            console.log("Key Tap Gesture");
-		            break;
-		        case "screenTap":
-		            console.log("Screen Tap Gesture");
 
 		            if (cursor.intersectedEl) {
 		                cursor.emit("click");
 		            }
+		            break;
+		        case "screenTap":
+		            console.log("Screen Tap Gesture");
 		            break;
 		        case "swipe":
 		            console.log("Swipe Gesture");
