@@ -2,6 +2,11 @@ Template.leapTest.onRendered(function () {
     var cursor = $("a-camera").get(0).components.cursor;
 
     var controller = LeapUtils.createController();
+    controller.use('pinchEvent', {
+        pinchThreshold: 0.9,
+        grabThreshold: 0.8,
+    });
+
     controller.on("gesture", function (gesture) {
         console.log(gesture.type + " Gesture");
 
@@ -45,66 +50,18 @@ Template.leapTest.onRendered(function () {
         }
     });
 
-    var triggerEvent = function (element, eventName, details) {
-        console.log("Firing event: " + eventName + ", details: " + JSON.stringify(details));
-
-        // create a jQuery event
-        var e = $.Event(eventName);
-
-        // set data
-        e.details = details
-
-        // trigger event - must trigger on document
-        $(element).trigger(e);
-    }
-
-    var detectPinchOrGrab = function (currentStrength, lastStrength, threshold, startEventName, endEventName) {
-        var eventName = null;
-        if (lastStrength > threshold && currentStrength < threshold) {
-            eventName = endEventName;
-        }
-        else if (lastStrength < threshold && currentStrength > threshold) {
-            eventName = startEventName;
-        }
-
-        if (eventName != null)
-            triggerEvent(cursor.intersectedEl || document, eventName, { strength: currentStrength });
-    }
-
-    var detectHandMoved = function (currentHand, lastHand) {
-        if(currentHand.palmPosition[0] != lastHand.palmPosition[0] ||
-            currentHand.palmPosition[1] != lastHand.palmPosition[1] ||
-            currentHand.palmPosition[2] != lastHand.palmPosition[2])
-        {
-            triggerEvent(document, "handMoved", { handId: currentHand.id });
-        }
-    }
-
     Leap.loop({ background: true }, {
         hand: function (hand) {
             var lastHand = controller.frame(1).hand(hand.id);
             if (!lastHand.valid)
                 return;
 
-            // Detect pinch
-            detectPinchOrGrab(
-                hand.pinchStrength.toPrecision(2),
-                lastHand.pinchStrength.toPrecision(2),
-                0.9,
-                "pinchStart",
-                "pinchEnd"
-            );
-
-            // Detect grab
-            detectPinchOrGrab(
-                hand.grabStrength.toPrecision(2),
-                lastHand.grabStrength.toPrecision(2),
-                0.7,
-                "grabStart",
-                "grabEnd"
-            );
-
-            detectHandMoved(hand, lastHand);
+            // Detect hand movement
+            if (hand.palmPosition[0] != lastHand.palmPosition[0] ||
+            hand.palmPosition[1] != lastHand.palmPosition[1] ||
+            hand.palmPosition[2] != lastHand.palmPosition[2]) {
+                controller.emit("handMoved", hand);
+            }
         }
     });
 
@@ -113,30 +70,29 @@ Template.leapTest.onRendered(function () {
     });
 
     var rotate = false;
-    $(document).on("grabStart", function (e) {
+    controller.on('grab', function (hand) {
         rotate = true;
-    });
-    $(document).on("grabEnd", function (e) {
+    })
+    .on('ungrab', function (hand) {
         rotate = false;
-    });
-
-    $(document).on("handMoved", function (e) {
+    })
+    .on("handMoved", function (hand) {
         if (!rotate)
             return;
 
-        var lastHand = controller.frame(1).hand(e.details.handId);
-        var currentHand = controller.frame(0).hand(e.details.handId);
+        var lastHand = controller.frame(1).hand(hand.id);
+        var currentHand = controller.frame(0).hand(hand.id);
 
         var deltaPosition = {
-            y: currentHand.palmPosition[0] - lastHand.palmPosition[0],
-            x: currentHand.palmPosition[1] - lastHand.palmPosition[1],
+            x: currentHand.palmPosition[0] - lastHand.palmPosition[0],
+            y: currentHand.palmPosition[1] - lastHand.palmPosition[1],
         };
 
         var rotationFactor = 1000;
         var cube = $("a-cube").get(0);
         var rotation = cube.getAttribute("rotation") || { x: 0, y: 0, z: 0 };
-        rotation.x -= deltaPosition.x * rotationFactor;
-        rotation.y += deltaPosition.y * rotationFactor;
+        rotation.x -= deltaPosition.y * rotationFactor;
+        rotation.y += deltaPosition.x * rotationFactor;
         cube.setAttribute("rotation",
             String(rotation.x) + " " +
             String(rotation.y) + " " +
