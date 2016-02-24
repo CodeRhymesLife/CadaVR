@@ -79,74 +79,29 @@ Template.heartLesson.onRendered(function () {
 	// Detect when player is looking left and right
 	var sceneEl = $("a-scene").get(0)
 	var cameraEl = sceneEl.cameraEl;
-	sceneEl.addBehavior({
-	    lookingLeft: false,
-	    lookingRight: false,
-	    lookingUp: false,
-        lookingDown: false,
-	    lastCameraRotation: cameraEl.getAttribute("rotation"),
-	    leftThreshold: 40,
-	    rightThreshold: -40,
-	    upThreshold: 7,
-        downThreshold: -60,
-	    update: function () {
-	        var rotation = cameraEl.getAttribute("rotation");
 
-            // Left
-	        if (!this.lookingLeft && rotation.y > this.leftThreshold) {
-	            this.lookingLeft = true;
-	            cameraEl.emit("lookingLeftStart");
-	        }
-	        else if (this.lookingLeft && rotation.y < this.leftThreshold) {
-	            this.lookingLeft = false;
-	            cameraEl.emit("lookingLeftEnd");
-	        }
-
-            // Right
-	        if (!this.lookingRight && rotation.y < this.rightThreshold) {
-	            this.lookingRight = true;
-	            cameraEl.emit("lookingRightStart");
-	        }
-	        else if (this.lookingRight && rotation.y > this.rightThreshold) {
-	            this.lookingRight = false;
-	            cameraEl.emit("lookingRightEnd");
-	        }
-
-            // Up
-            if (!this.lookingUp && rotation.x > this.upThreshold) {
-	            this.lookingUp = true;
-	            cameraEl.emit("lookingUpStart");
-            }
-            else if (this.lookingUp && rotation.x < this.upThreshold) {
-                this.lookingUp = false;
-                cameraEl.emit("lookingUpEnd");
-            }
-
-            // Down
-            if (!this.lookingDown && rotation.x < this.downThreshold) {
-	            this.lookingDown = true;
-	            cameraEl.emit("lookingDownStart");
-            }
-            else if (this.lookingDown && rotation.x > this.downThreshold) {
-                this.lookingDown = false;
-                cameraEl.emit("lookingDownEnd");
-            }
-
-	        this.lastCameraRotation = rotation;
-	    },
-	});
-
+	setupHeart();
 	setupVisuals(cameraEl);
 	setupController();
+	setupLookEvents(sceneEl, cameraEl);
 });
 
-
-function setupVisuals(cameraEl) {
+function setupHeart() {
     // Add Heart parts
     heartParts.forEach(function (partInfo) {
         $(".heartContainer").append("<a-model material='color: " + partInfo.color + ";' loader='src: url(models\\heart\\" + partInfo.file + "); format: obj'></a-model>");
     });
 
+    $("body").on("hover", ".heartContainer a-model", function () {
+        $(this).get(0).setAttribute("scale", "3 3 3");
+    })
+
+    $("body").on("a-hover", ".heartContainer a-model", function () {
+        $(this).get(0).setAttribute("scale", "3 3 3");
+    })
+}
+
+function setupVisuals(cameraEl) {
     // Top
     displayImage(
         "taskHeader",
@@ -226,38 +181,6 @@ function setupVisuals(cameraEl) {
     });
 }
 
-function slideHorizontal(selector, amount) {
-    $(selector).each(function (item) {
-        element = $(this).get(0);
-        rotation = element.getAttribute("rotation");
-        rotation.y += amount
-        element.setAttribute("rotation", rotation.x + " " + rotation.y + " " + rotation.z);
-    })
-}
-
-function slideVertical(selector, amount) {
-    $(selector).each(function (item) {
-        element = $(this).get(0);
-        position = element.getAttribute("position");
-        position.y += amount
-        element.setAttribute("position", position.x + " " + position.y + " " + position.z);
-    })
-}
-
-function displayImage(className, src, position, rotation, height, actualImageWidth, actualImageHeight) {
-	var radius = 4;
-	thetaLength = 57.2958 * actualImageWidth * height /
-					(actualImageHeight * radius);
-	
-    $(".curvedBackgroundContainer").append("<a-curvedimage class='" + className + "' " +
-        "src='images/heartLesson/" + src + "' " +
-		"position='" + position + "' " +
-		"rotation='" + rotation + "' " +
-		"height='" + height + "' " +
-		"radius='" + radius + "' " +
-		"theta-length='" + thetaLength + "'></a-curvedimage>");
-}
-
 function setupController() {
     var controller = LeapUtils.createController();
 
@@ -319,6 +242,97 @@ function setupController() {
             organContainer.setAttribute("scale", scale.x + " " + scale.y + " " + scale.z)
         }
     });
+}
+
+function setupLookEvents(sceneEl, cameraEl) {
+    sceneEl.addBehavior({
+        lookingLeft: false,
+        lookingRight: false,
+        lookingUp: false,
+        lookingDown: false,
+        lastCameraRotation: cameraEl.getAttribute("rotation"),
+        leftThreshold: 40,
+        rightThreshold: -40,
+        upThreshold: 7,
+        downThreshold: -60,
+        update: function () {
+            var rotation = cameraEl.getAttribute("rotation");
+
+            // Left
+            if (!this.lookingLeft && rotation.y > this.leftThreshold) {
+                this.lookingLeft = true;
+                cameraEl.emit("lookingLeftStart");
+            }
+            else if (this.lookingLeft && rotation.y < this.leftThreshold) {
+                this.lookingLeft = false;
+                cameraEl.emit("lookingLeftEnd");
+            }
+
+            // Right
+            if (!this.lookingRight && rotation.y < this.rightThreshold) {
+                this.lookingRight = true;
+                cameraEl.emit("lookingRightStart");
+            }
+            else if (this.lookingRight && rotation.y > this.rightThreshold) {
+                this.lookingRight = false;
+                cameraEl.emit("lookingRightEnd");
+            }
+
+            // Up
+            if (!this.lookingUp && rotation.x > this.upThreshold) {
+                this.lookingUp = true;
+                cameraEl.emit("lookingUpStart");
+            }
+            else if (this.lookingUp && rotation.x < this.upThreshold) {
+                this.lookingUp = false;
+                cameraEl.emit("lookingUpEnd");
+            }
+
+            // Down
+            if (!this.lookingDown && rotation.x < this.downThreshold) {
+                this.lookingDown = true;
+                cameraEl.emit("lookingDownStart");
+            }
+            else if (this.lookingDown && rotation.x > this.downThreshold) {
+                this.lookingDown = false;
+                cameraEl.emit("lookingDownEnd");
+            }
+
+            this.lastCameraRotation = rotation;
+        },
+    });
+}
+
+function slideHorizontal(selector, amount) {
+    $(selector).each(function (item) {
+        element = $(this).get(0);
+        rotation = element.getAttribute("rotation");
+        rotation.y += amount
+        element.setAttribute("rotation", rotation.x + " " + rotation.y + " " + rotation.z);
+    })
+}
+
+function slideVertical(selector, amount) {
+    $(selector).each(function (item) {
+        element = $(this).get(0);
+        position = element.getAttribute("position");
+        position.y += amount
+        element.setAttribute("position", position.x + " " + position.y + " " + position.z);
+    })
+}
+
+function displayImage(className, src, position, rotation, height, actualImageWidth, actualImageHeight) {
+	var radius = 4;
+	thetaLength = 57.2958 * actualImageWidth * height /
+					(actualImageHeight * radius);
+	
+    $(".curvedBackgroundContainer").append("<a-curvedimage class='" + className + "' " +
+        "src='images/heartLesson/" + src + "' " +
+		"position='" + position + "' " +
+		"rotation='" + rotation + "' " +
+		"height='" + height + "' " +
+		"radius='" + radius + "' " +
+		"theta-length='" + thetaLength + "'></a-curvedimage>");
 }
 
 function validHands() {
