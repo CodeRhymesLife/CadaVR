@@ -31,6 +31,26 @@ LeapUtils.createController = function () {
         }
     });
 
+    controller.use('pinchEvent', {
+        pinchThreshold: 0.9,
+        grabThreshold: 0.8,
+    });
+
+    Leap.loop({ background: true }, {
+        hand: function (hand) {
+            var lastHand = controller.frame(1).hand(hand.id);
+            if (!lastHand.valid)
+                return;
+
+            // Detect hand movement
+            if (hand.palmPosition[0] != lastHand.palmPosition[0] ||
+            hand.palmPosition[1] != lastHand.palmPosition[1] ||
+            hand.palmPosition[2] != lastHand.palmPosition[2]) {
+                controller.emit("handMoved", hand);
+            }
+        }
+    });
+
     controller.connect();
 
     return controller;

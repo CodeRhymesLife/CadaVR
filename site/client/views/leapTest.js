@@ -2,10 +2,6 @@ Template.leapTest.onRendered(function () {
     var cursor = $("a-camera").get(0).components.cursor;
 
     var controller = LeapUtils.createController();
-    controller.use('pinchEvent', {
-        pinchThreshold: 0.9,
-        grabThreshold: 0.8,
-    });
 
     controller.on("gesture", function (gesture) {
         console.log(gesture.type + " Gesture");
@@ -50,21 +46,6 @@ Template.leapTest.onRendered(function () {
         }
     });
 
-    Leap.loop({ background: true }, {
-        hand: function (hand) {
-            var lastHand = controller.frame(1).hand(hand.id);
-            if (!lastHand.valid)
-                return;
-
-            // Detect hand movement
-            if (hand.palmPosition[0] != lastHand.palmPosition[0] ||
-            hand.palmPosition[1] != lastHand.palmPosition[1] ||
-            hand.palmPosition[2] != lastHand.palmPosition[2]) {
-                controller.emit("handMoved", hand);
-            }
-        }
-    });
-
     $("a-cube").on("keyTap screenTap", function () {
         $(this).get(0).setAttribute("color", getRandomColor());
     });
@@ -95,15 +76,6 @@ Template.leapTest.onRendered(function () {
             leftHandPinched = false;
 
         zoom = false;
-    })
-    .on('handLost', function (hand) {
-        // If we lose a grabbing hand, ungrab
-        if (hand.data('pinchEvent.grabbing'))
-            controller.emit("ungrab", hand)
-
-        // If we lose a pinching hand make sure it's unpinched
-        if (hand.data('pinchEvent.pinching'))
-            controller.emit("unpinch", hand);
     })
     .on("handMoved", function (hand) {
         if (rotate) {
