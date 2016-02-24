@@ -113,10 +113,10 @@ function setupVisuals(cameraEl) {
 		246
 	);
     $(cameraEl).on("lookingUpStart", function () {
-        slideVertical(".taskHeader", -0.8);
+        //slideVertical(".taskHeader", -0.8);
     })
     .on("lookingUpEnd", function () {
-        slideVertical(".taskHeader", 0.8);
+        //slideVertical(".taskHeader", 0.8);
     });
 
     // Left
@@ -124,7 +124,7 @@ function setupVisuals(cameraEl) {
         "taskDescription",
 		"mainCard.png",
 		"0 -0.1 0",
-		"0 100 0",
+		"0 80 0",
 		4,
 		1674,
 		2204
@@ -133,7 +133,7 @@ function setupVisuals(cameraEl) {
         "quizIcon taskIcon",
 		"quizIcon.png",
 		"0 0.9 -0.01",
-		"0 60.3 0",
+		"0 40.3 0",
 		0.5,
 		400,
 		400
@@ -142,7 +142,7 @@ function setupVisuals(cameraEl) {
         "soundIcon taskIcon",
 		"soundIcon.png",
 		"0 0.3 -0.01",
-		"0 60.3 0",
+		"0 40.3 0",
 		0.5,
 		400,
 		400
@@ -151,16 +151,16 @@ function setupVisuals(cameraEl) {
         "simIcon taskIcon",
 		"simIcon.png",
 		"0 -0.3 -0.01",
-		"0 60.3 0",
+		"0 40.3 0",
 		0.5,
 		400,
 		400
 	);
     $(cameraEl).on("lookingLeftStart", function () {
-        slideHorizontal(".taskDescription, .taskIcon", -20);
+        //slideHorizontal(".taskDescription, .taskIcon", -20);
     })
     .on("lookingLeftEnd", function () {
-        slideHorizontal(".taskDescription, .taskIcon", 20);
+        //slideHorizontal(".taskDescription, .taskIcon", 20);
     });
 
     // Right
@@ -168,16 +168,16 @@ function setupVisuals(cameraEl) {
         "bodyImage",
 		"body.png",
 		"0 0 0",
-		"0 -50 0",
+		"0 -30 0",
 		3.8,
 		1418,
 		2960
 	);
     $(cameraEl).on("lookingRightStart", function () {
-        slideHorizontal(".bodyImage", 20);
+        //slideHorizontal(".bodyImage", 20);
     })
     .on("lookingRightEnd", function () {
-        slideHorizontal(".bodyImage", -20);
+        //slideHorizontal(".bodyImage", -20);
     });
 }
 
@@ -332,7 +332,9 @@ function displayImage(className, src, position, rotation, height, actualImageWid
 		"rotation='" + rotation + "' " +
 		"height='" + height + "' " +
 		"radius='" + radius + "' " +
-		"theta-length='" + thetaLength + "'></a-curvedimage>");
+		"theta-length='" + thetaLength + "' " +
+		"data-actualImageWidth='" + actualImageWidth + "' " +
+		"data-actualImageHeight='" + actualImageHeight + "'></a-curvedimage>");
 }
 
 function validHands() {
