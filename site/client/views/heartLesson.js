@@ -234,10 +234,16 @@ function setupVisuals(cameraEl) {
 		400
 	);
     $(cameraEl).on("lookingLeftStart", function () {
-        //slideHorizontal(".taskDescription, .taskIcon", -20);
+        $(".taskIcon").each(function () {
+			$(this).get(0).emit("slideRight");
+		});
+		//slideHorizontal(".taskIcon", -5);
     })
     .on("lookingLeftEnd", function () {
-        //slideHorizontal(".taskDescription, .taskIcon", 20);
+		$(".taskIcon").each(function () {
+			$(this).get(0).emit("slideLeft");
+		});
+        //slideHorizontal(".taskIcon", 5);
     });
 
     // Right
@@ -328,7 +334,7 @@ function setupLookEvents(sceneEl, cameraEl) {
         lookingUp: false,
         lookingDown: false,
         lastCameraRotation: cameraEl.getAttribute("rotation"),
-        leftThreshold: 40,
+        leftThreshold: 20,
         rightThreshold: -40,
         upThreshold: 7,
         downThreshold: -60,
@@ -403,6 +409,9 @@ function displayImage(className, src, position, rotation, height, actualImageWid
 	thetaLength = 57.2958 * actualImageWidth * height /
 					(actualImageHeight * radius);
 	
+	var rotationParts = rotation.split(" ");
+	var slideRotation = rotationParts[0] + " " + (rotationParts[1] - 5) + " " + rotationParts[2];
+	
     $(".curvedBackgroundContainer").append("<a-curvedimage class='" + className + "' " +
         "src='images/heartLesson/" + src + "' " +
 		"position='" + position + "' " +
@@ -411,7 +420,22 @@ function displayImage(className, src, position, rotation, height, actualImageWid
 		"radius='" + radius + "' " +
 		"theta-length='" + thetaLength + "' " +
 		"data-actualImageWidth='" + actualImageWidth + "' " +
-		"data-actualImageHeight='" + actualImageHeight + "'></a-curvedimage>");
+		"data-actualImageHeight='" + actualImageHeight + "'>" +
+			"<a-animation " +
+				"begin='slideRight' " +
+				"attribute='rotation' " +
+				"to='" + slideRotation + "' " +
+				"dur='500' " +
+				"fill='forwards' " +
+				"></a-animation>" +
+			"<a-animation " +
+				"begin='slideLeft' " +
+				"attribute='rotation' " +
+				"to='" + rotation + "' " +
+				"dur='500' " +
+				"fill='forwards' " +
+				"></a-animation>" +
+		"</a-curvedimage>");
 }
 
 function validHands() {
