@@ -80,7 +80,34 @@ Template.heartLesson.onRendered(function () {
 		1746,
 		246
 	);
+
+	displayImage(
+		"quizIcon.png",
+		"0 0.9 -0.01",
+		"0 40.3 0",
+		0.5,
+		400,
+		400
+	);
+
+	displayImage(
+		"soundIcon.png",
+		"0 0.3 -0.01",
+		"0 40.3 0",
+		0.5,
+		400,
+		400
+	);
 	
+	displayImage(
+		"simIcon.png",
+		"0 -0.3 -0.01",
+		"0 40.3 0",
+		0.5,
+		400,
+		400
+	);
+
 	displayImage(
 		"body.png",
 		"0 0 0",
