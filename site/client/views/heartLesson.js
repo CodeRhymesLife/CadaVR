@@ -129,16 +129,7 @@ function setupVisuals(cameraEl) {
         $(".heartContainer").append("<a-model material='color: #FFF0F5;' loader='src: url(models\\heart\\" + partInfo.file + "); format: obj'></a-model>");
     });
 
-    displayImage(
-        "taskDescription",
-		"mainCard.png",
-		"0 -0.1 0",
-		"0 100 0",
-		4,
-		1674,
-		2204
-	);
-
+    // Top
     displayImage(
         "taskHeader",
 		"taskCard.png",
@@ -148,7 +139,23 @@ function setupVisuals(cameraEl) {
 		1746,
 		246
 	);
+    $(cameraEl).on("lookingUpStart", function () {
+        slideVertical(".taskHeader", -0.8);
+    })
+    .on("lookingUpEnd", function () {
+        slideVertical(".taskHeader", 0.8);
+    });
 
+    // Left
+    displayImage(
+        "taskDescription",
+		"mainCard.png",
+		"0 -0.1 0",
+		"0 100 0",
+		4,
+		1674,
+		2204
+	);
     displayImage(
         "quizIcon taskIcon",
 		"quizIcon.png",
@@ -158,7 +165,6 @@ function setupVisuals(cameraEl) {
 		400,
 		400
 	);
-
     displayImage(
         "soundIcon taskIcon",
 		"soundIcon.png",
@@ -168,7 +174,6 @@ function setupVisuals(cameraEl) {
 		400,
 		400
 	);
-
     displayImage(
         "simIcon taskIcon",
 		"simIcon.png",
@@ -178,7 +183,14 @@ function setupVisuals(cameraEl) {
 		400,
 		400
 	);
+    $(cameraEl).on("lookingLeftStart", function () {
+        slideHorizontal(".taskDescription, .taskIcon", -20);
+    })
+    .on("lookingLeftEnd", function () {
+        slideHorizontal(".taskDescription, .taskIcon", 20);
+    });
 
+    // Right
     displayImage(
         "bodyImage",
 		"body.png",
@@ -188,41 +200,29 @@ function setupVisuals(cameraEl) {
 		1418,
 		2960
 	);
-
-    $(cameraEl).on("lookingLeftStart", function () {
-        slide(".taskDescription, .taskIcon", "horizontal", -20);
-    })
-    .on("lookingLeftEnd", function () {
-        slide(".taskDescription, .taskIcon", "horizontal", 20);
-    })
-    .on("lookingRightStart", function () {
-        slide(".bodyImage", "horizontal", 20);
+    $(cameraEl).on("lookingRightStart", function () {
+        slideHorizontal(".bodyImage", 20);
     })
     .on("lookingRightEnd", function () {
-        slide(".bodyImage", "horizontal", -20);
-    })
-    .on("lookingUpStart", function () {
-        slide(".taskHeader", "vertical", -0.8);
-    })
-    .on("lookingUpEnd", function () {
-        slide(".taskHeader", "vertical", 0.8);
+        slideHorizontal(".bodyImage", -20);
+    });
+}
+
+function slideHorizontal(selector, amount) {
+    $(selector).each(function (item) {
+        element = $(this).get(0);
+        rotation = element.getAttribute("rotation");
+        rotation.y += amount
+        element.setAttribute("rotation", rotation.x + " " + rotation.y + " " + rotation.z);
     })
 }
 
-function slide(selector, direction, amount) {
+function slideVertical(selector, amount) {
     $(selector).each(function (item) {
         element = $(this).get(0);
-
-        if (direction == "horizontal") {
-            rotation = element.getAttribute("rotation");
-            rotation.y += amount
-            element.setAttribute("rotation", rotation.x + " " + rotation.y + " " + rotation.z);
-        }
-        else if (direction == "vertical") {
-            position = element.getAttribute("position");
-            position.y += amount
-            element.setAttribute("position", position.x + " " + position.y + " " + position.z);
-        }
+        position = element.getAttribute("position");
+        position.y += amount
+        element.setAttribute("position", position.x + " " + position.y + " " + position.z);
     })
 }
 
