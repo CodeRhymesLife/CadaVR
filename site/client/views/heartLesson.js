@@ -66,7 +66,7 @@ Template.heartLesson.onRendered(function () {
 	displayImage(
 		"mainCard.png",
 		"0 -0.1 0",
-		"0 80 0",
+		"0 100 0",
 		4,
 		1674,
 		2204
@@ -84,7 +84,7 @@ Template.heartLesson.onRendered(function () {
 	displayImage(
 		"quizIcon.png",
 		"0 0.9 -0.01",
-		"0 40.3 0",
+		"0 60.3 0",
 		0.5,
 		400,
 		400
@@ -93,7 +93,7 @@ Template.heartLesson.onRendered(function () {
 	displayImage(
 		"soundIcon.png",
 		"0 0.3 -0.01",
-		"0 40.3 0",
+		"0 60.3 0",
 		0.5,
 		400,
 		400
@@ -102,7 +102,7 @@ Template.heartLesson.onRendered(function () {
 	displayImage(
 		"simIcon.png",
 		"0 -0.3 -0.01",
-		"0 40.3 0",
+		"0 60.3 0",
 		0.5,
 		400,
 		400
@@ -111,7 +111,7 @@ Template.heartLesson.onRendered(function () {
 	displayImage(
 		"body.png",
 		"0 0 0",
-		"0 -30 0",
+		"0 -45 0",
 		3.8,
 		1418,
 		2960
