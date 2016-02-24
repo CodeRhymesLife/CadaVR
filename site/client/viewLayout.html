@@ -7,25 +7,7 @@
 	
 		<a-camera sync="playerOne" position="0 1.8 0" cursor cursor-color="black"></a-camera>
 		
-		<!-- Floor -->
-		<a-entity mixin="floorAndCeiling" rotation="-90 0 0" material="src: url(images/woodenFloor.jpg); repeat: 10 10"></a-entity>
-		
-		<!-- Left Wall -->
-		<a-entity mixin="wall" position="10 2.5 0" rotation="0 -90 0"></a-entity>
-		
-		<!-- Right Wall -->
-		<a-entity mixin="wall" position="-10 2.5 0" rotation="0 90 0"></a-entity>
-		
-		<!-- Front Wall -->
-		<a-entity mixin="wall" position="0 2.5 -10"></a-entity>
-		
-		<!-- Back Wall -->
-		<a-entity mixin="wall" position="0 2.5 10" rotation="0 180 0"></a-entity>
-		
-		<!-- Ceiling -->
-		<a-entity mixin="floorAndCeiling" position="0 5 0" rotation="90 0 0" material="src: url(images/ceiling.jpg); repeat: 10 10"></a-entity>
-		
-		<a-sky color="#ECECEC"></a-sky>
+		<a-sky src="images/operatingRoom.jpg" rotation="0 10 0"></a-sky>
 		
 		{{> yield}}
 	</a-scene>
