@@ -1,59 +1,78 @@
+var colors = {
+    artery: "red",
+    vein: "blue",
+    general: "#ffb3b3",
+}
 var heartParts = [
 	{
 		"file": "Anterior Papillary Muscle of Right Ventricle.obj",
-		"name": "Anterior Papillary Muscle of Right Ventricle"
+		"name": "Anterior Papillary Muscle of Right Ventricle",
+        color: colors.general,
 	},
 	{
 		"file": "Circumflex branch of left coronary artery.obj",
-		"name": "Circumflex branch of left coronary artery"
+		"name": "Circumflex branch of left coronary artery",
+		color: colors.artery,
 	},
 	{
 		"file": "Coronary sinus.obj",
-		"name": "Coronary sinus"
+		"name": "Coronary sinus",
+		color: colors.general,
 	},
 	{
 		"file": "Great cardiac vein.obj",
-		"name": "Great cardiac vein"
+		"name": "Great cardiac vein",
+		color: colors.vein,
 	},
 	{
 		"file": "Marginal branch of right coronary artery.obj",
-		"name": "Marginal branch of right coronary artery"
+		"name": "Marginal branch of right coronary artery",
+		color: colors.artery,
 	},
 	{
 		"file": "Mitral valve.obj",
-		"name": "Mitral valve"
+		"name": "Mitral valve",
+		color: colors.general,
 	},
 	{
 		"file": "Posterior papillary muscle of left ventricle.obj",
-		"name": "Posterior papillary muscle of left ventricle"
+		"name": "Posterior papillary muscle of left ventricle",
+		color: colors.general,
 	},
 	{
 		"file": "Posterior papillary muscle of right ventricle.obj",
-		"name": "Posterior papillary muscle of right ventricle"
+		"name": "Posterior papillary muscle of right ventricle",
+		color: colors.general,
 	},
 	{
 		"file": "Pulmonary valve.obj",
-		"name": "Pulmonary valve"
+		"name": "Pulmonary valve",
+		color: colors.general,
 	},
 	{
 		"file": "Right posterolateral branch of right coronary artery.obj",
-		"name": "Right posterolateral branch of right coronary artery"
+		"name": "Right posterolateral branch of right coronary artery",
+		color: colors.artery,
 	},
 	{
 		"file": "Septal papillary muscle of right ventricle.obj",
-		"name": "Septal papillary muscle of right ventricle"
+		"name": "Septal papillary muscle of right ventricle",
+		color: colors.general,
 	},
 	{
 		"file": "Tricuspid valve.obj",
-		"name": "Tricuspid valve"
+		"name": "Tricuspid valve",
+		color: colors.general,
 	},
 	{
 		"file": "Trunk of right coronary artery.obj",
-		"name": "Trunk of right coronary artery"
+		"name": "Trunk of right coronary artery",
+		color: colors.artery,
 	},
 	{
 		"file": "Wall of heart.obj",
-		"name": "Wall of heart"
+		"name": "Wall of heart",
+		color: colors.general,
 	}
 ];
 Template.heartLesson.onRendered(function () {
@@ -125,7 +144,7 @@ Template.heartLesson.onRendered(function () {
 function setupVisuals(cameraEl) {
     // Add Heart parts
     heartParts.forEach(function (partInfo) {
-        $(".heartContainer").append("<a-model material='color: #FFF0F5;' loader='src: url(models\\heart\\" + partInfo.file + "); format: obj'></a-model>");
+        $(".heartContainer").append("<a-model material='color: " + partInfo.color + ";' loader='src: url(models\\heart\\" + partInfo.file + "); format: obj'></a-model>");
     });
 
     // Top
