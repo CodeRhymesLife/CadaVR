@@ -55649,11 +55649,17 @@ module.exports.Component = registerComponent('loader', {
   },
 
   applyMaterial: function () {
+    var el = this.el;
     var material = this.el.components.material.material;
     if (!this.model) { return; }
     this.model.traverse(function (child) {
       if (child instanceof THREE.Mesh) {
         child.material = material;
+
+        // Objects are not detected by the raycaster because
+        // the intersected mesh does not define the el property (see getClosestIntersected)
+        // Add the el property to each child mesh so the raycaster detects its intersection
+        child.el = el;
       }
     });
   },
