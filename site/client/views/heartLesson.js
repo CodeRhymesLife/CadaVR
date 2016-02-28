@@ -92,12 +92,23 @@ function setupHeart() {
         $(".heartContainer").append("<a-model material='color: " + partInfo.color + ";' loader='src: url(models\\heart\\" + partInfo.file + "); format: obj'></a-model>");
     });
 
-    $("body").on("hover", ".heartContainer a-model", function () {
-        $(this).get(0).setAttribute("scale", "3 3 3");
+    var updateMaterialColor = function (material, newColor) {
+        var oldData = material.getData();
+        if(material.originalColor == undefined)
+            material.originalColor = oldData.color;
+        material.data.color = newColor;
+        material.update(oldData);
+    }
+    $("body").on("stateadded", ".heartContainer a-model", function (e) {
+        if (e.detail.state == "hovered") {
+            updateMaterialColor($(this).get(0).components.material, "yellow");
+        }
     })
-
-    $("body").on("a-hover", ".heartContainer a-model", function () {
-        $(this).get(0).setAttribute("scale", "3 3 3");
+    $("body").on("stateremoved", ".heartContainer a-model", function (e) {
+        if (e.detail.state == "hovered") {
+            var material = $(this).get(0).components.material;
+            updateMaterialColor(material, material.originalColor);
+        }
     })
 }
 
