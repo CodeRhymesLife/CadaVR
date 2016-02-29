@@ -107,23 +107,74 @@ function setupHeart() {
         $(".heartContainer").append("<a-model material='color: " + partInfo.color + ";' loader='src: url(models\\heart\\" + partInfo.file + "); format: obj'></a-model>");
     });
 
-    var updateMaterialColor = function (material, newColor) {
-        var oldData = material.getData();
-        if(material.originalColor == undefined)
-            material.originalColor = oldData.color;
-        material.data.color = newColor;
-        material.update(oldData);
+    var selectedPartElement = null;
+    var highlightedPartElement = null;
+    var highlightColor = "yellow";
+
+    var setHighlightColor = function (part) {
+        removeHighlightColor();
+
+        var element = $(part).get(0);
+        if (element.originalColor == undefined)
+            element.originalColor = element.components.material.data.color;
+
+        element.setAttribute("material", "color", highlightColor);
+        highlightedPartElement = element
     }
+
+    var removeHighlightColor = function () {
+        if (!highlightedPartElement)
+            return;
+
+        highlightedPartElement.setAttribute("material", "color", highlightedPartElement.originalColor);
+        highlightedPartElement = null;
+    }
+
+    var selectPart = function (part) {
+        removeHighlightColor();
+
+        selectedPartElement = $(part).get(0);
+        $("body .heartContainer a-model").each(function (i, otherPart) {
+            var otherPartElement = $(otherPart).get(0);
+            if (otherPartElement != selectedPartElement)
+                otherPartElement.setAttribute("material", "opacity", "0.1")
+        })
+    }
+
+    var deselectPart = function () {
+        $("body .heartContainer a-model").each(function (i, part) {
+            var partElement = $(this).get(0);
+            partElement.setAttribute("material", "opacity", "1")
+        })
+        selectedPartElement = null;
+    }
+
     $("body").on("stateadded", ".heartContainer a-model", function (e) {
-        if (e.detail.state == "hovered") {
-            updateMaterialColor($(this).get(0).components.material, "yellow");
-        }
+        if (selectedPartElement)
+            return;
+
+        setHighlightColor(this);
     })
     $("body").on("stateremoved", ".heartContainer a-model", function (e) {
-        if (e.detail.state == "hovered") {
-            var material = $(this).get(0).components.material;
-            updateMaterialColor(material, material.originalColor);
-        }
+        if (selectedPartElement)
+            return;
+
+        removeHighlightColor(this);
+    })
+
+    var lastCall = 0;
+    $(".heartContainer a-model").click(function (e) {
+        // For some reason the click event is executed twice.
+        // Make sure a half second passes before we call it again
+        if (new Date() - lastCall < 500)
+            return;
+        lastCall = new Date();
+
+        // If a part is selected deselect it
+        if (selectedPartElement)
+            deselectPart();
+        else
+            selectPart(this);
     })
 }
 
