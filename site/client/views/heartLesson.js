@@ -7,85 +7,85 @@ var heartParts = [
     {
         "file": "Anterior Papillary Muscle of Right Ventricle.obj",
         "name": "Anterior Papillary Muscle of Right Ventricle",
-        "color": "#ffb3b3",
+        "color": colors.general,
         "description": "Papillary muscle of right venricle which is attached to the wall of right ventricle below the anteroposterior commissure of tricuspid valve and the septomarginal trabecula. "
     },
     {
         "file": "Circumflex branch of left coronary artery.obj",
         "name": "Circumflex branch of left coronary artery",
-        "color": "red",
+        "color": colors.artery,
         "description": "Branch of left coronary artery which runs perpendicular to the anterior interventricular branch of the left coronary artery on the left side of the interventricular sulcus and supplies the left side of the heart. "
     },
     {
         "file": "Coronary sinus.obj",
         "name": "Coronary sinus",
-        "color": "#ffb3b3",
+        "color": colors.vein,
         "description": "N/A"
     },
     {
         "file": "Great cardiac vein.obj",
         "name": "Great cardiac vein",
-        "color": "blue",
+        "color": colors.vein,
         "description": "N/A"
     },
     {
         "file": "Marginal branch of right coronary artery.obj",
         "name": "Marginal branch of right coronary artery",
-        "color": "red",
+        "color": colors.artery,
         "description": "Anterior ventricular branch of right coronary artery which runs downward along the the acute margin and supplies the anterior wall of right ventricle and the apex. "
     },
     {
         "file": "Mitral valve.obj",
         "name": "Mitral valve",
-        "color": "#ffb3b3",
+        "color": colors.general,
         "description": "Atrioventricular valve which has as its parts the anterior and posterior leaflets, attached to the fibrous ring of mitral valve. "
     },
     {
         "file": "Posterior papillary muscle of left ventricle.obj",
         "name": "Posterior papillary muscle of left ventricle",
-        "color": "#ffb3b3",
+        "color": colors.general,
         "description": "Papillary muscle of left ventricle which has as its parts the posteromedial and anterior heads of the posterior papillary muscle of left ventricle and is continuous with the inferior wall of left ventricle.. "
     },
     {
         "file": "Posterior papillary muscle of right ventricle.obj",
         "name": "Posterior papillary muscle of right ventricle",
-        "color": "#ffb3b3",
+        "color": colors.general,
         "description": "Papillary muscle of right ventricle which is attached to the wall of right ventricle below the posteroseptal commissure of tricuspid valve. "
     },
     {
         "file": "Pulmonary valve.obj",
         "name": "Pulmonary valve",
-        "color": "#ffb3b3",
+        "color": colors.general,
         "description": "Cardiac valve which has as its parts the right anterior, left anterior and posterior cusps, attached to the fibrous ring of pulmonary valve. "
     },
     {
         "file": "Right posterolateral branch of right coronary artery.obj",
         "name": "Right posterolateral branch of right coronary artery",
-        "color": "red",
+        "color": colors.artery,
         "description": "N/A"
     },
     {
         "file": "Septal papillary muscle of right ventricle.obj",
         "name": "Septal papillary muscle of right ventricle",
-        "color": "#ffb3b3",
+        "color": colors.general,
         "description": "Papillary muscle of right ventricle which is attached to the septomarginal trabecula. "
     },
     {
         "file": "Tricuspid valve.obj",
         "name": "Tricuspid valve",
-        "color": "#ffb3b3",
+        "color": colors.general,
         "description": "Atrioventricular valve which has as its parts the anterior, posterior and septal leaflets, attached to the fibrous ring of tricuspid valve. "
     },
     {
         "file": "Trunk of right coronary artery.obj",
         "name": "Trunk of right coronary artery",
-        "color": "red",
+        "color": colors.artery,
         "description": "N/A"
     },
     {
         "file": "Wall of heart.obj",
         "name": "Wall of heart",
-        "color": "#ffb3b3",
+        "color": colors.general,
         "description": "Wall of organ which has as its parts the endocardium, myocardium , epicardium, and the cardiac septum, surrounded by the pericardial sac proper and is continuous with the walls of the systemic and pulmonary arterial and venous trees. "
     }
 ];
