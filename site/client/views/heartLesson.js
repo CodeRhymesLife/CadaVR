@@ -99,12 +99,15 @@ Template.heartLesson.onRendered(function () {
 	setupVisuals(cameraEl);
 	setupController();
 	setupLookEvents(sceneEl, cameraEl);
+	setupHUD(sceneEl);
 });
 
 function setupHeart() {
     // Add Heart parts
     heartParts.forEach(function (partInfo) {
-        $(".heartContainer").append("<a-model material='color: " + partInfo.color + ";' loader='src: url(models\\heart\\" + partInfo.file + "); format: obj'></a-model>");
+        var part = $("<a-model material='color: " + partInfo.color + ";' loader='src: url(models\\heart\\" + partInfo.file + "); format: obj'></a-model>");
+		part.data("partInfo", partInfo);
+		$(".heartContainer").append(part)
     });
 
     var selectedPartElement = null;
@@ -133,6 +136,7 @@ function setupHeart() {
     var selectPart = function (part) {
         removeHighlightColor();
 
+		// Dim all other parts
         selectedPartElement = $(part).get(0);
         $("body .heartContainer a-model").each(function (i, otherPart) {
             var otherPartElement = $(otherPart).get(0);
@@ -154,12 +158,17 @@ function setupHeart() {
             return;
 
         setHighlightColor(this);
+		
+		// Update the HUD
+		var name = $(this).data("partInfo").name;
+		updateHUDOrganName(name);
     })
     $("body").on("stateremoved", ".heartContainer a-model", function (e) {
         if (selectedPartElement)
             return;
 
         removeHighlightColor(this);
+		updateHUDOrganName("");
     })
 
     var lastCall = 0;
@@ -384,6 +393,16 @@ function setupLookEvents(sceneEl, cameraEl) {
             this.lastCameraRotation = rotation;
         },
     });
+}
+
+function setupHUD(sceneEl) {
+	var hud = $(".hud").get(0);
+	hud.object3D.parent.updateMatrixWorld();
+	THREE.SceneUtils.attach( hud.object3D, sceneEl.object3D, sceneEl.cameraEl.object3D );
+}
+
+function updateHUDOrganName (newName) {
+	$(".hud .organName").get(0).setAttribute("text", "text", newName);
 }
 
 function slideHorizontal(selector, amount) {
