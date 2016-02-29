@@ -163,7 +163,7 @@ function setupHeart() {
     })
 
     var lastCall = 0;
-    $(".heartContainer a-model").click(function (e) {
+    $(".heartContainer a-model").on("click, keyTap, screenTap", function (e) {
         // For some reason the click event is executed twice.
         // Make sure a half second passes before we call it again
         if (new Date() - lastCall < 500)
