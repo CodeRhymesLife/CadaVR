@@ -172,7 +172,7 @@ function setupHeart() {
     })
 
     var lastCall = 0;
-    $(".heartContainer a-model").on("click, keyTap, screenTap", function (e) {
+    $("body").on("click, keyTap, screenTap", ".heartContainer a-model", function (e) {
         // For some reason the click event is executed twice.
         // Make sure a half second passes before we call it again
         if (new Date() - lastCall < 500)
@@ -402,7 +402,16 @@ function setupHUD(sceneEl) {
 }
 
 function updateHUDOrganName (newName) {
-	$(".hud .organName").get(0).setAttribute("text", "text", newName);
+	var textObject = $(".hud .organName").get(0);
+	textObject.setAttribute("text", "text", newName);
+	
+	if(newName == "")
+		return;
+	
+	// Center the text
+	var box = new THREE.Box3().setFromObject(textObject.object3D);
+	console.log(box.min, box.max, box.size());
+	textObject.setAttribute("position", -(box.size().x / 2) + " 0 0");
 }
 
 function slideHorizontal(selector, amount) {
