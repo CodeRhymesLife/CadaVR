@@ -168,11 +168,13 @@ function setupHeart() {
             return;
 
         removeHighlightColor(this);
-		updateHUDOrganName("");
+
+        // Update the HUD
+        updateHUDOrganName("");
     })
 
     var lastCall = 0;
-    $("body").on("click, keyTap, screenTap", ".heartContainer a-model", function (e) {
+    $("body").on("click keyTap screenTap", ".heartContainer a-model", function (e) {
         // For some reason the click event is executed twice.
         // Make sure a half second passes before we call it again
         if (new Date() - lastCall < 500)
@@ -180,10 +182,14 @@ function setupHeart() {
         lastCall = new Date();
 
         // If a part is selected deselect it
-        if (selectedPartElement)
+        if (selectedPartElement) {
             deselectPart();
-        else
+            hideDescription();
+        }
+        else {
             selectPart(this);
+            showDescription(selectedPartElement)
+        }
     })
 }
 
@@ -412,6 +418,15 @@ function updateHUDOrganName (newName) {
 	var box = new THREE.Box3().setFromObject(textObject.object3D);
 	//console.log(box.min, box.max, box.size());
 	textObject.setAttribute("position", -(box.size().x / 2) + " 0 0");
+}
+
+function hideDescription() {
+    $(".partDescription").get(0).setAttribute("visible", "false");
+}
+
+function showDescription(selectedPartElement) {
+    var description = $(".partDescription").get(0);
+    description.setAttribute("visible", "true");
 }
 
 function slideHorizontal(selector, amount) {
