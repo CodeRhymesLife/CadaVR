@@ -410,7 +410,7 @@ function updateHUDOrganName (newName) {
 	
 	// Center the text
 	var box = new THREE.Box3().setFromObject(textObject.object3D);
-	console.log(box.min, box.max, box.size());
+	//console.log(box.min, box.max, box.size());
 	textObject.setAttribute("position", -(box.size().x / 2) + " 0 0");
 }
 
