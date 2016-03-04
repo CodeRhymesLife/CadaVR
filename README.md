@@ -1,5 +1,5 @@
 # CadaVR
-A virtual reality cadaver to replace physical cadavers
+A virtual reality medical educational environment that leverages structural models of anatomy, natrual input, and mathematical models of physiology to help students learn.
 
 ## Server Setup
     1. Install nodejs - https://nodejs.org/en/download/
