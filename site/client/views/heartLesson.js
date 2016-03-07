@@ -195,7 +195,7 @@ function setupHeart() {
 
 function setupVisuals(cameraEl) {
     // Top
-    displayImage(
+    DisplayUtils.addImageToCurvedBackgroundContainer(
         "taskHeader",
 		"taskCard.png",
 		"0 1.95 0",
@@ -212,7 +212,7 @@ function setupVisuals(cameraEl) {
     });
 
     // Left
-    displayImage(
+    DisplayUtils.addImageToCurvedBackgroundContainer(
         "taskDescription",
 		"mainCard.png",
 		"0 -0.1 0",
@@ -221,7 +221,7 @@ function setupVisuals(cameraEl) {
 		1674,
 		2204
 	);
-    displayImage(
+    DisplayUtils.addImageToCurvedBackgroundContainer(
         "quizIcon taskIcon",
 		"quizIcon.png",
 		"0 0.9 -0.01",
@@ -230,7 +230,7 @@ function setupVisuals(cameraEl) {
 		400,
 		400
 	);
-    displayImage(
+    DisplayUtils.addImageToCurvedBackgroundContainer(
         "soundIcon taskIcon",
 		"soundIcon.png",
 		"0 0.3 -0.01",
@@ -239,7 +239,7 @@ function setupVisuals(cameraEl) {
 		400,
 		400
 	);
-    displayImage(
+    DisplayUtils.addImageToCurvedBackgroundContainer(
         "simIcon taskIcon",
 		"simIcon.png",
 		"0 -0.3 -0.01",
@@ -262,7 +262,7 @@ function setupVisuals(cameraEl) {
     });
 
     // Right
-    displayImage(
+    DisplayUtils.addImageToCurvedBackgroundContainer(
         "bodyImage",
 		"body.png",
 		"0 0 0",
@@ -445,40 +445,6 @@ function slideVertical(selector, amount) {
         position.y += amount
         element.setAttribute("position", position.x + " " + position.y + " " + position.z);
     })
-}
-
-function displayImage(className, src, position, rotation, height, actualImageWidth, actualImageHeight) {
-	var radius = 4;
-	thetaLength = 57.2958 * actualImageWidth * height /
-					(actualImageHeight * radius);
-	
-	var rotationParts = rotation.split(" ");
-	var slideRotation = rotationParts[0] + " " + (rotationParts[1] - 5) + " " + rotationParts[2];
-	
-    $(".curvedBackgroundContainer").append("<a-curvedimage class='" + className + "' " +
-        "src='images/heartLesson/" + src + "' " +
-		"position='" + position + "' " +
-		"rotation='" + rotation + "' " +
-		"height='" + height + "' " +
-		"radius='" + radius + "' " +
-		"theta-length='" + thetaLength + "' " +
-		"data-actualImageWidth='" + actualImageWidth + "' " +
-		"data-actualImageHeight='" + actualImageHeight + "'>" +
-			"<a-animation " +
-				"begin='slideRight' " +
-				"attribute='rotation' " +
-				"to='" + slideRotation + "' " +
-				"dur='500' " +
-				"fill='forwards' " +
-				"></a-animation>" +
-			"<a-animation " +
-				"begin='slideLeft' " +
-				"attribute='rotation' " +
-				"to='" + rotation + "' " +
-				"dur='500' " +
-				"fill='forwards' " +
-				"></a-animation>" +
-		"</a-curvedimage>");
 }
 
 function validHands() {
