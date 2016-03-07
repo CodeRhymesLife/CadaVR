@@ -5,7 +5,6 @@ Router.route('/', function () {
 Views = [
 	"displayMenu",
 	"firstDemo",
-	"heartLesson",
     "leapTest",
 	"menuSelection",
 	"moveObject",
@@ -19,9 +18,21 @@ Views = [
 	"watchPresentationOwnPerspective",
 ];
 
+FinalDemoViews = [
+	"curvedMenu",
+	"heartLesson",
+]
+
 Views.forEach( function (page) {
 	Router.route('/' + page, function () {
 		this.layout('viewLayout');
+		this.render(page);
+	});
+});
+
+FinalDemoViews.forEach( function (page) {
+	Router.route('/' + page, function () {
+		this.layout('finalDemoLayout');
 		this.render(page);
 	});
 });

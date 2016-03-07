@@ -1,0 +1,3 @@
+Template.curvedMenu.onRendered(function () {
+	
+});

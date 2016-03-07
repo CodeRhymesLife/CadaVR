@@ -1,20 +1,23 @@
 ﻿<head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta name="apple-mobile-web-app-capable" content="yes">
 	<script src="/lib/aframe.js"></script>
 	<script src="/lib/aframe-text-component.js"></script>
 	<script src="/lib/leap-0.6.4.js"></script>
 	<script src="/lib/leap-plugins-0.1.11.js"></script>
     <script src="/lib/leap.rigged-hand-0.1.7.js"></script>
     <script src="/lib/leap.pinchEvent.js"></script>
-	<script>
-        window.navigator.standalone = true;
-	</script>
 </head>
 
 <template name="index">
-	<ul>
+	Final Demo Views: <ul>
+		{{#each finalDemoViews}}
+			<li><a href="/{{this}}" >{{this}}</a></li>
+		{{/each}}
+	</ul>
+	
+	
+	Prototypes: <ul>
 		{{#each views}}
 			<li><a href="/{{this}}" >{{this}}</a></li>
 		{{/each}}

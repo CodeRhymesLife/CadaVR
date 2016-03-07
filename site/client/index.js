@@ -3,6 +3,10 @@ if(Meteor.isClient) {
 		"views": function () {
 			return Views;
 		},
+		
+		"finalDemoViews": function () {
+			return FinalDemoViews;
+		},
 	});
 
 	Template.index.onRendered(function () {
