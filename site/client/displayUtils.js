@@ -1,6 +1,10 @@
 DisplayUtils = {};
 
 DisplayUtils.addImageToCurvedBackgroundContainer = function (className, src, position, rotation, height, actualImageWidth, actualImageHeight) {
+	DisplayUtils.addCurvedImageToContainer("curvedBackgroundContainer", className, src, position, rotation, height, actualImageWidth, actualImageHeight)
+}
+
+DisplayUtils.addCurvedImageToContainer = function (containerClassName, className, src, position, rotation, height, actualImageWidth, actualImageHeight) {
 	var radius = 4;
 	thetaLength = 57.2958 * actualImageWidth * height /
 					(actualImageHeight * radius);
@@ -8,8 +12,13 @@ DisplayUtils.addImageToCurvedBackgroundContainer = function (className, src, pos
 	var rotationParts = rotation.split(" ");
 	var slideRotation = rotationParts[0] + " " + (rotationParts[1] - 5) + " " + rotationParts[2];
 	
-    $(".curvedBackgroundContainer").append("<a-curvedimage class='" + className + "' " +
-        "src='images/heartLesson/" + src + "' " +
+	var containerSelector = "." + containerClassName;
+	if(!$(containerSelector).length) {
+		$(".curvedBackgroundContainer").append('<a-entity class="' + containerClassName + '"></a-entity>')
+	}
+	
+    $(containerSelector).append("<a-curvedimage class='" + className + "' " +
+        "src='" + src + "' " +
 		"position='" + position + "' " +
 		"rotation='" + rotation + "' " +
 		"height='" + height + "' " +

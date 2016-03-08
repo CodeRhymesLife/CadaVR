@@ -98,7 +98,7 @@ Template.heartLesson.onRendered(function () {
 	setupHeart();
 	setupVisuals(cameraEl);
 	setupController();
-	setupLookEvents(sceneEl, cameraEl);
+	CameraUtils.setupLookEvents();
 	setupHUD(sceneEl);
 });
 
@@ -197,24 +197,18 @@ function setupVisuals(cameraEl) {
     // Top
     DisplayUtils.addImageToCurvedBackgroundContainer(
         "taskHeader",
-		"taskCard.png",
+		"images/heartLesson/taskCard.png",
 		"0 1.95 0",
 		"0 26 0",
 		0.5,
 		1746,
 		246
 	);
-    $(cameraEl).on("lookingUpStart", function () {
-        //slideVertical(".taskHeader", -0.8);
-    })
-    .on("lookingUpEnd", function () {
-        //slideVertical(".taskHeader", 0.8);
-    });
 
     // Left
     DisplayUtils.addImageToCurvedBackgroundContainer(
         "taskDescription",
-		"mainCard.png",
+		"images/heartLesson/mainCard.png",
 		"0 -0.1 0",
 		"0 80 0",
 		4,
@@ -223,7 +217,7 @@ function setupVisuals(cameraEl) {
 	);
     DisplayUtils.addImageToCurvedBackgroundContainer(
         "quizIcon taskIcon",
-		"quizIcon.png",
+		"images/heartLesson/quizIcon.png",
 		"0 0.9 -0.01",
 		"0 40.3 0",
 		0.5,
@@ -232,7 +226,7 @@ function setupVisuals(cameraEl) {
 	);
     DisplayUtils.addImageToCurvedBackgroundContainer(
         "soundIcon taskIcon",
-		"soundIcon.png",
+		"images/heartLesson/soundIcon.png",
 		"0 0.3 -0.01",
 		"0 40.3 0",
 		0.5,
@@ -241,7 +235,7 @@ function setupVisuals(cameraEl) {
 	);
     DisplayUtils.addImageToCurvedBackgroundContainer(
         "simIcon taskIcon",
-		"simIcon.png",
+		"images/heartLesson/simIcon.png",
 		"0 -0.3 -0.01",
 		"0 40.3 0",
 		0.5,
@@ -252,31 +246,23 @@ function setupVisuals(cameraEl) {
         $(".taskIcon").each(function () {
 			$(this).get(0).emit("slideRight");
 		});
-		//slideHorizontal(".taskIcon", -5);
     })
     .on("lookingLeftEnd", function () {
 		$(".taskIcon").each(function () {
 			$(this).get(0).emit("slideLeft");
 		});
-        //slideHorizontal(".taskIcon", 5);
     });
 
     // Right
     DisplayUtils.addImageToCurvedBackgroundContainer(
         "bodyImage",
-		"body.png",
+		"images/heartLesson/body.png",
 		"0 0 0",
 		"0 -30 0",
 		3.8,
 		1418,
 		2960
 	);
-    $(cameraEl).on("lookingRightStart", function () {
-        //slideHorizontal(".bodyImage", 20);
-    })
-    .on("lookingRightEnd", function () {
-        //slideHorizontal(".bodyImage", -20);
-    });
 }
 
 function setupController() {
@@ -339,65 +325,6 @@ function setupController() {
             scale.z *= scaleFactor;
             organContainer.setAttribute("scale", scale.x + " " + scale.y + " " + scale.z)
         }
-    });
-}
-
-function setupLookEvents(sceneEl, cameraEl) {
-    sceneEl.addBehavior({
-        lookingLeft: false,
-        lookingRight: false,
-        lookingUp: false,
-        lookingDown: false,
-        lastCameraRotation: cameraEl.getAttribute("rotation"),
-        leftThreshold: 20,
-        rightThreshold: -40,
-        upThreshold: 7,
-        downThreshold: -60,
-        update: function () {
-            var rotation = cameraEl.getAttribute("rotation");
-
-            // Left
-            if (!this.lookingLeft && rotation.y > this.leftThreshold) {
-                this.lookingLeft = true;
-                cameraEl.emit("lookingLeftStart");
-            }
-            else if (this.lookingLeft && rotation.y < this.leftThreshold) {
-                this.lookingLeft = false;
-                cameraEl.emit("lookingLeftEnd");
-            }
-
-            // Right
-            if (!this.lookingRight && rotation.y < this.rightThreshold) {
-                this.lookingRight = true;
-                cameraEl.emit("lookingRightStart");
-            }
-            else if (this.lookingRight && rotation.y > this.rightThreshold) {
-                this.lookingRight = false;
-                cameraEl.emit("lookingRightEnd");
-            }
-
-            // Up
-            if (!this.lookingUp && rotation.x > this.upThreshold) {
-                this.lookingUp = true;
-                cameraEl.emit("lookingUpStart");
-            }
-            else if (this.lookingUp && rotation.x < this.upThreshold) {
-                this.lookingUp = false;
-                cameraEl.emit("lookingUpEnd");
-            }
-
-            // Down
-            if (!this.lookingDown && rotation.x < this.downThreshold) {
-                this.lookingDown = true;
-                cameraEl.emit("lookingDownStart");
-            }
-            else if (this.lookingDown && rotation.x > this.downThreshold) {
-                this.lookingDown = false;
-                cameraEl.emit("lookingDownEnd");
-            }
-
-            this.lastCameraRotation = rotation;
-        },
     });
 }
 
