@@ -8,33 +8,29 @@ Template.curvedMenu.onRendered(function () {
 function addCards() {
 	var cards = [
 		{
-			className: "cadavrIcon",
+			className: "cadavrCard",
 			src: "images/curvedMenu/cadavrCard.png",
 		},
 		{
-			className: "cadavrIcon",
-			src: "images/curvedMenu/cadavrCard.png",
+			className: "astronomyCard",
+			src: "images/curvedMenu/astronomyCard.png",
 		},
 		{
-			className: "cadavrIcon",
-			src: "images/curvedMenu/cadavrCard.png",
+			className: "historyCard",
+			src: "images/curvedMenu/historyCard.png",
 		},
 		{
-			className: "cadavrIcon",
-			src: "images/curvedMenu/cadavrCard.png",
-		},
-		{
-			className: "cadavrIcon",
-			src: "images/curvedMenu/cadavrCard.png",
+			className: "physicsCard",
+			src: "images/curvedMenu/physicsCard.png",
 		},
 	]
 
-	var firstCardHorizontalPosition = 0;
+	var firstCardHorizontalPosition = 50;
 	var cardWidth = 40;
 	var spaceBetweenCards = 10;
 	for(var cardIndex = 0; cardIndex < cards.length; cardIndex++) {
 		var card = cards[cardIndex];
-		var horizontalPosition = firstCardHorizontalPosition + cardIndex * (cardWidth + spaceBetweenCards);
+		var horizontalPosition = firstCardHorizontalPosition - cardIndex * (cardWidth + spaceBetweenCards);
 		DisplayUtils.addCurvedImageToContainer(
 			cardContainerClassName,
 			"lessonCard " + card.className,
