@@ -195,7 +195,8 @@ function setupHeart() {
 
 function setupVisuals(cameraEl) {
     // Top
-    DisplayUtils.addImageToCurvedBackgroundContainer(
+    DisplayUtils.addCurvedImageToContainer(
+		"heartLessonCurvedImageContainer",
         "taskHeader",
 		"images/heartLesson/taskCard.png",
 		"0 1.95 0",
@@ -206,7 +207,8 @@ function setupVisuals(cameraEl) {
 	);
 
     // Left
-    DisplayUtils.addImageToCurvedBackgroundContainer(
+    DisplayUtils.addCurvedImageToContainer(
+		"heartLessonCurvedImageContainer",
         "taskDescription",
 		"images/heartLesson/mainCard.png",
 		"0 -0.1 0",
@@ -215,7 +217,8 @@ function setupVisuals(cameraEl) {
 		1674,
 		2204
 	);
-    DisplayUtils.addImageToCurvedBackgroundContainer(
+    DisplayUtils.addCurvedImageToContainer(
+		"heartLessonCurvedImageContainer",
         "quizIcon taskIcon",
 		"images/heartLesson/quizIcon.png",
 		"0 0.9 -0.01",
@@ -224,7 +227,8 @@ function setupVisuals(cameraEl) {
 		400,
 		400
 	);
-    DisplayUtils.addImageToCurvedBackgroundContainer(
+    DisplayUtils.addCurvedImageToContainer(
+		"heartLessonCurvedImageContainer",
         "soundIcon taskIcon",
 		"images/heartLesson/soundIcon.png",
 		"0 0.3 -0.01",
@@ -233,7 +237,8 @@ function setupVisuals(cameraEl) {
 		400,
 		400
 	);
-    DisplayUtils.addImageToCurvedBackgroundContainer(
+    DisplayUtils.addCurvedImageToContainer(
+		"heartLessonCurvedImageContainer",
         "simIcon taskIcon",
 		"images/heartLesson/simIcon.png",
 		"0 -0.3 -0.01",
@@ -254,7 +259,8 @@ function setupVisuals(cameraEl) {
     });
 
     // Right
-    DisplayUtils.addImageToCurvedBackgroundContainer(
+    DisplayUtils.addCurvedImageToContainer(
+		"heartLessonCurvedImageContainer",
         "bodyImage",
 		"images/heartLesson/body.png",
 		"0 0 0",

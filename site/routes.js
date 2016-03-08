@@ -20,6 +20,7 @@ Views = [
 
 FinalDemoViews = [
 	"curvedMenu",
+	"finalDemo",
 	"heartLesson",
 ]
 

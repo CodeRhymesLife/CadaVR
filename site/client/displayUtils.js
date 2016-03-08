@@ -1,9 +1,5 @@
 DisplayUtils = {};
 
-DisplayUtils.addImageToCurvedBackgroundContainer = function (className, src, position, rotation, height, actualImageWidth, actualImageHeight) {
-	DisplayUtils.addCurvedImageToContainer("curvedBackgroundContainer", className, src, position, rotation, height, actualImageWidth, actualImageHeight)
-}
-
 DisplayUtils.addCurvedImageToContainer = function (containerClassName, className, src, position, rotation, height, actualImageWidth, actualImageHeight) {
 	var radius = 4;
 	thetaLength = 57.2958 * actualImageWidth * height /
