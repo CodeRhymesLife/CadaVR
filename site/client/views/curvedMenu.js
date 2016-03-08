@@ -1,36 +1,38 @@
 var cardContainerClassName = "cardContainer"
 Template.curvedMenu.onRendered(function () {
 	
-	addCards();
+	var firstCardHorizontalPosition = 50;
+	addCards(firstCardHorizontalPosition);
+	addVerticalMenu(firstCardHorizontalPosition + 20);
 	attachLookEvents()
 });
 
-function addCards() {
+function addCards(startPos) {
 	var cards = [
 		{
 			className: "cadavrCard",
-			src: "images/curvedMenu/cadavrCard.png",
+			src: "images/curvedMenu/cards/cadavrCard.png",
 		},
 		{
 			className: "astronomyCard",
-			src: "images/curvedMenu/astronomyCard.png",
+			src: "images/curvedMenu/cards/astronomyCard.png",
 		},
 		{
 			className: "historyCard",
-			src: "images/curvedMenu/historyCard.png",
+			src: "images/curvedMenu/cards/historyCard.png",
 		},
 		{
 			className: "physicsCard",
-			src: "images/curvedMenu/physicsCard.png",
+			src: "images/curvedMenu/cards/physicsCard.png",
 		},
 	]
 
-	var firstCardHorizontalPosition = 50;
+	
 	var cardWidth = 40;
 	var spaceBetweenCards = 10;
 	for(var cardIndex = 0; cardIndex < cards.length; cardIndex++) {
 		var card = cards[cardIndex];
-		var horizontalPosition = firstCardHorizontalPosition - cardIndex * (cardWidth + spaceBetweenCards);
+		var horizontalPosition = startPos - cardIndex * (cardWidth + spaceBetweenCards);
 		DisplayUtils.addCurvedImageToContainer(
 			cardContainerClassName,
 			"lessonCard " + card.className,
@@ -40,6 +42,32 @@ function addCards() {
 			3.8,
 			1674,
 			2074
+		);
+	}
+}
+
+function addVerticalMenu(startPos) {
+	var buttons = [
+		"images/curvedMenu/personButton.png",
+		"images/curvedMenu/cloudButton.png",
+		"images/curvedMenu/notifButton.png",
+	];
+	
+	var firstButtonVerticalPosition = 17;
+	var buttonWidth = 0.8;
+	var spaceBetweenButtons = 15;
+	for(var buttonIndex = 0; buttonIndex < buttons.length; buttonIndex++) {
+		var buttonSrc = buttons[buttonIndex];
+		var verticalPosition = firstButtonVerticalPosition - buttonIndex * (buttonWidth + spaceBetweenButtons);
+		DisplayUtils.addCurvedImageToContainer(
+			cardContainerClassName,
+			"menuButton",
+			buttonSrc,
+			"0 0 0",
+			verticalPosition + " " + startPos + " 0",
+			buttonWidth,
+			668,
+			668
 		);
 	}
 }
