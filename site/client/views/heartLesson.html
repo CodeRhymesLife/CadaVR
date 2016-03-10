@@ -10,7 +10,15 @@
 	</a-entity>
 	
 	<!-- HUD (this object is moved as a child of the camera after the scene is rendered) -->
-	<a-entity class="hud" position="0 1.35 -0.6" rotation="-10 0 0">
-		<a-entity class="organName" text="text:" scale="0.04 0.04 0.04" material="color: black" width="1" height="0.5"></a-entity>
+	<a-entity class="hud" position="0 1.8 -0.6">
+        <a-entity class="undoContainer" position="-0.9 0.45 0">
+            <a-image scale="0.04 0.04 0.04" src="images/heartLesson/undo icon.png"></a-image>
+        </a-entity>
+        <a-entity class="redoContainer" position="0.9 0.45 0">
+            <a-image scale="0.04 0.04 0.04" src="images/heartLesson/redo icon.png"></a-image>
+        </a-entity>
+        <a-entity position="0 -0.45 0" rotation="-10 0 0">
+            <a-entity class="organName" text="text:" scale="0.04 0.04 0.04" material="color: black" width="1" height="0.5"></a-entity>
+        </a-entity>
 	</a-entity>
 </template>
