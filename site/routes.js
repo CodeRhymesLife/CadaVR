@@ -1,6 +1,8 @@
-Router.route('/', function () {
-  this.render('index');
-});
+Router.route('/',
+    function () {
+      this.render('index');
+    },
+    { name: "index" });
 
 Views = [
 	"displayMenu",
@@ -25,15 +27,19 @@ FinalDemoViews = [
 ]
 
 Views.forEach( function (page) {
-	Router.route('/' + page, function () {
-		this.layout('viewLayout');
-		this.render(page);
-	});
+    Router.route('/' + page,
+        function () {
+		    this.layout('viewLayout');
+		    this.render(page);
+        },
+        { name: page });
 });
 
 FinalDemoViews.forEach( function (page) {
-	Router.route('/' + page, function () {
-		this.layout('finalDemoLayout');
-		this.render(page);
-	});
+    Router.route('/' + page,
+        function () {
+		    this.layout('finalDemoLayout');
+		    this.render(page);
+        },
+        { name: page });
 });
