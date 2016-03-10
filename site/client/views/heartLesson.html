@@ -1,6 +1,10 @@
 <template name="heartLesson">
 	
 	<a-entity position="0 1 -2">
+        <a-entity class="skeletonContainer" position="0 -2 0" rotation="-90 0 96" scale="0.004 0.004 0.004">
+            <a-model position="-5 450 -20" material='color: pink;' loader='src: url(models\lungs\Lungs.obj); format: obj'></a-model>
+            <a-model material='color: #E3DAC9;' loader='src: url(models\skeleton\Skeleton.obj); format: obj'></a-model>
+        </a-entity>
 		<a-entity class="heartContainer" scale="0.012 0.012 0.012"></a-entity>
         <a-image class="partDescription" position=" 1 1 -0.5" rotation="5 -20 0" src="images/heartLesson/partDescription.png" height="1" width="1" visible="false"></a-image>
 	</a-entity>
