@@ -1,7 +1,7 @@
 var colors = {
-    artery: "red",
-    vein: "blue",
-    general: "#ffb3b3",
+    artery: "#DD0000",
+    vein: "#336699",
+    general: "#ff8181",
 }
 var heartParts = [
     {
@@ -112,7 +112,7 @@ function setupHeart() {
 
     var selectedPartElement = null;
     var highlightedPartElement = null;
-    var highlightColor = "yellow";
+    var highlightColor = "#F9E400";
 
     var setHighlightColor = function (part) {
         removeHighlightColor();
