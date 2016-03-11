@@ -3,6 +3,7 @@ LeapUtils.createController = function () {
     var sceneEl = $("a-scene").get(0);
     var scene = sceneEl.object3D;
     var camera = sceneEl.cameraEl.components.camera.camera;
+    var cursor = $("a-camera").get(0).components.cursor;
 
     window.controller = controller = new Leap.Controller({
         host: Cookies.get('leapHost'),
@@ -35,8 +36,29 @@ LeapUtils.createController = function () {
         pinchThreshold: 0.9,
         grabThreshold: 0.8,
     });
-
-    var cursor = $("a-camera").get(0).components.cursor;
+    
+    var pinchInfo = {
+        left: null,
+        right: null,
+    };
+    controller.on('pinch', function (hand) {
+        pinchInfo[hand.type] = Date.now();
+    })
+    .on('unpinch', function (hand) {
+        var pinchTime = Date.now() - pinchInfo[hand.type];
+        console.log("pinchTime: " + pinchTime)
+        if(pinchTime > 500 && pinchTime < 1500){
+            console.log("Pinch time valid. Checking for intersected el")
+            if (cursor.intersectedEl) {
+                console.log("Simulating click");
+                // Emit event on element
+                cursor.emit("click", {});
+            }
+        }
+        
+        pinchInfo[hand.type] = null;
+    })
+    
     controller.on("gesture", function (gesture) {
         console.log(gesture.type + " Gesture");
 
