@@ -90,16 +90,21 @@ var heartParts = [
     }
 ];
 
-Template.heartLesson.onRendered(function () {
-	// Detect when player is looking left and right
-	var sceneEl = $("a-scene").get(0)
-	var cameraEl = sceneEl.cameraEl;
+var rotate;
+var zoom;
 
-	setupHeart();
-	setupVisuals(cameraEl);
-	setupController();
-	CameraUtils.setupLookEvents();
-	setupHUD(sceneEl);
+Template.heartLesson.onRendered(function () {
+    Utils.waitForScene(function () {
+        // Detect when player is looking left and right
+        var sceneEl = $("a-scene").get(0)
+        var cameraEl = sceneEl.cameraEl;
+
+        setupHeart();
+        setupVisuals(cameraEl);
+        setupController();
+        CameraUtils.setupLookEvents();
+        setupHUD(sceneEl);
+    });
 });
 
 function setupHeart() {
@@ -154,7 +159,7 @@ function setupHeart() {
     }
 
     $("body").on("stateadded", ".heartContainer a-model", function (e) {
-        if (selectedPartElement)
+        if (selectedPartElement || rotate || zoom)
             return;
 
         setHighlightColor(this);
@@ -164,7 +169,7 @@ function setupHeart() {
 		updateHUDOrganName(name);
     })
     $("body").on("stateremoved", ".heartContainer a-model", function (e) {
-        if (selectedPartElement)
+        if (selectedPartElement || rotate || zoom)
             return;
 
         removeHighlightColor(this);
@@ -275,8 +280,6 @@ function setupController() {
     var controller = LeapUtils.createController();
 
     var organContainer = $(".heartContainer").get(0);
-    var rotate = null;
-    var zoom = false;
     var leftHandPinched = false;
     var rightHandPinched = false;
     controller.on('grab', function (hand) {

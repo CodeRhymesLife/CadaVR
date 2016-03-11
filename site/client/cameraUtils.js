@@ -87,5 +87,6 @@ CameraUtils.setupLookEvents = function () {
         },
     });
 	
+    lookEventSetup = true;
 	return cameraEl;
 }

@@ -1,10 +1,12 @@
 var cardContainerClassName = "cardContainer"
 Template.curvedMenu.onRendered(function () {
 	
-	var firstCardHorizontalPosition = 50;
-	addCards(firstCardHorizontalPosition);
-	addVerticalMenu(firstCardHorizontalPosition + 20);
-	attachLookEvents()
+    Utils.waitForScene(function () {
+        var firstCardHorizontalPosition = 50;
+        addCards(firstCardHorizontalPosition);
+        addVerticalMenu(firstCardHorizontalPosition + 20);
+        attachLookEvents()
+    });
 });
 
 function addCards(startPos) {
