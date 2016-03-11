@@ -4,8 +4,8 @@ Template.finalDemo.onRendered(function () {
         setVisibility(".heartLessonMenuContainer, .heartLessonCurvedImageContainer, .hud", false);
 
         // When the cadavr card is clicked hide the navigation menu and show the heart lesson
-        $(".cadavrCard").click(function () {
-            setVisibility(".navigationMenuContainer, .cardContainer", false);
+        $(".heartCard").click(function () {
+            setVisibility(".navigationMenuContainer, .cardContainer, .verticalButtonsContainer, .organCardContainerClassName", false);
 
             setVisibility(".heartLessonMenuContainer, .heartLessonCurvedImageContainer, .hud", true);
         })
