@@ -113,7 +113,7 @@ function setupHeart() {
     // Add Heart parts
     heartParts.forEach(function (partInfo) {
         var part = $("<a-model material='color: " + partInfo.color + ";' loader='src: url(models\\heart\\" + partInfo.file + "); format: obj'></a-model>");
-        partInfo.organNameElement = $('<a-entity class="organName" visible="false" text="text: ' + partInfo.name + '" scale="0.04 0.04 0.04" material="color: black" width="1" height="0.5"></a-entity>')
+        partInfo.organNameElement = $('<a-entity class="organName" visible="false" text="text: ' + partInfo.name + '" scale="0.05 0.05 0.05" material="color: black" width="1" height="0.5"></a-entity>')
 		part.data("partInfo", partInfo);
 		$(".heartContainer").append(part)
         $(".organNames").append(partInfo.organNameElement)
@@ -212,6 +212,7 @@ function setupHeart() {
 
 function setupVisuals(cameraEl) {
     // Top
+    /*
     DisplayUtils.addCurvedImageToContainer(
 		"heartLessonCurvedImageContainer",
         "taskHeader",
@@ -221,7 +222,7 @@ function setupVisuals(cameraEl) {
 		0.5,
 		1746,
 		246
-	);
+	);*/
 
     // Left
     DisplayUtils.addCurvedImageToContainer(
