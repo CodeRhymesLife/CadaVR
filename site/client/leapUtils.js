@@ -37,17 +37,53 @@ LeapUtils.createController = function () {
         grabThreshold: 0.8,
     });
     
-    var pinchInfo = {
-        left: null,
-        right: null,
-    };
-    controller.on('pinch', function (hand) {
-        pinchInfo[hand.type] = Date.now();
+    var pinchInfo = {};
+    var initHand = function (type) {
+        console.log("initializing pinch hand: " + type)
+        pinchInfo[type] = {
+            canPinch: false,
+            pinchTime: 1000000,
+            timeoutKey: null,
+        }
+    }
+    controller.on('handFound', function (hand) {
+        if(!pinchInfo[hand.type])
+            initHand(hand.type);
+            
+        pinchInfo[hand.type].timeoutKey = setTimeout(function () {
+            pinchInfo[hand.type].timeoutKey = null;
+            pinchInfo[hand.type].canPinch = true;
+            console.log("Can pinch to click!")
+        }, 500)
+    })
+    .on('handLost', function (hand) {
+        if(!pinchInfo[hand.type])
+            initHand(hand.type);
+            
+        if(pinchInfo[hand.type].timeoutKey)
+            clearInterval(pinchInfo[hand.type].timeoutKey);
+        pinchInfo[hand.type].timeoutKey = null
+        pinchInfo[hand.type].canPinch = false;
+        console.log("No can pinch to click!")
+    })
+    .on('pinch', function (hand) {
+        console.log("pinch")
+        if(!pinchInfo[hand.type])
+            initHand(hand.type);
+            
+        pinchInfo[hand.type].pinchTime = Date.now();
     })
     .on('unpinch', function (hand) {
-        var pinchTime = Date.now() - pinchInfo[hand.type];
+        console.log("unpinch")
+        if(!pinchInfo[hand.type])
+            initHand(hand.type);
+            
+        if(!pinchInfo[hand.type].canPinch)
+            return;
+
+        var pinchTime = Date.now() - pinchInfo[hand.type].pinchTime;
         console.log("pinchTime: " + pinchTime)
-        if(pinchTime > 500 && pinchTime < 1500){
+        if(pinchTime < 1500){
             console.log("Pinch time valid. Checking for intersected el")
             if (cursor.intersectedEl) {
                 console.log("Simulating click");
@@ -55,8 +91,6 @@ LeapUtils.createController = function () {
                 cursor.emit("click", {});
             }
         }
-        
-        pinchInfo[hand.type] = null;
     })
     
     controller.on("gesture", function (gesture) {

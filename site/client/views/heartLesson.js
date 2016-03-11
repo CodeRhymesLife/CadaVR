@@ -111,8 +111,10 @@ function setupHeart() {
     // Add Heart parts
     heartParts.forEach(function (partInfo) {
         var part = $("<a-model material='color: " + partInfo.color + ";' loader='src: url(models\\heart\\" + partInfo.file + "); format: obj'></a-model>");
+        partInfo.organNameElement = $('<a-entity class="organName" visible="false" text="text: ' + partInfo.name + '" scale="0.04 0.04 0.04" material="color: black" width="1" height="0.5"></a-entity>')
 		part.data("partInfo", partInfo);
 		$(".heartContainer").append(part)
+        $(".organNames").append(partInfo.organNameElement)
     });
 
     var selectedPartElement = null;
@@ -158,28 +160,30 @@ function setupHeart() {
         selectedPartElement = null;
     }
 
-    $("body").on("stateadded", ".heartContainer a-model", function (e) {
-        if (selectedPartElement || rotate || zoom)
+    $(".heartContainer a-model").on("stateadded", function (e) {
+        if (selectedPartElement)
             return;
-
+            
         setHighlightColor(this);
 		
 		// Update the HUD
-		var name = $(this).data("partInfo").name;
-		updateHUDOrganName(name);
+        var organNameElement = $(highlightedPartElement).data("partInfo").organNameElement.get(0);
+        updateHUDOrganName(organNameElement)
+        organNameElement.setAttribute("visible", "true");
     })
-    $("body").on("stateremoved", ".heartContainer a-model", function (e) {
-        if (selectedPartElement || rotate || zoom)
+    $(".heartContainer a-model").on("stateremoved", function (e) {
+        if (selectedPartElement)
             return;
 
+        $(this).data("partInfo").organNameElement.get(0).setAttribute("visible", "false");
         removeHighlightColor(this);
-
-        // Update the HUD
-        updateHUDOrganName("");
     })
 
     var lastCall = 0;
-    $("body").on("click keyTap screenTap", ".heartContainer a-model", function (e) {
+    $(".heartContainer a-model").on("click", function (e) {
+        if (rotate || zoom)
+            return;
+            
         // For some reason the click event is executed twice.
         // Make sure a half second passes before we call it again
         if (new Date() - lastCall < 500)
@@ -188,6 +192,7 @@ function setupHeart() {
 
         // If a part is selected deselect it
         if (selectedPartElement) {
+            $(selectedPartElement).data("partInfo").organNameElement.get(0).setAttribute("visible", "false");
             deselectPart();
             hideDescription();
         }
@@ -343,17 +348,15 @@ function setupHUD(sceneEl) {
 	THREE.SceneUtils.attach( hud.object3D, sceneEl.object3D, sceneEl.cameraEl.object3D );
 }
 
-function updateHUDOrganName (newName) {
-	var textObject = $(".hud .organName").get(0);
-	textObject.setAttribute("text", "text", newName);
-	
-	if(newName == "")
-		return;
-	
+function updateHUDOrganName (textObject) {
+    if(textObject.positionSet)
+        return;
+        
 	// Center the text
 	var box = new THREE.Box3().setFromObject(textObject.object3D);
 	//console.log(box.min, box.max, box.size());
 	textObject.setAttribute("position", -(box.size().x / 2) + " 0 0");
+    textObject.positionSet = true;
 }
 
 function hideDescription() {
