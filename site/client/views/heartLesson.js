@@ -92,6 +92,8 @@ var heartParts = [
 
 var rotate;
 var zoom;
+var rotateEnd = Date.now();
+var zoomEnd = Date.now();
 
 Template.heartLesson.onRendered(function () {
     Utils.waitForScene(function () {
@@ -181,7 +183,12 @@ function setupHeart() {
 
     var lastCall = 0;
     $(".heartContainer a-model").on("click", function (e) {
-        if (rotate || zoom)
+        if(zoom || rotate)
+            return;
+        
+        var timeSinceLastAction = Date.now() - Math.max(zoomEnd, rotateEnd);
+        console.log("time since last action: " + timeSinceLastAction)
+        if (timeSinceLastAction < 500)
             return;
             
         // For some reason the click event is executed twice.
@@ -291,6 +298,8 @@ function setupController() {
         rotate = hand;
     })
     .on('ungrab', function (hand) {
+        if(rotate)
+            rotateEnd = Date.now();
         rotate = null;
     })
     .on('pinch', function (hand) {
@@ -306,6 +315,9 @@ function setupController() {
             rightHandPinched = false;
         if (hand.type == "left")
             leftHandPinched = false;
+
+         if(zoom)
+            zoomEnd = Date.now();
 
         zoom = false;
     })
