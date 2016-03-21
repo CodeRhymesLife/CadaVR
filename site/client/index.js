@@ -7,6 +7,10 @@ if(Meteor.isClient) {
 		"finalDemoViews": function () {
 			return FinalDemoViews;
 		},
+		
+		"caseViews": function () {
+			return CaseViews;
+		},
 	});
 
 	Template.index.onRendered(function () {

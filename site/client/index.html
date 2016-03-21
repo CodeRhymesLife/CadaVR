@@ -1,7 +1,7 @@
 ﻿<head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<script src="/lib/aframe.js"></script>
+	<script src="/lib/aframe-v0.2.0-rc1/aframe.js"></script>
 	<script src="/lib/aframe-text-component.js"></script>
 	<script src="/lib/leap-0.6.4.js"></script>
 	<script src="/lib/leap-plugins-0.1.11.js"></script>
@@ -10,6 +10,12 @@
 </head>
 
 <template name="index">
+	Case Views: <ul>
+		{{#each caseViews}}
+			<li><a href="/{{this}}" >{{this}}</a></li>
+		{{/each}}
+	</ul>
+	
 	Final Demo Views: <ul>
 		{{#each finalDemoViews}}
 			<li><a href="/{{this}}" >{{this}}</a></li>

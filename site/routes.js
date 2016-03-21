@@ -26,6 +26,11 @@ FinalDemoViews = [
 	"heartLesson",
 ]
 
+CaseViews = [
+	"congenitalHeartCase",
+	"liverTransplantCase",
+]
+
 Views.forEach( function (page) {
     Router.route('/' + page,
         function () {
@@ -39,6 +44,15 @@ FinalDemoViews.forEach( function (page) {
     Router.route('/' + page,
         function () {
 		    this.layout('finalDemoLayout');
+		    this.render(page);
+        },
+        { name: page });
+});
+
+CaseViews.forEach( function (page) {
+    Router.route('/' + page,
+        function () {
+		    this.layout('casesLayout');
 		    this.render(page);
         },
         { name: page });
