@@ -1,0 +1,13 @@
+# Blender v2.76 (sub 0) OBJ File: ''
+# www.blender.org
+mtllib heart removable front.004.mtl
+o heart_removable_front.004_heart_removable_front.004_MESH
+v 0.763959 45.391304 -3.286117
+v 0.615237 45.356445 -3.437285
+v 0.806798 45.339455 -3.382461
+vn -0.326600 -0.826800 0.457900
+vn -0.004600 -0.970800 0.239700
+vn -0.292700 -0.924700 0.243400
+usemtl None
+s 1
+f 1//1 2//2 3//3

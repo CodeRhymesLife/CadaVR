@@ -7,17 +7,20 @@ Leap.plugin('rotateAndZoom', function(scope){
 	var container = scope.container
 	
 	var controller = this;
+	var data = {
+	    rotating: false,
+	    zooming: false,
+	}
+	controller.rotateAndZoom = data;
     var leftHandPinched = false;
     var rightHandPinched = false;
-    var rotate = null;
-	var zoom = null;
 	this.on('grab', function (hand) {
-        rotate = hand;
+	    data.rotating = true;
     })
     .on('ungrab', function (hand) {
-        if(rotate)
-            rotateEnd = Date.now();
-        rotate = null;
+        if (data.rotating)
+            controller.emit("rotateEnd");
+        data.rotating = false;
     })
     .on('pinch', function (hand) {
         if (hand.type == "right")
@@ -25,7 +28,7 @@ Leap.plugin('rotateAndZoom', function(scope){
         if (hand.type == "left")
             leftHandPinched = true;
 
-        zoom = rightHandPinched && leftHandPinched;
+        data.zooming = rightHandPinched && leftHandPinched;
     })
     .on('unpinch', function (hand) {
         if (hand.type == "right")
@@ -33,13 +36,13 @@ Leap.plugin('rotateAndZoom', function(scope){
         if (hand.type == "left")
             leftHandPinched = false;
 
-         if(zoom)
-            zoomEnd = Date.now();
+         if(data.zooming)
+             controller.emit("zoomEnd");
 
-        zoom = false;
+         data.zooming = false;
     })
     .on("handMoved", function (hand) {
-        if (rotate) {
+        if (data.rotating) {
             var lastHand = controller.frame(1).hand(hand.id);
             var currentHand = controller.frame(0).hand(hand.id);
 
@@ -58,7 +61,7 @@ Leap.plugin('rotateAndZoom', function(scope){
                 String(rotation.z));
         }
 
-        if (zoom && validHands(controller)) {
+        if (data.zooming && validHands(controller)) {
             var scale = container.object3D.scale;
             var scaleFactor = 1 + (getDistanceBetweenHands(controller, 0) - getDistanceBetweenHands(controller, 1))
             scaleFactor = Math.max(0.0000001, scaleFactor);
