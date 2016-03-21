@@ -34,11 +34,20 @@ Utils.waitForScene = function (callback) {
 
 var sceneReady = false;
 var checkSceneReady = function () {
-    if ($("a-scene").get(0) != undefined && $("a-scene").get(0).cameraEl != undefined) {
-        sceneReady = true;
+	var scene = $("a-scene").get(0);
+	if( scene == undefined ) {
+		setTimeout(checkSceneReady, 10);
+		return;
+	}
+
+	var execSceneReady = function () {
+		sceneReady = true;
         callbacks.forEach(function (cb) { cb(); });
-    }
+	}
+	
+    if (scene.renderStarted)
+		execSceneReady();
     else
-        setTimeout(checkSceneReady, 10);
+        scene.addEventListener("renderstart", execSceneReady)
 }
 checkSceneReady();
