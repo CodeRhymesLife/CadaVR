@@ -3,7 +3,7 @@ LeapUtils.createController = function () {
     var sceneEl = $("a-scene").get(0);
     var scene = sceneEl.object3D;
     var camera = sceneEl.camera;
-    var cursor = $("a-cursor").get(0);
+    var cursor = $("a-cursor").get(0).components.cursor;
 
     window.controller = controller = new Leap.Controller({
         host: Cookies.get('leapHost'),

@@ -18,6 +18,8 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, loade
         })
     });
 
+    controller.use("rotateAndZoom", { container: $(modelContainerSelector).get(0) });
+
     var selectedPartElement = null;
     var highlightedPartElement = null;
     var highlightColor = "#F9E400";
@@ -62,7 +64,6 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, loade
         selectedPartElement = null;
     }
 
-    var rotateAndZoom = controller.rotateAndZoom;
     var actionKey = null;
     canClick = true;
     controller.on("rotateEnd, zoomEnd", function () {
@@ -87,7 +88,7 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, loade
 
     var lastCall = 0;
     $(modelSelector).on("click", function (e) {
-        if (!canClick || rotateAndZoom.rotating || rotateAndZoom.zooming)
+        if (!canClick || controller.rotateAndZoom.rotating || controller.rotateAndZoom.zooming)
             return;
             
         // For some reason the click event is executed twice.
