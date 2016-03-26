@@ -18,10 +18,10 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, loade
         })
     });
 
-    controller.use("rotateAndZoom", { container: $(modelContainerSelector).get(0) });
-
-    var selectedPartElement = null;
-    var highlightedPartElement = null;
+    var data = {
+        selectedPartElement: null,
+        highlightedPartElement: null,
+    }
     var highlightColor = "#F9E400";
     var modelSelector = modelContainerSelector + " a-entity";
 
@@ -33,27 +33,29 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, loade
             element.originalColor = element.components.material.data.color;
 
         element.setAttribute("material", "color", highlightColor);
-        highlightedPartElement = element
+        data.highlightedPartElement = element
     }
 
     var removeHighlightColor = function () {
-        if (!highlightedPartElement)
+        if (!data.highlightedPartElement)
             return;
 
-        highlightedPartElement.setAttribute("material", "color", highlightedPartElement.originalColor);
-        highlightedPartElement = null;
+        data.highlightedPartElement.setAttribute("material", "color", data.highlightedPartElement.originalColor);
+        data.highlightedPartElement = null;
     }
 
     var selectPart = function (part) {
         removeHighlightColor();
 
         // Dim all other parts
-        selectedPartElement = $(part).get(0);
+        data.selectedPartElement = $(part).get(0);
         $(modelSelector).each(function (i, otherPart) {
             var otherPartElement = $(otherPart).get(0);
-            if (otherPartElement != selectedPartElement)
+            if (otherPartElement != data.selectedPartElement)
                 otherPartElement.setAttribute("material", "opacity", "0.1")
         })
+
+        data.selectedPartElement.addState("selected");
     }
 
     var deselectPart = function () {
@@ -61,26 +63,19 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, loade
             var partElement = $(this).get(0);
             partElement.setAttribute("material", "opacity", "1")
         })
-        selectedPartElement = null;
+
+        data.selectedPartElement.removeState("selected");
+        data.selectedPartElement = null;
     }
 
-    var actionKey = null;
-    canClick = true;
-    controller.on("rotateEnd, zoomEnd", function () {
-        canClick = false;
-        if (actionKey)
-            clearTimeout(actionKey);
-        actionKey = setTimeout(function () { canClick = true; }, 500)
-    });
-
     $(modelSelector).on("stateadded", function (e) {
-        if (selectedPartElement)
+        if (data.selectedPartElement)
             return;
             
         setHighlightColor(this);
     })
     $(modelSelector).on("stateremoved", function (e) {
-        if (selectedPartElement)
+        if (data.selectedPartElement)
             return;
 
         removeHighlightColor(this);
@@ -88,9 +83,6 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, loade
 
     var lastCall = 0;
     $(modelSelector).on("click", function (e) {
-        if (!canClick || controller.rotateAndZoom.rotating || controller.rotateAndZoom.zooming)
-            return;
-            
         // For some reason the click event is executed twice.
         // Make sure a half second passes before we call it again
         if (new Date() - lastCall < 500)
@@ -98,11 +90,13 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, loade
         lastCall = new Date();
 
         // If a part is selected deselect it
-        if (selectedPartElement) {
+        if (data.selectedPartElement) {
             deselectPart();
         }
         else {
             selectPart(this);
         }
     })
+
+    return data;
 }

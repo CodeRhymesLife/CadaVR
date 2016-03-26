@@ -7,7 +7,7 @@ CameraUtils.setupLookEvents = function () {
 	
 	// Detect when player is looking left and right
 	var sceneEl = $("a-scene").get(0)
-	var cameraEl = sceneEl.cameraEl;
+	var cameraEl = sceneEl.camera.el;
 	
     sceneEl.addBehavior({
 		el: { isPlaying: true },
@@ -20,10 +20,7 @@ CameraUtils.setupLookEvents = function () {
         rightThreshold: -40,
         upThreshold: 7,
         downThreshold: -60,
-		time: (new Date()).getTime(),
-        update: function () {
-			var time = (new Date()).getTime();
-			var timeDelta = time - this.time;
+        tick: function (time, timeDelta) {
 			this.time = time;	
             var rotation = cameraEl.getAttribute("rotation");
             var data = {

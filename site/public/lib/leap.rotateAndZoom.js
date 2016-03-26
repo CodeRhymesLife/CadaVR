@@ -16,6 +16,7 @@ Leap.plugin('rotateAndZoom', function(scope){
     var rightHandPinched = false;
 	this.on('grab', function (hand) {
 	    data.rotating = true;
+	    controller.emit("rotateStart");
     })
     .on('ungrab', function (hand) {
         if (data.rotating)
@@ -29,6 +30,8 @@ Leap.plugin('rotateAndZoom', function(scope){
             leftHandPinched = true;
 
         data.zooming = rightHandPinched && leftHandPinched;
+        if(data.zooming)
+            controller.emit("zoomStart");
     })
     .on('unpinch', function (hand) {
         if (hand.type == "right")

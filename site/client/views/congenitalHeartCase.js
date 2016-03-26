@@ -134,6 +134,6 @@ Template.congenitalHeartCase.onRendered(function () {
     });
 	
 	$(".organContainer").on('models-loaded', function () {
-		Utils.resize( $(this).get(0), 1 );
+		Utils.resize( $(this).get(0), 0.5 );
 	});
 });
