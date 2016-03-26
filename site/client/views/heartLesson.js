@@ -100,8 +100,8 @@ Template.heartLesson.onRendered(function () {
         var cameraEl = sceneEl.camera.el;
 
         var controller = LeapUtils.createController();
-        controller.use("rotateAndZoom", { container: $(".heartContainer").get(0) });
-        
+        //controller.use("rotateAndZoom", { container: $(".heartContainer").get(0) });
+        controller.use("pointer", { debug: true });
 
         setupHeart(controller);
         setupVisuals(cameraEl);
@@ -113,7 +113,7 @@ Template.heartLesson.onRendered(function () {
 function setupHeart(controller) {
     var modelData = ModelUtils.load(heartPartsInfo, ".heartContainer", controller);
     $(".heartContainer").on('models-loaded', function () {
-        Utils.resize($(this).get(0), 1);
+        Utils.resize($(this).get(0), 2);
     });
 
     // Add Heart parts

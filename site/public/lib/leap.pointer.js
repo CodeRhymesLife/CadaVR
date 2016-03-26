@@ -4,18 +4,18 @@ Leap.plugin('pointer', function(scope){
 	this.use('handHold');
   	//this.use('pinchEvent');
 	
-	scope.detectionInterval = scope.detectionInterval || 100; // Default is 100 milliseconds
-	scope.touchDistance = scope.touchDistance || 0.01; // default is one centimeter
+	scope.detectionInterval = scope.detectionInterval || 10; // Default is 100 milliseconds
+	scope.touchDistance = scope.touchDistance || 0.1; // default is one centimeter
 
     var scene = $("a-scene").get(0);
 
     var detectCollision = false;
-    setInterval(function () { detectCollision = true }, 100);
+    setInterval(function () { detectCollision = true }, scope.detectionInterval);
 
     var leftPointer = new Pointer(scope, scene);
     var rightPointer = new Pointer(scope, scene);
 
-    Leap.loop(function (frame) {
+    Leap.loop({ background: true }, function (frame) {
         if (!detectCollision || frame.hands.length <= 0)
             return;
 
@@ -24,6 +24,8 @@ Leap.plugin('pointer', function(scope){
                 leftPointer.detectIntersection(hand);
             else if (hand.type == "right")
                 rightPointer.detectIntersection(hand);
+
+            detectCollision = false;
         })
     });
 });

@@ -21,6 +21,7 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, loade
     var data = {
         selectedPartElement: null,
         highlightedPartElement: null,
+        grabbedPartElement: null,
     }
     var highlightColor = "#F9E400";
     var modelSelector = modelContainerSelector + " a-entity";
@@ -68,34 +69,61 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, loade
         data.selectedPartElement = null;
     }
 
+    var grabPart = function () {
+        data.grabbedPartElement = data.selectedPartElement;
+        console.log("grabing part")
+    }
+
+    var ungrabPart = function () {
+        deselectPart();
+        data.grabbedPartElement = null;
+        console.log("ungrabing part")
+    }
+
     $(modelSelector).on("stateadded", function (e) {
-        if (data.selectedPartElement)
+        if (data.selectedPartElement || e.detail.state != "hovered")
             return;
             
         setHighlightColor(this);
     })
     $(modelSelector).on("stateremoved", function (e) {
-        if (data.selectedPartElement)
+        if (data.selectedPartElement || e.detail.state != "hovered")
             return;
 
         removeHighlightColor(this);
     })
 
-    var lastCall = 0;
-    $(modelSelector).on("click", function (e) {
-        // For some reason the click event is executed twice.
-        // Make sure a half second passes before we call it again
-        if (new Date() - lastCall < 500)
+    var lastClick = 0;
+    var canClick = function () {
+        return Date.now() - lastClick > 1000 && data.grabbedPartElement == null;
+    }
+    $(modelSelector).on("click, pointerTouch", function (e) {
+        if (!canClick())
             return;
-        lastCall = new Date();
 
         // If a part is selected deselect it
-        if (data.selectedPartElement) {
+        if (data.selectedPartElement) 
             deselectPart();
-        }
-        else {
+        else
             selectPart(this);
-        }
+
+        lastClick = Date.now();
+    })
+
+    controller.use('pinchEvent', {
+        pinchThreshold: 0.9,
+        grabThreshold: 0.8,
+    });
+    var isGrabbingPart = function () {
+        return data.grabbedPartElement != null;
+    }
+    controller.on("pinch", function () {
+        if (!isGrabbingPart() && data.selectedPartElement != null && (Date.now() - lastClick < 500))
+            grabPart();
+    })
+    .on("unpinch", function () {
+        if (isGrabbingPart())
+            ungrabPart();
     })
 
     return data;
