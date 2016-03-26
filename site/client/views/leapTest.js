@@ -5,8 +5,18 @@ Template.leapTest.onRendered(function () {
         controller.use("pointer", { debug: true });
     });
 
-    $("a-box").on("click, pointerIntersected", function () {
+    $("a-box").on("stateadded", function (e) {
+        if (e.detail.state != "hovered")
+            return;
+
         $("a-box").get(0).setAttribute("material", "color", getRandomColor());
+    })
+
+    var small = true;
+    $("a-box").on("pointerTouch", function (e) {
+        var scale = small ? "0.01 0.01 0.01" : "0.1 0.1 0.1";
+        small = !small;
+        $("a-box").get(0).setAttribute("scale", scale);
     })
 });
 
