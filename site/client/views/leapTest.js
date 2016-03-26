@@ -1,7 +1,7 @@
 Template.leapTest.onRendered(function () {
     Utils.waitForScene(function () {
         var controller = LeapUtils.createController();
-        controller.use("rotateAndZoom", { container: $("a-cube").get(0) });
+        controller.use("rotateAndZoom", { container: $("a-box").get(0) });
     });
 
     $("a-box").click(function () {
