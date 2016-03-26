@@ -2,9 +2,10 @@ Template.leapTest.onRendered(function () {
     Utils.waitForScene(function () {
         var controller = LeapUtils.createController();
         controller.use("rotateAndZoom", { container: $("a-box").get(0) });
+        controller.use("pointer", { debug: true });
     });
 
-    $("a-box").click(function () {
+    $("a-box").on("click, pointerIntersected", function () {
         $("a-box").get(0).setAttribute("material", "color", getRandomColor());
     })
 });
