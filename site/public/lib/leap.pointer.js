@@ -38,6 +38,7 @@ function Pointer(scope, scene, controller) {
     this.direction = null;
     this.intersectedEl = null;
     this.childContainer = null;
+    this.childElement = null;
 
     this.update = function (hand, detectIntersection) {
         this.hand = hand;
@@ -111,18 +112,33 @@ function Pointer(scope, scene, controller) {
     }
 
     this.attachChild = function (childElement) {
+        if (this.childElement != null)
+            throw "attempting to attach a child when a child already exists";
+
         if (!this.childContainer) {
             this.childContainer = new THREE.Group()
             this.getIndexFinger().tip.add(this.childContainer);
         }
 
+        this.childElement = childElement;
         childElement.object3D.parent.updateMatrixWorld();
         THREE.SceneUtils.attach(childElement.object3D, scene.object3D, this.childContainer);
+        return childElement;
     }
 
-    this.detachChild = function (childElement, newParentElement) {
+    this.detachChild = function (newParentElement) {
+        if (this.childElement == null)
+            throw "attempting to detach a child when no child exists";
+
+        var childElement = this.childElement;
         childElement.object3D.parent.updateMatrixWorld();
         THREE.SceneUtils.detach(childElement.object3D, childElement.object3D.parent, newParentElement.object3D);
+        this.childElement = null;
+        return childElement;
+    }
+
+    this.hasChild = function () {
+        return this.childElement != null;
     }
 
     this.getIndexFinger = function () {

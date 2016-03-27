@@ -34,7 +34,7 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
     var data = {
         selectedPartElement: null,
         highlightedPartElement: null,
-        grabbedPartElement: null,
+        grabbingElement: false,
     }
     var highlightColor = "#F9E400";
 
@@ -82,32 +82,34 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
     }
 
     var grabPart = function (hand) {
-        data.grabbedPartElement = data.selectedPartElement;
-        hand.data("grabbedPartElement", data.grabbedPartElement)
-
-        hand.data("pointer").attachChild(data.grabbedPartElement);
-
-        data.grabbedPartElement.setAttribute("position", "0 0 0");
-
-        var scale = Utils.getScaleForMaxDimension(data.grabbedPartElement, 0.5)
-        data.grabbedPartElement.setAttribute("scale", scale + " " + scale + " " + scale);
-
         console.log("grabing part")
+
+        var grabbedElement = hand.data("pointer").attachChild(data.selectedPartElement);
+        data.grabbingElement = true;
+
+        grabbedElement.setAttribute("position", "0 0 0");
+
+        var scale = Utils.getScaleForMaxDimension(grabbedElement, 0.5)
+        grabbedElement.setAttribute("scale", scale + " " + scale + " " + scale);
+
+        return grabbedElement;
     }
 
     var ungrabPart = function (hand) {
+        console.log("ungrabing part")
+
         deselectPart();
         
-        hand.data("pointer").detachChild(data.grabbedPartElement, $(modelContainerSelector).get(0));
-        data.grabbedPartElement.setAttribute("position", "0 0 0");
-        data.grabbedPartElement.setAttribute("rotation", "0 0 0");
+        var grabbedElement = hand.data("pointer").detachChild($(modelContainerSelector).get(0));
+        data.grabbingElement = false;
 
-        var scale = data.grabbedPartElement.originalScale;
-        data.grabbedPartElement.setAttribute("scale", scale + " " + scale + " " + scale);
+        grabbedElement.setAttribute("position", "0 0 0");
+        grabbedElement.setAttribute("rotation", "0 0 0");
 
-        data.grabbedPartElement = null;
-        hand.data("grabbedPartElement", null)
-        console.log("ungrabing part")
+        var scale = grabbedElement.originalScale;
+        grabbedElement.setAttribute("scale", scale + " " + scale + " " + scale);
+
+        return grabbedElement;
     }
 
     $(modelSelector).on("stateadded", function (e) {
@@ -125,7 +127,7 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
 
     var lastClick = 0;
     var canClick = function () {
-        return Date.now() - lastClick > 1000 && data.grabbedPartElement == null;
+        return Date.now() - lastClick > 1000 && !data.grabbingElement;
     }
     $(modelSelector).on("click, pointerTouch", function (e) {
         if (!canClick())
@@ -145,16 +147,26 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
         grabThreshold: 0.8,
     });
     var isGrabbingPart = function (hand) {
-        return data.grabbedPartElement != null && hand.data("grabbedPartElement") != null;
+        return hand.data("pointer") != null && hand.data("pointer").hasChild();
+    }
+    var canGrab = function (hand) {
+        return hand.data("pointer") != null && !isGrabbingPart(hand) && data.selectedPartElement != null;
     }
     controller.on("pinch", function (hand) {
-        if (!isGrabbingPart(hand) && data.selectedPartElement != null)
+        if (canGrab(hand))
             grabPart(hand);
     })
     .on("unpinch", function (hand) {
         if (isGrabbingPart(hand))
             ungrabPart(hand);
     })
+    .on('handLost', function (hand) {
+        // "Throw awway" the element when the hand is lost"
+        if (isGrabbingPart(hand)) {
+            var grabbedElement = ungrabPart(hand)
+            grabbedElement.setAttribute("visible", "false")
+        }
+    });
 
     return data;
 }
