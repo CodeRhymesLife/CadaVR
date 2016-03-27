@@ -6,27 +6,23 @@ Leap.plugin('pointer', function(scope){
 	
 	scope.detectionInterval = scope.detectionInterval || 10; // Default is 100 milliseconds
 	scope.touchDistance = scope.touchDistance || 0.1; // default is one centimeter
+	scope.handType = scope.handType || "right"; // default hand is the right hand 
 
     var scene = $("a-scene").get(0);
 
     var detectCollision = false;
     setInterval(function () { detectCollision = true }, scope.detectionInterval);
 
-    var leftPointer = new Pointer(scope, scene, controller);
-    var rightPointer = new Pointer(scope, scene, controller);
+    var pointer = new Pointer(scope, scene, controller);
 
     Leap.loop({ background: true }, function (frame) {
         if (!detectCollision || frame.hands.length <= 0)
             return;
 
         frame.hands.forEach(function (hand) {
-            if (hand.type == "left") {
-                hand.data("pointer", leftPointer)
-                leftPointer.update(hand, detectCollision);
-            }
-            else if (hand.type == "right") {
-                hand.data("pointer", rightPointer)
-                rightPointer.update(hand, detectCollision);
+            if (hand.type == scope.handType) {
+                hand.data("pointer", pointer)
+                pointer.update(hand, detectCollision);
             }
 
             detectCollision = false;
