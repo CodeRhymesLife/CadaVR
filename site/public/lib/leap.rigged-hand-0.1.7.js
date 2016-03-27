@@ -646,7 +646,7 @@ function onReady(handler) {
           for (_k = 0, _len2 = _ref2.length; _k < _len2; _k++) {
             mcp = _ref2[_k];
             mcp.traverse(function(bone) {
-              if (bone.children[0]) {
+                if (bone.children[0] && bone.children[0].positionLeap) {
                 bone.worldDirection.subVectors(bone.children[0].positionLeap, bone.positionLeap).normalize();
                 return bone.positionFromWorld(bone.children[0].positionLeap, bone.positionLeap);
               }

@@ -12,35 +12,67 @@ Leap.plugin('pointer', function(scope){
     var detectCollision = false;
     setInterval(function () { detectCollision = true }, scope.detectionInterval);
 
-    var leftPointer = new Pointer(scope, scene);
-    var rightPointer = new Pointer(scope, scene);
+    var leftPointer = new Pointer(scope, scene, controller);
+    var rightPointer = new Pointer(scope, scene, controller);
 
     Leap.loop({ background: true }, function (frame) {
         if (!detectCollision || frame.hands.length <= 0)
             return;
 
         frame.hands.forEach(function (hand) {
-            if (hand.type == "left")
-                leftPointer.detectIntersection(hand);
-            else if (hand.type == "right")
-                rightPointer.detectIntersection(hand);
+            if (hand.type == "left") {
+                hand.data("pointer", leftPointer)
+                leftPointer.update(hand, detectCollision);
+            }
+            else if (hand.type == "right") {
+                hand.data("pointer", rightPointer)
+                rightPointer.update(hand, detectCollision);
+            }
 
             detectCollision = false;
         })
     });
 });
 
-function Pointer(scope, scene) {
+function Pointer(scope, scene, controller) {
     var raycaster = new THREE.Raycaster();
 
+    this.hand = null;
+    this.position = null;
+    this.direction = null;
     this.intersectedEl = null;
-    this.detectIntersection = function (hand) {
-        var handMesh = hand.data("riggedHand.mesh");
-        if (!handMesh)
+    this.childContainer = null;
+
+    this.update = function (hand, detectIntersection) {
+        this.hand = hand;
+        var indexFinger = this.getIndexFinger();
+        if (!indexFinger)
             return;
 
-        var indexFinger = handMesh.fingers[1];
-        var intersectedObj = this.getClosestObject(indexFinger);
+        this.setPointerPositionAndDirection(indexFinger);
+
+        // Show the debug arrow?
+        if (scope.debug)
+            showArrowHelper(this.position, this.direction);
+
+        if (detectIntersection)
+            this.detectIntersection();
+
+        controller.emit("pointerUpdated", this)
+    };
+
+    this.setPointerPositionAndDirection = function (indexFinger) {
+        // Get the finder's position
+        this.position = new THREE.Vector3();
+        scene.object3D.updateMatrixWorld();
+        this.position.setFromMatrixPosition(indexFinger.tip.matrixWorld);
+
+        // Get the direction
+        this.direction = indexFinger.worldDirection;
+    };
+
+    this.detectIntersection = function (hand) {
+        var intersectedObj = this.getClosestObject();
 
         var newIntersectedEl = intersectedObj != null ? intersectedObj.object.el : null;
         if (this.intersectedEl != newIntersectedEl && this.intersectedEl != null)
@@ -55,25 +87,13 @@ function Pointer(scope, scene) {
             return;
 
         if (intersectedObj.distance <= scope.touchDistance)
-            this.intersectedEl.emit("pointerTouch");
+            this.intersectedEl.emit("pointerTouch", { intersectedObj: intersectedObj });
     }
 
     this.getClosestObject = function (indexFinger) {
-        // Get the finder's position
-        var worldPosition = new THREE.Vector3();
-        scene.object3D.updateMatrixWorld();
-        worldPosition.setFromMatrixPosition(indexFinger.tip.matrixWorld);
-
-        // Get the direction
-        var worldDirection = indexFinger.worldDirection;
-
-        // Show the debug arrow?
-        if (scope.debug)
-            showArrowHelper(worldDirection, worldPosition);
-
         // Detect intersected objects
         var raycaster = new THREE.Raycaster();
-        raycaster.set(worldPosition, worldDirection);
+        raycaster.set(this.position, this.direction);
         var intersectedObjects = raycaster.intersectObjects(scene.object3D.children, true);
         for (var i = 0; i < intersectedObjects.length; ++i) {
             var intersectedObj = intersectedObjects[i];
@@ -94,8 +114,31 @@ function Pointer(scope, scene) {
         return null;
     }
 
+    this.attachChild = function (childElement) {
+        if (!this.childContainer) {
+            this.childContainer = new THREE.Group()
+            this.getIndexFinger().tip.add(this.childContainer);
+        }
+
+        childElement.object3D.parent.updateMatrixWorld();
+        THREE.SceneUtils.attach(childElement.object3D, scene.object3D, this.childContainer);
+    }
+
+    this.detachChild = function (childElement, newParentElement) {
+        childElement.object3D.parent.updateMatrixWorld();
+        THREE.SceneUtils.detach(childElement.object3D, childElement.object3D.parent, newParentElement.object3D);
+    }
+
+    this.getIndexFinger = function () {
+        var handMesh = this.hand.data("riggedHand.mesh");
+        if (!handMesh)
+            return null;
+
+        return handMesh.fingers[1];
+    }
+
     var arrowHelper = null;
-    var showArrowHelper = function (dir, origin) {
+    var showArrowHelper = function (origin, dir) {
         var length = 1;
         var hex = 0xffff00;
 

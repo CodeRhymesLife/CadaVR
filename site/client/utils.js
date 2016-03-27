@@ -14,14 +14,14 @@ Utils.xyzString = function (o) {
 	return o.x + " " + o.y + " " + o.z;
 }
 
-Utils.resize = function (obj, maxDimension) {
-	console.log("resizing obj to max '" + maxDimension + "' meter");
-	var box = new THREE.Box3().setFromObject(obj.object3D);
-	//console.log(box.min, box.max, box.size());
-	var boxSize = box.size();
-	var maxCurrentDimension = Math.max( boxSize.x, Math.max( boxSize.y, boxSize.z ) );
-	var newScale = maxDimension / maxCurrentDimension;
-	obj.setAttribute("scale", newScale + " " + newScale + " " + newScale)
+Utils.getScaleForMaxDimension = function (obj, maxDimension) {
+    var box = new THREE.Box3().setFromObject(obj.object3D);
+    //console.log(box.min, box.max, box.size());
+    var boxSize = box.size();
+    var maxCurrentDimension = Math.max(boxSize.x, Math.max(boxSize.y, boxSize.z));
+    var newScale = maxDimension / maxCurrentDimension;
+    console.log("scale to resize obj to '" + maxDimension + "'m : " + newScale);
+    return newScale;
 }
 
 var callbacks = [];

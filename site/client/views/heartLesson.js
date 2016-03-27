@@ -111,10 +111,7 @@ Template.heartLesson.onRendered(function () {
 });
 
 function setupHeart(controller) {
-    var modelData = ModelUtils.load(heartPartsInfo, ".heartContainer", controller);
-    $(".heartContainer").on('models-loaded', function () {
-        Utils.resize($(this).get(0), 2);
-    });
+    var modelData = ModelUtils.load(heartPartsInfo, ".heartContainer", controller, 2);
 
     // Add Heart parts
     heartPartsInfo.parts.forEach(function (partInfo) {

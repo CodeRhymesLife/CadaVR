@@ -1,6 +1,10 @@
 ModelUtils = {};
 
-ModelUtils.load = function (partsInfo, modelContainerSelector, controller, loaded) {
+ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDimension) {
+    var scene = $("a-scene").get(0);
+
+    var modelSelector = modelContainerSelector + " a-entity";
+
     // Add model parts
     var folder = partsInfo.folder;
     var loadedCount = 0;
@@ -13,8 +17,17 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, loade
             e.detail.model.traverse(function (child) {
                 child.el = e.target
             });
-            if (++loadedCount == partsInfo.parts.length)
+
+            // When all the models are loaded, scale them and fire a models loaded event
+            if (++loadedCount == partsInfo.parts.length) {
+                var scale = Utils.getScaleForMaxDimension($(modelContainerSelector).get(0), maxDimension)
+                $(modelSelector).each(function () {
+                    $(this).get(0).setAttribute("scale", scale + " " + scale + " " + scale)
+                    $(this).get(0).originalScale = scale;
+                });
+
                 $(modelContainerSelector).get(0).emit("models-loaded");
+            }  
         })
     });
 
@@ -24,7 +37,6 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, loade
         grabbedPartElement: null,
     }
     var highlightColor = "#F9E400";
-    var modelSelector = modelContainerSelector + " a-entity";
 
     var setHighlightColor = function (part) {
         removeHighlightColor();
@@ -69,14 +81,32 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, loade
         data.selectedPartElement = null;
     }
 
-    var grabPart = function () {
+    var grabPart = function (hand) {
         data.grabbedPartElement = data.selectedPartElement;
+        hand.data("grabbedPartElement", data.grabbedPartElement)
+
+        hand.data("pointer").attachChild(data.grabbedPartElement);
+
+        data.grabbedPartElement.setAttribute("position", "0 0 0");
+
+        var scale = Utils.getScaleForMaxDimension(data.grabbedPartElement, 0.5)
+        data.grabbedPartElement.setAttribute("scale", scale + " " + scale + " " + scale);
+
         console.log("grabing part")
     }
 
-    var ungrabPart = function () {
+    var ungrabPart = function (hand) {
         deselectPart();
+        
+        hand.data("pointer").detachChild(data.grabbedPartElement, $(modelContainerSelector).get(0));
+        data.grabbedPartElement.setAttribute("position", "0 0 0");
+        data.grabbedPartElement.setAttribute("rotation", "0 0 0");
+
+        var scale = data.grabbedPartElement.originalScale;
+        data.grabbedPartElement.setAttribute("scale", scale + " " + scale + " " + scale);
+
         data.grabbedPartElement = null;
+        hand.data("grabbedPartElement", null)
         console.log("ungrabing part")
     }
 
@@ -114,16 +144,16 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, loade
         pinchThreshold: 0.9,
         grabThreshold: 0.8,
     });
-    var isGrabbingPart = function () {
-        return data.grabbedPartElement != null;
+    var isGrabbingPart = function (hand) {
+        return data.grabbedPartElement != null && hand.data("grabbedPartElement") != null;
     }
-    controller.on("pinch", function () {
-        if (!isGrabbingPart() && data.selectedPartElement != null && (Date.now() - lastClick < 500))
-            grabPart();
+    controller.on("pinch", function (hand) {
+        if (!isGrabbingPart(hand) && data.selectedPartElement != null)
+            grabPart(hand);
     })
-    .on("unpinch", function () {
-        if (isGrabbingPart())
-            ungrabPart();
+    .on("unpinch", function (hand) {
+        if (isGrabbingPart(hand))
+            ungrabPart(hand);
     })
 
     return data;
