@@ -78,12 +78,12 @@ function Pointer(scope, scene, controller) {
 
         var newIntersectedEl = intersectedObj != null ? intersectedObj.object.el : null;
         if (this.intersectedEl != newIntersectedEl && this.intersectedEl != null)
-            this.intersectedEl.removeState("hovered");
+            this.intersectedEl.removeState("pointerHovered");
 
         this.intersectedEl = newIntersectedEl;
 
         if (this.intersectedEl)
-            this.intersectedEl.addState("hovered");
+            this.intersectedEl.addState("pointerHovered");
 
         if (!this.intersectedEl)
             return;

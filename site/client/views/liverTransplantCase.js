@@ -82,10 +82,7 @@ var liverPartInfo = {
 Template.liverTransplantCase.onRendered(function () {
 	Utils.waitForScene(function () {
 	    var controller = LeapUtils.createController();
-	    ModelUtils.load(liverPartInfo, ".organContainer", controller);
+	    ModelUtils.load(liverPartInfo, ".organContainer", controller, 2);
+	    controller.use("pointer", { debug: true });
     });
-	
-	$(".organContainer").on('models-loaded', function () {
-		Utils.resize( $(this).get(0), 1 );
-	});
 });

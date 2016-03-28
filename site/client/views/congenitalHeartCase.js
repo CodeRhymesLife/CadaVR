@@ -129,11 +129,6 @@ var congenitalHeartPartsInfo = {
 Template.congenitalHeartCase.onRendered(function () {
 	Utils.waitForScene(function () {
 	    var controller = LeapUtils.createController();
-	    ModelUtils.load(congenitalHeartPartsInfo, ".organContainer", controller)
-	    controller.use("rotateAndZoom", { container: $(".organContainer").get(0) });
+	    ModelUtils.load(congenitalHeartPartsInfo, ".organContainer", controller, 2)
     });
-	
-	$(".organContainer").on('models-loaded', function () {
-		Utils.resize( $(this).get(0), 0.5 );
-	});
 });

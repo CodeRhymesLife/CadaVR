@@ -38,10 +38,9 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
     }
     var highlightColor = "#F9E400";
 
-    var setHighlightColor = function (part) {
+    var setHighlightColor = function (element) {
         removeHighlightColor();
 
-        var element = $(part).get(0);
         if (element.originalColor == undefined)
             element.originalColor = element.components.material.data.color;
 
@@ -78,6 +77,10 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
         })
 
         data.selectedPartElement.removeState("selected");
+
+        if (data.selectedPartElement.is("hovered"))
+            setHighlightColor(data.selectedPartElement)
+
         data.selectedPartElement = null;
     }
 
@@ -112,22 +115,23 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
         return grabbedElement;
     }
 
+    controller.use("pointer", { debug: true });
     $(modelSelector).on("stateadded", function (e) {
-        if (data.selectedPartElement || e.detail.state != "hovered")
+        if (data.selectedPartElement || e.detail.state != "pointerHovered")
             return;
             
-        setHighlightColor(this);
+        setHighlightColor($(this).get(0));
     })
     $(modelSelector).on("stateremoved", function (e) {
-        if (data.selectedPartElement || e.detail.state != "hovered")
+        if (data.selectedPartElement || e.detail.state != "pointerHovered")
             return;
 
-        removeHighlightColor(this);
+        removeHighlightColor();
     })
 
     var lastClick = 0;
     var canTouch = function () {
-        return Date.now() - lastClick > 1000 && !data.grabbingElement;
+        return Date.now() - lastClick > 1000 && !data.grabbingElement && !rotate;
     }
     var touchPoint = null;
     $(modelSelector).on("pointerTouch", function (e) {
@@ -137,7 +141,6 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
         // If a part is selected deselect it
         if (data.selectedPartElement) {
             deselectPart();
-            touchPosition = null;
         }
         else {
             touchPoint = e.detail.intersectedObj.point;
@@ -148,37 +151,65 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
     })
 
     controller.use('pinchEvent', {
-        pinchThreshold: 0.7,
+        pinchThreshold: 0.9,
         grabThreshold: 0.8,
     });
+
+    
+    var rotate = false;
+    var rotationContainer = $(modelContainerSelector).get(0);
+    Leap.loop({ background: true }, {
+        hand: function (hand) {
+            if (!hand.data('pinchEvent.pinching'))
+                return;
+
+            if (!isGrabbingPart(hand) && canGrab(hand) && hand.data("pointer").getWorldPosition().distanceTo(touchPoint) > 0.3) {
+                rotate = false;
+                grabPart(hand);
+            }
+
+            if (rotate && controller.frame(1).hand(hand.id)) {
+                var lastHand = controller.frame(1).hand(hand.id);
+                var currentHand = controller.frame(0).hand(hand.id);
+
+                var deltaPosition = {
+                    x: currentHand.palmPosition[0] - lastHand.palmPosition[0],
+                    y: currentHand.palmPosition[1] - lastHand.palmPosition[1],
+                };
+
+                var rotationFactor = 1000;
+                var rotation = rotationContainer.getAttribute("rotation") || { x: 0, y: 0, z: 0 };
+                rotation.x -= deltaPosition.y * rotationFactor;
+                rotation.y += deltaPosition.x * rotationFactor;
+                rotationContainer.setAttribute("rotation",
+                    String(rotation.x) + " " +
+                    String(rotation.y) + " " +
+                    String(rotation.z));
+            }
+        },
+    });
+
     var isGrabbingPart = function (hand) {
         return hand.data("pointer") != null && hand.data("pointer").hasChild();
     }
     var canGrab = function (hand) {
-        var pointer = hand.data("pointer")
-        if(pointer != null && !isGrabbingPart(hand) && data.selectedPartElement) {
-            var distance = pointer.getWorldPosition().distanceTo(touchPoint);
-            console.log("grab distance: " + distance);
-            return distance <= pointer.touchDistance;
-        }
-
-        return false;
+        return hand.data("pointer") && !isGrabbingPart(hand) && data.selectedPartElement != null;
     }
     controller.on("pinch", function (hand) {
-        if (canGrab(hand))
-            grabPart(hand);
+        rotate = !isGrabbingPart(hand) && data.selectedPartElement != null;
     })
     .on("unpinch", function (hand) {
+        rotate = false;
         if (isGrabbingPart(hand))
             setTimeout(function () { ungrabPart(hand); });
     })
     .on('handLost', function (hand) {
         // "Throw awway" the element when the hand is lost"
-        if (isGrabbingPart(hand)) {
-            var grabbedElement = ungrabPart(hand)
-            grabbedElement.setAttribute("visible", "false")
+        var lastHand = controller.frame(1).hand(hand.id)
+        if (isGrabbingPart(lastHand)) {
+            lastHand.data("pointer").childElement.setAttribute("visible", "false")
         }
-    });
+    })
 
     return data;
 }
