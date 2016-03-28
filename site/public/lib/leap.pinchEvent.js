@@ -26,7 +26,7 @@ Leap.plugin('pinchEvent', function(scope){
 
     hand: function(hand){
 
-      var pinching = hand.pinchStrength > scope.pinchThreshold;
+      var pinching = (hand.pinchStrength > scope.pinchThreshold) && !hand.indexFinger.extended;
 
       if (hand.data('pinchEvent.pinching') != pinching){
 
