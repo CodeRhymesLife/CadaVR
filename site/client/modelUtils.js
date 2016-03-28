@@ -170,7 +170,7 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
     })
     .on("unpinch", function (hand) {
         if (isGrabbingPart(hand))
-            ungrabPart(hand);
+            setTimeout(function () { ungrabPart(hand); });
     })
     .on('handLost', function (hand) {
         // "Throw awway" the element when the hand is lost"
