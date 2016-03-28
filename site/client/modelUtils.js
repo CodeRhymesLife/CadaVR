@@ -87,10 +87,18 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
     var grabPart = function (hand) {
         console.log("grabing part")
 
+        data.selectedPartElement.object3D.updateMatrixWorld();
+        var originalRotation = data.selectedPartElement.object3D.getWorldRotation();
+
         var grabbedElement = hand.data("pointer").attachChild(data.selectedPartElement);
         data.grabbingElement = true;
 
         grabbedElement.setAttribute("position", "0 0 0");
+
+        grabbedElement.setAttribute("rotation", "0 0 0");
+        Utils.RotateAroundWorldAxis(grabbedElement, new THREE.Vector3(1, 0, 0), originalRotation.x)
+        Utils.RotateAroundWorldAxis(grabbedElement, new THREE.Vector3(0, 1, 0), originalRotation.y)
+        Utils.RotateAroundWorldAxis(grabbedElement, new THREE.Vector3(0, 0, 1), originalRotation.z)
 
         var scale = Utils.getScaleForMaxDimension(grabbedElement, 0.5)
         grabbedElement.setAttribute("scale", scale + " " + scale + " " + scale);
