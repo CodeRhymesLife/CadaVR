@@ -87,7 +87,7 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
     var grabPart = function (hand) {
         console.log("grabing part")
 
-        data.selectedPartElement.object3D.updateMatrixWorld();
+        scene.object3D.updateMatrixWorld();
         var originalRotation = data.selectedPartElement.object3D.getWorldRotation();
 
         var grabbedElement = hand.data("pointer").attachChild(data.selectedPartElement);
