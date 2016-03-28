@@ -151,7 +151,7 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
     })
 
     controller.use('pinchEvent', {
-        pinchThreshold: 0.9,
+        pinchThreshold: 0.7,
         grabThreshold: 0.8,
     });
 
@@ -196,14 +196,16 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
         return hand.data("pointer") && !isGrabbingPart(hand) && data.selectedPartElement != null;
     }
     controller.on("pinch", function (hand) {
-        rotate = canGrab(hand);
+        console.log("pinch")
+        rotate = hand.data("pointer") != null;
+
         if (rotate) {
             localPinchLocation = rotationContainer.object3D.worldToLocal(hand.data("pointer").getWorldPosition().clone())
-
             dummyRotationObject.lookAt(hand.data("pointer").getWorldPosition().clone());
         }
     })
     .on("unpinch", function (hand) {
+        console.log("unpinch")
         rotate = false;
         if (isGrabbingPart(hand))
             setTimeout(function () { ungrabPart(hand); });
