@@ -34,6 +34,7 @@ function Pointer(scope, scene, controller) {
     var raycaster = new THREE.Raycaster();
 
     this.hand = null;
+    this.touchDistance = scope.touchDistance;
     this.position = null;
     this.direction = null;
     this.intersectedEl = null;
@@ -46,7 +47,7 @@ function Pointer(scope, scene, controller) {
         if (!indexFinger)
             return;
 
-        this.setPointerPositionAndDirection(indexFinger);
+        this.setPointerPositionAndDirection();
 
         // Show the debug arrow?
         if (scope.debug)
@@ -58,14 +59,18 @@ function Pointer(scope, scene, controller) {
         controller.emit("pointerUpdated", this)
     };
 
-    this.setPointerPositionAndDirection = function (indexFinger) {
-        // Get the finder's position
-        this.position = new THREE.Vector3();
+    this.getWorldPosition = function () {
+        var position = new THREE.Vector3();
         scene.object3D.updateMatrixWorld();
-        this.position.setFromMatrixPosition(indexFinger.tip.matrixWorld);
+        position.setFromMatrixPosition(this.getIndexFinger().tip.matrixWorld);
+        return position;
+    }
+
+    this.setPointerPositionAndDirection = function (indexFinger) {
+        this.position = this.getWorldPosition()
 
         // Get the direction
-        this.direction = indexFinger.worldDirection;
+        this.direction = this.getIndexFinger().worldDirection;
     };
 
     this.detectIntersection = function (hand) {
@@ -83,7 +88,7 @@ function Pointer(scope, scene, controller) {
         if (!this.intersectedEl)
             return;
 
-        if (intersectedObj.distance <= scope.touchDistance)
+        if (intersectedObj.distance <= this.touchDistance)
             this.intersectedEl.emit("pointerTouch", { intersectedObj: intersectedObj });
     }
 

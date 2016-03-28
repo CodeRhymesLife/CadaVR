@@ -126,31 +126,43 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
     })
 
     var lastClick = 0;
-    var canClick = function () {
+    var canTouch = function () {
         return Date.now() - lastClick > 1000 && !data.grabbingElement;
     }
-    $(modelSelector).on("click, pointerTouch", function (e) {
-        if (!canClick())
+    var touchPoint = null;
+    $(modelSelector).on("pointerTouch", function (e) {
+        if (!canTouch())
             return;
 
         // If a part is selected deselect it
-        if (data.selectedPartElement) 
+        if (data.selectedPartElement) {
             deselectPart();
-        else
+            touchPosition = null;
+        }
+        else {
+            touchPoint = e.detail.intersectedObj.point;
             selectPart(this);
+        }
 
         lastClick = Date.now();
     })
 
     controller.use('pinchEvent', {
-        pinchThreshold: 0.9,
+        pinchThreshold: 0.7,
         grabThreshold: 0.8,
     });
     var isGrabbingPart = function (hand) {
         return hand.data("pointer") != null && hand.data("pointer").hasChild();
     }
     var canGrab = function (hand) {
-        return hand.data("pointer") != null && !isGrabbingPart(hand) && data.selectedPartElement != null;
+        var pointer = hand.data("pointer")
+        if(pointer != null && !isGrabbingPart(hand) && data.selectedPartElement) {
+            var distance = pointer.getWorldPosition().distanceTo(touchPoint);
+            console.log("grab distance: " + distance);
+            return distance <= pointer.touchDistance;
+        }
+
+        return false;
     }
     controller.on("pinch", function (hand) {
         if (canGrab(hand))
