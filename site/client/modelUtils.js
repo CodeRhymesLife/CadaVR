@@ -3,13 +3,13 @@ ModelUtils = {};
 ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDimension) {
     var scene = $("a-scene").get(0);
 
-    var modelSelector = modelContainerSelector + " a-entity";
+    var modelSelector = modelContainerSelector + " .model";
 
     // Add model parts
     var folder = partsInfo.folder;
     var loadedCount = 0;
     partsInfo.parts.forEach(function (partInfo) {
-        var part = $("<a-entity material='color: " + partInfo.color + ";' obj-model='obj: url(" + folder +  partInfo.file + ");'></a-entity>");
+        var part = $("<a-entity class='model' material='color: " + partInfo.color + ";' obj-model='obj: url(" + folder +  partInfo.file + ");'></a-entity>");
         part.data("partInfo", partInfo);
         $(modelContainerSelector).append(part)
 
@@ -158,33 +158,33 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
     
     var rotate = false;
     var rotationContainer = $(modelContainerSelector).get(0);
+    var localPinchLocation = null;
+
+    // Add a dummy rotation object that we can use to rotate the model container
+    // There's probably a much, much, much better way to do this, but it's fucking late.
+    var dummyRotationObject = new THREE.Group
+    dummyRotationObject.position.copy(rotationContainer.object3D.getWorldPosition())
+    scene.object3D.add(dummyRotationObject);
+
     Leap.loop({ background: true }, {
         hand: function (hand) {
-            if (!hand.data('pinchEvent.pinching'))
+            if (!hand.data("pointer") || !hand.data('pinchEvent.pinching'))
                 return;
 
-            if (!isGrabbingPart(hand) && canGrab(hand) && hand.data("pointer").getWorldPosition().distanceTo(touchPoint) > 0.3) {
+            if (!isGrabbingPart(hand) && canGrab(hand) && localPinchLocation && localPinchLocation.distanceTo(rotationContainer.object3D.worldToLocal(hand.data("pointer").getWorldPosition().clone())) > hand.data("pointer").touchDistance * 3) {
                 rotate = false;
                 grabPart(hand);
             }
 
-            if (rotate && controller.frame(1).hand(hand.id)) {
-                var lastHand = controller.frame(1).hand(hand.id);
-                var currentHand = controller.frame(0).hand(hand.id);
+            if (rotate) {
+                var beforeRotation = dummyRotationObject.rotation.clone();
+                dummyRotationObject.lookAt(hand.data("pointer").getWorldPosition().clone());
+                var afterRotation = dummyRotationObject.rotation.clone();
 
-                var deltaPosition = {
-                    x: currentHand.palmPosition[0] - lastHand.palmPosition[0],
-                    y: currentHand.palmPosition[1] - lastHand.palmPosition[1],
-                };
-
-                var rotationFactor = 1000;
-                var rotation = rotationContainer.getAttribute("rotation") || { x: 0, y: 0, z: 0 };
-                rotation.x -= deltaPosition.y * rotationFactor;
-                rotation.y += deltaPosition.x * rotationFactor;
-                rotationContainer.setAttribute("rotation",
-                    String(rotation.x) + " " +
-                    String(rotation.y) + " " +
-                    String(rotation.z));
+                // There's probably a much, much, much better way to do this, but it's fucking late.
+                Utils.RotateAroundWorldAxis(rotationContainer, new THREE.Vector3(1, 0, 0), afterRotation.x - beforeRotation.x)
+                Utils.RotateAroundWorldAxis(rotationContainer, new THREE.Vector3(0, 1, 0), afterRotation.y - beforeRotation.y)
+                Utils.RotateAroundWorldAxis(rotationContainer, new THREE.Vector3(0, 0, 1), afterRotation.z - beforeRotation.z)
             }
         },
     });
@@ -196,7 +196,12 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
         return hand.data("pointer") && !isGrabbingPart(hand) && data.selectedPartElement != null;
     }
     controller.on("pinch", function (hand) {
-        rotate = !isGrabbingPart(hand) && data.selectedPartElement != null;
+        rotate = canGrab(hand);
+        if (rotate) {
+            localPinchLocation = rotationContainer.object3D.worldToLocal(hand.data("pointer").getWorldPosition().clone())
+
+            dummyRotationObject.lookAt(hand.data("pointer").getWorldPosition().clone());
+        }
     })
     .on("unpinch", function (hand) {
         rotate = false;

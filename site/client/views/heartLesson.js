@@ -117,9 +117,9 @@ function setupHeart(controller) {
         $(".organNames").append(partInfo.organNameElement)
     });
 
-    $(".heartContainer a-entity")
+    $(".heartContainer .model")
     .on("stateadded", function (e) {
-        if (modelData.selectedPartElement || e.detail.state != "hovered")
+        if (modelData.selectedPartElement || e.detail.state != "pointerHovered")
             return;
 		
 		// Update the HUD
@@ -128,7 +128,7 @@ function setupHeart(controller) {
         organNameElement.setAttribute("visible", "true");
     })
     .on("stateremoved", function (e) {
-        if (modelData.selectedPartElement || e.detail.state != "hovered")
+        if (modelData.selectedPartElement || e.detail.state != "pointerHovered")
             return;
 
         $(this).data("partInfo").organNameElement.get(0).setAttribute("visible", "false");

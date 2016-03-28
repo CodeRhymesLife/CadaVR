@@ -24,6 +24,21 @@ Utils.getScaleForMaxDimension = function (obj, maxDimension) {
     return newScale;
 }
 
+Utils.RotateAroundObjectAxis = function (object, axis, radians) {
+    var rotationMatrix = new THREE.Matrix4();
+    rotationMatrix.makeRotationAxis(axis.normalize(), radians);
+    object.object3D.matrix.multiply(rotationMatrix);                       // post-multiply
+    object.object3D.rotation.setFromRotationMatrix(object.object3D.matrix, object.object3D.order);
+}
+
+Utils.RotateAroundWorldAxis = function (object, axis, radians) {
+    var rotWorldMatrix = new THREE.Matrix4();
+    rotWorldMatrix.makeRotationAxis(axis.normalize(), radians);
+    rotWorldMatrix.multiply(object.object3D.matrix);        // pre-multiply
+    object.object3D.matrix = rotWorldMatrix;
+    object.object3D.rotation.setFromRotationMatrix(object.object3D.matrix, object.object3D.order);
+}
+
 var callbacks = [];
 Utils.waitForScene = function (callback) {
     if (sceneReady)
