@@ -215,6 +215,7 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
         var lastHand = controller.frame(1).hand(hand.id)
         if (isGrabbingPart(lastHand)) {
             lastHand.data("pointer").childElement.setAttribute("visible", "false")
+            lastHand.data("pointer").childElement.addState("trashed")
         }
     })
 

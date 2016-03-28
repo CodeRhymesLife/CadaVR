@@ -119,31 +119,22 @@ function setupHeart(controller) {
 
     $(".heartContainer .model")
     .on("stateadded", function (e) {
-        if (modelData.selectedPartElement || e.detail.state != "pointerHovered")
-            return;
-		
-		// Update the HUD
-        var organNameElement = $(modelData.highlightedPartElement).data("partInfo").organNameElement.get(0);
-        updateHUDOrganName(organNameElement)
-        organNameElement.setAttribute("visible", "true");
+        if (modelData.selectedPartElement == null && e.detail.state == "pointerHovered") {
+            // Update the HUD
+            var organNameElement = $(modelData.highlightedPartElement).data("partInfo").organNameElement.get(0);
+            updateHUDOrganName(organNameElement)
+            organNameElement.setAttribute("visible", "true");
+        }
+        else if (e.detail.state == "selected")
+            showDescription(modelData.selectedPartElement)
+        else if (e.detail.state == "trashed")
+            $(this).data("partInfo").organNameElement.get(0).setAttribute("visible", "false");
     })
     .on("stateremoved", function (e) {
-        if (modelData.selectedPartElement || e.detail.state != "pointerHovered")
-            return;
-
-        $(this).data("partInfo").organNameElement.get(0).setAttribute("visible", "false");
-    })
-    .on("stateadded", function (e) {
-        if (e.detail.state != "selected")
-            return;
-
-        showDescription(modelData.selectedPartElement)
-    })
-    .on("stateremoved", function (e) {
-        if (e.detail.state != "selected")
-            return;
-
-        hideDescription();
+        if (modelData.selectedPartElement == null && e.detail.state == "pointerHovered") 
+            $(this).data("partInfo").organNameElement.get(0).setAttribute("visible", "false");
+        else if(e.detail.state == "selected")
+            hideDescription();
     })
 }
 
