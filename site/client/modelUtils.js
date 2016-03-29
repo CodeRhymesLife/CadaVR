@@ -176,7 +176,7 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
 
     Leap.loop({ background: true }, {
         hand: function (hand) {
-            if (!hand.data("pointer") || !hand.data('pinchEvent.pinching'))
+            if (!hand.data("pointer") || !isPinchingOrGrabbing(hand))
                 return;
 
             if (!isGrabbingPart(hand) && canGrab(hand) && localPinchLocation && localPinchLocation.distanceTo(rotationContainer.object3D.worldToLocal(hand.data("pointer").getWorldPosition().clone())) > hand.data("pointer").touchDistance * 3) {
@@ -197,28 +197,55 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
         },
     });
 
+	var isPinchingOrGrabbing = function (hand) {
+		return hand.data('pinchEvent.pinching') || hand.data('pinchEvent.pinching');
+	}
     var isGrabbingPart = function (hand) {
         return hand.data("pointer") != null && hand.data("pointer").hasChild();
     }
     var canGrab = function (hand) {
         return hand.data("pointer") && !isGrabbingPart(hand) && data.selectedPartElement != null;
     }
-    controller.on("pinch", function (hand) {
-        console.log("pinch")
+	var handlePinchAndGrab = function (action, hand) {
+		// Return unless this is the first aciton
+		if(isPinchingOrGrabbing(hand))
+			return;
+
+		console.log(action)
+		
         rotate = hand.data("pointer") != null;
 
         if (rotate) {
             localPinchLocation = rotationContainer.object3D.worldToLocal(hand.data("pointer").getWorldPosition().clone())
             dummyRotationObject.lookAt(hand.data("pointer").getWorldPosition().clone());
         }
-    })
-    .on("unpinch", function (hand) {
-        console.log("unpinch")
-        rotate = false;
+    };
+	var handleUnpinchAndUngrab = function (action, hand) {
+		// If the user is still performing an action return
+		if(hand.data('pinchEvent.pinching') && hand.data('pinchEvent.grabbing'))
+			return;
+		
+		console.log(action)
+		
+		rotate = false;
         if (isGrabbingPart(hand))
             setTimeout(function () { ungrabPart(hand); });
-    })
-    .on('handLost', function (hand) {
+
+		primaryAction = null
+    };
+    controller.on("pinch", function (hand) {
+		handlePinchAndGrab("pinch", hand)
+	})
+	.on("grab", function (hand) {
+		handlePinchAndGrab("grab", hand)
+	})
+	.on("unpinch", function (hand) {
+		handleUnpinchAndUngrab("unpinch", hand)
+	})
+	.on("ungrab", function (hand) {
+		handleUnpinchAndUngrab("ungrab", hand)
+	})
+	.on('handLost', function (hand) {
         // "Throw awway" the element when the hand is lost"
         var lastHand = controller.frame(1).hand(hand.id)
         if (isGrabbingPart(lastHand)) {
