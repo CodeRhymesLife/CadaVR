@@ -172,7 +172,9 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
 	}
 	
     var modelContainer = $(modelContainerSelector).get(0);
+	var lastPinchOrGrabLocation = null;
 	var lastPinchOrGrabLocationOnModel = null;
+	var modelScaleAtlastPinchOrGrab = null;
 
     // Add a dummy rotation object that we can use to rotate the model container
     // There's probably a much, much, much better way to do this, but it's fucking late.
@@ -201,7 +203,8 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
             }
 			
 			else if (isZooming(hand)) {
-				var newScale = modelContainer.object3D.getWorldPosition().distanceTo(hand.data("pointer").getWorldPosition().clone());
+				var diff = hand.data("pointer").getWorldPosition().clone().sub(lastPinchOrGrabLocation.clone());
+				var newScale = modelScaleAtlastPinchOrGrab + diff.z;
 				console.log("new scale: " + newScale)
 				modelContainer.setAttribute("scale", newScale + " " + newScale + " " + newScale)
 			}
@@ -230,6 +233,8 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
 
 		console.log(action)
 
+		modelScaleAtlastPinchOrGrab = modelContainer.object3D.scale.x;
+		lastPinchOrGrabLocation = hand.data("pointer").getWorldPosition().clone()
         lastPinchOrGrabLocationOnModel = modelContainer.object3D.worldToLocal(hand.data("pointer").getWorldPosition().clone())
         dummyRotationObject.lookAt(hand.data("pointer").getWorldPosition().clone());
     };
