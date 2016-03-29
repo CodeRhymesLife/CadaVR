@@ -162,6 +162,15 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
 
     
     var actionMode = "rotate";
+	var actionModeChangedCallbacks = [];
+	var onActionModeChanged = function (callback) {
+		actionModeChangedCallbacks.push(callback);
+	}
+	var setActionMode = function (mode) {
+		actionMode = mode;
+		actionModeChangedCallbacks.forEach(function (callback) { callback(mode); });
+	}
+	
     var rotationContainer = $(modelContainerSelector).get(0);
     var lastPinchOrGrabLocation = null;
 
@@ -190,11 +199,18 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
                 Utils.RotateAroundWorldAxis(rotationContainer, new THREE.Vector3(0, 1, 0), afterRotation.y - beforeRotation.y)
                 Utils.RotateAroundWorldAxis(rotationContainer, new THREE.Vector3(0, 0, 1), afterRotation.z - beforeRotation.z)
             }
+			
+			else if (isZooming(hand)) {
+				
+			}
         },
     });
 
 	var isRotating = function (hand) {
 		return actionMode == "rotate" && !isGrabbingPart(hand) && isPinchingOrGrabbing(hand);
+	}
+	var isZooming = function (hand) {
+		return actionMode == "zooming" && !isGrabbingPart(hand) && isPinchingOrGrabbing(hand);
 	}
 	var isPinchingOrGrabbing = function (hand) {
 		return hand.data('pinchEvent.pinching') || hand.data('pinchEvent.pinching');
@@ -244,7 +260,38 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
             lastHand.data("pointer").childElement.setAttribute("visible", "false")
             lastHand.data("pointer").childElement.addState("trashed")
         }
-    })
+    });
+	
+	var prepareGlobalAction = function (selector, mode) {
+		$(selector).on("stateadded", function (e) {
+			if(e.detail.state == "hovered" && actionMode != mode)
+				$(this).get(0).setAttribute("rotation", "10 10 10");
+		})
+		.on("stateremoved", function (e) {
+			if(e.detail.state == "hovered")
+				$(this).get(0).setAttribute("rotation", "0 0 0");
+		})
+		.click(function (e) {
+			setActionMode(mode);
+		});
+		
+		$(selector).get(0).object3D.lookAt($("a-camera").get(0).object3D.getWorldPosition())
+	}
+	
+	prepareGlobalAction(".rotationIcon", "rotate")
+	prepareGlobalAction(".zoomIcon", "zoom")
+	
+	onActionModeChanged(function () {
+		$(".globalAction").each(function () {
+			$(this).get(0).setAttribute("scale", "0.1 0.1 0.1");
+			$(this).get(0).setAttribute("rotation", "0 0 0")
+		})
+		
+		actionElement = actionMode == "rotate" ? $(".rotationIcon") : $(".zoomIcon");
+		actionElement.get(0).setAttribute("scale", "0.15 0.15 0.15");
+	});
+	
+	setActionMode("rotate")
 
     return data;
 }
