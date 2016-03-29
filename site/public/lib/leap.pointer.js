@@ -55,8 +55,6 @@ function Pointer(scope, scene, controller) {
 
         if (detectIntersection)
             this.detectIntersection();
-
-        controller.emit("pointerUpdated", this)
     };
 
     this.getWorldPosition = function () {
@@ -89,7 +87,7 @@ function Pointer(scope, scene, controller) {
             return;
 
         if (intersectedObj.distance <= this.touchDistance)
-            this.intersectedEl.emit("pointerTouch", { intersectedObj: intersectedObj });
+            this.intersectedEl.emit("pointerTouch", { pointer: this, intersectedObj: intersectedObj });
     }
 
     this.getClosestObject = function (indexFinger) {

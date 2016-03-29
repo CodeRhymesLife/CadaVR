@@ -34,7 +34,6 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
     var data = {
         selectedPartElement: null,
         highlightedPartElement: null,
-        grabbingElement: false,
     }
     var highlightColor = "#F9E400";
 
@@ -91,7 +90,6 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
         var originalRotation = data.selectedPartElement.object3D.getWorldRotation();
 
         var grabbedElement = hand.data("pointer").attachChild(data.selectedPartElement);
-        data.grabbingElement = true;
 
         grabbedElement.setAttribute("position", "0 0 0");
 
@@ -112,7 +110,6 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
         deselectPart();
         
         var grabbedElement = hand.data("pointer").detachChild($(modelContainerSelector).get(0));
-        data.grabbingElement = false;
 
         grabbedElement.setAttribute("position", "0 0 0");
         grabbedElement.setAttribute("rotation", "0 0 0");
@@ -138,12 +135,12 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
     })
 
     var lastClick = 0;
-    var canTouch = function () {
-        return Date.now() - lastClick > 1000 && !data.grabbingElement && !rotate;
+    var canTouch = function (hand) {
+        return Date.now() - lastClick > 1000 && !isGrabbingPart(hand) && !isRotating(hand);
     }
     var touchPoint = null;
     $(modelSelector).on("pointerTouch", function (e) {
-        if (!canTouch())
+        if (!canTouch(e.detail.pointer.hand))
             return;
 
         // If a part is selected deselect it
@@ -164,9 +161,9 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
     });
 
     
-    var rotate = false;
+    var actionMode = "rotate";
     var rotationContainer = $(modelContainerSelector).get(0);
-    var localPinchLocation = null;
+    var lastPinchOrGrabLocation = null;
 
     // Add a dummy rotation object that we can use to rotate the model container
     // There's probably a much, much, much better way to do this, but it's fucking late.
@@ -179,12 +176,11 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
             if (!hand.data("pointer") || !isPinchingOrGrabbing(hand))
                 return;
 
-            if (!isGrabbingPart(hand) && canGrab(hand) && localPinchLocation && localPinchLocation.distanceTo(rotationContainer.object3D.worldToLocal(hand.data("pointer").getWorldPosition().clone())) > hand.data("pointer").touchDistance * 3) {
-                rotate = false;
+            if (!isGrabbingPart(hand) && canGrab(hand) && lastPinchOrGrabLocation && lastPinchOrGrabLocation.distanceTo(rotationContainer.object3D.worldToLocal(hand.data("pointer").getWorldPosition().clone())) > hand.data("pointer").touchDistance * 3) {
                 grabPart(hand);
             }
 
-            if (rotate) {
+            else if (isRotating(hand)) {
                 var beforeRotation = dummyRotationObject.rotation.clone();
                 dummyRotationObject.lookAt(hand.data("pointer").getWorldPosition().clone());
                 var afterRotation = dummyRotationObject.rotation.clone();
@@ -197,6 +193,9 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
         },
     });
 
+	var isRotating = function (hand) {
+		return actionMode == "rotate" && !isGrabbingPart(hand) && isPinchingOrGrabbing(hand);
+	}
 	var isPinchingOrGrabbing = function (hand) {
 		return hand.data('pinchEvent.pinching') || hand.data('pinchEvent.pinching');
 	}
@@ -207,18 +206,14 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
         return hand.data("pointer") && !isGrabbingPart(hand) && data.selectedPartElement != null;
     }
 	var handlePinchAndGrab = function (action, hand) {
-		// Return unless this is the first aciton
-		if(isPinchingOrGrabbing(hand))
+		// Return unless this is the first aciton and this hand can perform the action
+		if(isPinchingOrGrabbing(hand) || hand.data("pointer") == null)
 			return;
 
 		console.log(action)
-		
-        rotate = hand.data("pointer") != null;
 
-        if (rotate) {
-            localPinchLocation = rotationContainer.object3D.worldToLocal(hand.data("pointer").getWorldPosition().clone())
-            dummyRotationObject.lookAt(hand.data("pointer").getWorldPosition().clone());
-        }
+        lastPinchOrGrabLocation = rotationContainer.object3D.worldToLocal(hand.data("pointer").getWorldPosition().clone())
+        dummyRotationObject.lookAt(hand.data("pointer").getWorldPosition().clone());
     };
 	var handleUnpinchAndUngrab = function (action, hand) {
 		// If the user is still performing an action return
@@ -227,11 +222,8 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
 		
 		console.log(action)
 		
-		rotate = false;
         if (isGrabbingPart(hand))
-            setTimeout(function () { ungrabPart(hand); });
-
-		primaryAction = null
+            ungrabPart(hand);
     };
     controller.on("pinch", function (hand) {
 		handlePinchAndGrab("pinch", hand)
