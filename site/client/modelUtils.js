@@ -241,7 +241,7 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
 		console.log(action)
 		
         if (isGrabbingPart(hand))
-            ungrabPart(hand);
+            setTimeout(function () { ungrabPart(hand) });
     };
     controller.on("pinch", function (hand) {
 		handlePinchAndGrab("pinch", hand)
