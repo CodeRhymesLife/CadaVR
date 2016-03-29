@@ -269,16 +269,44 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
         }
     });
 	
+	var globalActionUnselectedScale = 0.1;
+	var globalActionSelectedScale = 0.15;
+	var hoveringKey = null;
 	var prepareGlobalAction = function (selector, mode) {
 		$(selector).on("stateadded", function (e) {
-			if(e.detail.state == "hovered" && actionMode != mode)
-				$(this).get(0).setAttribute("rotation", "10 10 10");
+			if(e.detail.state != "hovered" || actionMode == mode)
+				return;
+			
+			var delay = 1500;
+			var scaleSteps = 15;
+			var scaleIncrement = (globalActionSelectedScale - globalActionUnselectedScale) / scaleSteps
+			var globalAction = $(this).get(0);
+			hoveringKey = setInterval(function () {
+				var scale = globalAction.object3D.scale.x;
+				if(scale >= globalActionSelectedScale) {
+					clearInterval(hoveringKey)
+					return;
+				}
+
+				var newScale = scale + scaleIncrement;
+				globalAction.setAttribute("scale", newScale + " " + newScale + " " + newScale);
+			},
+			delay / scaleSteps);
 		})
 		.on("stateremoved", function (e) {
-			if(e.detail.state == "hovered")
-				$(this).get(0).setAttribute("rotation", "0 0 0");
+			if(e.detail.state != "hovered")
+				return;
+			
+			if(hoveringKey)
+				clearInterval(hoveringKey)
+			
+			if(!$(this).get(0).selectedGlobalAction)
+				$(this).get(0).setAttribute("scale", globalActionUnselectedScale + " " + globalActionUnselectedScale + " " + globalActionUnselectedScale);
 		})
 		.click(function (e) {
+			if(hoveringKey)
+				clearInterval(hoveringKey)
+				
 			setActionMode(mode);
 		});
 		
@@ -290,12 +318,14 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
 	
 	onActionModeChanged(function () {
 		$(".globalAction").each(function () {
-			$(this).get(0).setAttribute("scale", "0.1 0.1 0.1");
+			$(this).get(0).selectedGlobalAction = false;
+			$(this).get(0).setAttribute("scale", globalActionUnselectedScale + " " + globalActionUnselectedScale + " " + globalActionUnselectedScale);
 			$(this).get(0).setAttribute("rotation", "0 0 0")
 		})
 		
 		actionElement = actionMode == "rotate" ? $(".rotationIcon") : $(".zoomIcon");
-		actionElement.get(0).setAttribute("scale", "0.15 0.15 0.15");
+		actionElement.get(0).setAttribute("scale", globalActionSelectedScale + " " + globalActionSelectedScale + " " + globalActionSelectedScale);
+		actionElement.get(0).selectedGlobalAction = true;
 	});
 	
 	setActionMode("rotate")
