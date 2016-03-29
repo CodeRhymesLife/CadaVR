@@ -171,13 +171,13 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
 		actionModeChangedCallbacks.forEach(function (callback) { callback(mode); });
 	}
 	
-    var rotationContainer = $(modelContainerSelector).get(0);
+    var modelContainer = $(modelContainerSelector).get(0);
     var lastPinchOrGrabLocation = null;
 
     // Add a dummy rotation object that we can use to rotate the model container
     // There's probably a much, much, much better way to do this, but it's fucking late.
     var dummyRotationObject = new THREE.Group
-    dummyRotationObject.position.copy(rotationContainer.object3D.getWorldPosition())
+    dummyRotationObject.position.copy(modelContainer.object3D.getWorldPosition())
     scene.object3D.add(dummyRotationObject);
 
     Leap.loop({ background: true }, {
@@ -185,7 +185,7 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
             if (!hand.data("pointer") || !isPinchingOrGrabbing(hand))
                 return;
 
-            if (!isGrabbingPart(hand) && canGrab(hand) && lastPinchOrGrabLocation && lastPinchOrGrabLocation.distanceTo(rotationContainer.object3D.worldToLocal(hand.data("pointer").getWorldPosition().clone())) > hand.data("pointer").touchDistance * 3) {
+            if (!isGrabbingPart(hand) && canGrab(hand) && lastPinchOrGrabLocation && lastPinchOrGrabLocation.distanceTo(modelContainer.object3D.worldToLocal(hand.data("pointer").getWorldPosition().clone())) > hand.data("pointer").touchDistance * 3) {
                 grabPart(hand);
             }
 
@@ -195,9 +195,9 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
                 var afterRotation = dummyRotationObject.rotation.clone();
 
                 // There's probably a much, much, much better way to do this, but it's fucking late.
-                Utils.RotateAroundWorldAxis(rotationContainer, new THREE.Vector3(1, 0, 0), afterRotation.x - beforeRotation.x)
-                Utils.RotateAroundWorldAxis(rotationContainer, new THREE.Vector3(0, 1, 0), afterRotation.y - beforeRotation.y)
-                Utils.RotateAroundWorldAxis(rotationContainer, new THREE.Vector3(0, 0, 1), afterRotation.z - beforeRotation.z)
+                Utils.RotateAroundWorldAxis(modelContainer, new THREE.Vector3(1, 0, 0), afterRotation.x - beforeRotation.x)
+                Utils.RotateAroundWorldAxis(modelContainer, new THREE.Vector3(0, 1, 0), afterRotation.y - beforeRotation.y)
+                Utils.RotateAroundWorldAxis(modelContainer, new THREE.Vector3(0, 0, 1), afterRotation.z - beforeRotation.z)
             }
 			
 			else if (isZooming(hand)) {
@@ -228,7 +228,7 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
 
 		console.log(action)
 
-        lastPinchOrGrabLocation = rotationContainer.object3D.worldToLocal(hand.data("pointer").getWorldPosition().clone())
+        lastPinchOrGrabLocation = modelContainer.object3D.worldToLocal(hand.data("pointer").getWorldPosition().clone())
         dummyRotationObject.lookAt(hand.data("pointer").getWorldPosition().clone());
     };
 	var handleUnpinchAndUngrab = function (action, hand) {
