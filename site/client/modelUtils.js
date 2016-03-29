@@ -172,7 +172,7 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
 	}
 	
     var modelContainer = $(modelContainerSelector).get(0);
-    var lastPinchOrGrabLocation = null;
+	var lastPinchOrGrabLocationOnModel = null;
 
     // Add a dummy rotation object that we can use to rotate the model container
     // There's probably a much, much, much better way to do this, but it's fucking late.
@@ -185,7 +185,7 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
             if (!hand.data("pointer") || !isPinchingOrGrabbing(hand))
                 return;
 
-            if (!isGrabbingPart(hand) && canGrab(hand) && lastPinchOrGrabLocation && lastPinchOrGrabLocation.distanceTo(modelContainer.object3D.worldToLocal(hand.data("pointer").getWorldPosition().clone())) > hand.data("pointer").touchDistance * 3) {
+            if (!isGrabbingPart(hand) && canGrab(hand) && lastPinchOrGrabLocationOnModel && lastPinchOrGrabLocationOnModel.distanceTo(modelContainer.object3D.worldToLocal(hand.data("pointer").getWorldPosition().clone())) > hand.data("pointer").touchDistance * 3) {
                 grabPart(hand);
             }
 
@@ -201,7 +201,9 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
             }
 			
 			else if (isZooming(hand)) {
-				
+				var newScale = modelContainer.object3D.getWorldPosition().distanceTo(hand.data("pointer").getWorldPosition().clone());
+				console.log("new scale: " + newScale)
+				modelContainer.setAttribute("scale", newScale + " " + newScale + " " + newScale)
 			}
         },
     });
@@ -210,7 +212,7 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
 		return actionMode == "rotate" && !isGrabbingPart(hand) && isPinchingOrGrabbing(hand);
 	}
 	var isZooming = function (hand) {
-		return actionMode == "zooming" && !isGrabbingPart(hand) && isPinchingOrGrabbing(hand);
+		return actionMode == "zoom" && !isGrabbingPart(hand) && isPinchingOrGrabbing(hand);
 	}
 	var isPinchingOrGrabbing = function (hand) {
 		return hand.data('pinchEvent.pinching') || hand.data('pinchEvent.pinching');
@@ -228,7 +230,7 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
 
 		console.log(action)
 
-        lastPinchOrGrabLocation = modelContainer.object3D.worldToLocal(hand.data("pointer").getWorldPosition().clone())
+        lastPinchOrGrabLocationOnModel = modelContainer.object3D.worldToLocal(hand.data("pointer").getWorldPosition().clone())
         dummyRotationObject.lookAt(hand.data("pointer").getWorldPosition().clone());
     };
 	var handleUnpinchAndUngrab = function (action, hand) {
