@@ -161,7 +161,7 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
     });
 
     
-    var actionMode = "rotate";
+    var actionMode = null;
 	var actionModeChangedCallbacks = [];
 	var onActionModeChanged = function (callback) {
 		actionModeChangedCallbacks.push(callback);
@@ -309,8 +309,6 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
 				
 			setActionMode(mode);
 		});
-		
-		$(selector).get(0).object3D.lookAt($("a-camera").get(0).object3D.getWorldPosition())
 	}
 	
 	prepareGlobalAction(".rotationIcon", "rotate")
@@ -323,12 +321,13 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
 			$(this).get(0).setAttribute("rotation", "0 0 0")
 		})
 		
+		if(actionMode == null)
+			return;
+		
 		actionElement = actionMode == "rotate" ? $(".rotationIcon") : $(".zoomIcon");
 		actionElement.get(0).setAttribute("scale", globalActionSelectedScale + " " + globalActionSelectedScale + " " + globalActionSelectedScale);
 		actionElement.get(0).selectedGlobalAction = true;
 	});
-	
-	setActionMode("rotate")
 
     return data;
 }
