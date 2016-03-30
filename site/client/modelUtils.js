@@ -10,6 +10,7 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
     var loadedCount = 0;
     partsInfo.parts.forEach(function (partInfo) {
         var part = $("<a-entity class='model' material='color: " + partInfo.color + ";' obj-model='obj: url(" + folder +  partInfo.file + ");'></a-entity>");
+		part.get(0).canGrab = true;
         part.data("partInfo", partInfo);
         $(modelContainerSelector).append(part)
 
@@ -137,9 +138,8 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
         removeHighlightColor();
     })
 
-    var lastClick = 0;
     var canTouch = function (hand) {
-        return Date.now() - lastClick > 1000 && !isGrabbingPart(hand) && !isRotating(hand) && !isZooming(hand);
+        return !isGrabbingPart(hand) && !isRotating(hand) && !isZooming(hand);
     }
     $(modelSelector).on("pointerTouch", function (e) {
         if (!canTouch(e.detail.pointer.hand))
@@ -152,8 +152,6 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
         else {
             selectPart(this);
         }
-
-        lastClick = Date.now();
     })
 
     controller.use('pinchEvent', {
@@ -162,16 +160,7 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
     });
 
     
-    var actionMode = null;
-	var actionModeChangedCallbacks = [];
-	var onActionModeChanged = function (callback) {
-		actionModeChangedCallbacks.push(callback);
-	}
-	var setActionMode = function (mode) {
-		actionMode = mode;
-		actionModeChangedCallbacks.forEach(function (callback) { callback(mode); });
-	}
-	
+    var actionMode = null;	
     var modelContainer = $(modelContainerSelector).get(0);
 	var lastPinchOrGrabLocation = null;
 	var modelScaleAtlastPinchOrGrab = null;
@@ -201,7 +190,7 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
 			else
 				pointerSphere.visible = false;
 
-			if(!isGrabbingPart(hand) && isPinchingOrGrabbing(hand) && pointer.getTouchElement())
+			if(!isGrabbingPart(hand) && isPinchingOrGrabbing(hand) && pointer.getTouchElement() && pointer.getTouchElement().canGrab)
 				grabPart(hand, pointer.getTouchElement())
 
             else if (isRotating(hand)) {
@@ -270,65 +259,79 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
         }
     });
 	
-	var globalActionUnselectedScale = 0.1;
-	var globalActionSelectedScale = 0.15;
-	var hoveringKey = null;
-	var prepareGlobalAction = function (selector, mode) {
-		$(selector).on("stateadded", function (e) {
-			if(e.detail.state != "hovered" || actionMode == mode)
-				return;
-			
-			var delay = 1500;
-			var scaleSteps = 15;
-			var scaleIncrement = (globalActionSelectedScale - globalActionUnselectedScale) / scaleSteps
-			var globalAction = $(this).get(0);
-			hoveringKey = setInterval(function () {
-				var scale = globalAction.object3D.scale.x;
-				if(scale >= globalActionSelectedScale) {
-					clearInterval(hoveringKey)
-					return;
-				}
-
-				var newScale = scale + scaleIncrement;
-				globalAction.setAttribute("scale", newScale + " " + newScale + " " + newScale);
-			},
-			delay / scaleSteps);
-		})
-		.on("stateremoved", function (e) {
-			if(e.detail.state != "hovered")
-				return;
-			
-			if(hoveringKey)
-				clearInterval(hoveringKey)
-			
-			if(!$(this).get(0).selectedGlobalAction)
-				$(this).get(0).setAttribute("scale", globalActionUnselectedScale + " " + globalActionUnselectedScale + " " + globalActionUnselectedScale);
-		})
-		.click(function (e) {
-			if(hoveringKey)
-				clearInterval(hoveringKey)
-				
-			setActionMode(mode);
-		});
-	}
-	
-	prepareGlobalAction(".rotationIcon", "rotate")
-	prepareGlobalAction(".zoomIcon", "zoom")
-	
-	onActionModeChanged(function () {
-		$(".globalAction").each(function () {
-			$(this).get(0).selectedGlobalAction = false;
-			$(this).get(0).setAttribute("scale", globalActionUnselectedScale + " " + globalActionUnselectedScale + " " + globalActionUnselectedScale);
-			$(this).get(0).setAttribute("rotation", "0 0 0")
-		})
-		
-		if(actionMode == null)
-			return;
-		
-		actionElement = actionMode == "rotate" ? $(".rotationIcon") : $(".zoomIcon");
-		actionElement.get(0).setAttribute("scale", globalActionSelectedScale + " " + globalActionSelectedScale + " " + globalActionSelectedScale);
-		actionElement.get(0).selectedGlobalAction = true;
-	});
+	var globalActions = new GlobalActionsMenu();
+	globalActions.onSelected(function (action) {
+		actionMode = action;
+	})
 
     return data;
+}
+
+function GlobalActionsMenu(buttons) {
+	buttons = [
+		{
+			src: "images/rotate.png",
+			action: "rotate",
+		},
+		{
+			src: "images/zoom.png",
+			action: "zoom",
+		},
+	];
+	
+	var unselectedScale = 0.1;
+	var hoveredScale = 0.12;
+	var selectedScale = 0.15;
+	var self = this;
+	
+	this.init = function () {
+		this.containerEl = $("<a-entity position='0 1.8 -1.5'></a-entity>");
+	
+		for(var buttonIndex = 0; buttonIndex < buttons.length; buttonIndex++) {
+			this.createButton(buttonIndex);
+		}
+		
+		$("a-scene").append(this.containerEl);
+	}
+	
+	this.selectedCallback = null;
+	this.onSelected = function (callback) {
+		this.selectedCallback = callback;
+	}
+	
+	this.createButton = function (buttonIndex) {
+		var button = buttons[buttonIndex];
+		var x = buttonIndex * 0.3;
+		var buttonEl = $("<a-box class='globalAction' position='" + x + " 0 0' scale='" + unselectedScale + " " + unselectedScale + " " + unselectedScale + "' src='" + button.src + "' color='white'></a-box>")
+		
+		this.containerEl.append(buttonEl);
+		
+		buttonEl.on("stateadded", function (e) {
+			if(e.detail.state == "pointerHovered" && !buttonEl.get(0).selected )
+				buttonEl.get(0).setAttribute("scale", hoveredScale + " " + hoveredScale + " " + hoveredScale);
+		})
+		.on("stateremoved", function (e) {
+			if(e.detail.state == "pointerHovered" && !buttonEl.get(0).selected)
+				buttonEl.get(0).setAttribute("scale", unselectedScale + " " + unselectedScale + " " + unselectedScale);
+		})
+		.on("pointerTouch", function (e) {		
+			$(".globalAction").each(function () {
+				if($(this).get(0) != buttonEl.get(0)) {
+					$(this).get(0).selected = false;
+					$(this).get(0).setAttribute("scale", unselectedScale + " " + unselectedScale + " " + unselectedScale);
+				}
+			})
+			
+			if(buttonEl.get(0).selected = !buttonEl.get(0).selected) {
+				buttonEl.get(0).setAttribute("scale", selectedScale + " " + selectedScale + " " + selectedScale);
+				self.selectedCallback(button.action)
+			}
+			else {
+				buttonEl.get(0).setAttribute("scale", unselectedScale + " " + unselectedScale + " " + unselectedScale);
+				self.selectedCallback(null)
+			}			
+		})
+	}
+	
+	this.init();
 }

@@ -8,6 +8,7 @@ Leap.plugin('pointer', function(scope){
 	scope.hoverDistance = scope.hoverDistance || 0.2; // default is one centimeter
 	scope.touchDistance = scope.touchDistance || 0.01; // default is one milimeter
 	scope.handType = scope.handType || "right"; // default hand is the right hand 
+	scope.touchDelay = scope.touchDelay || 1000; // Time between touches
 
     var scene = $("a-scene").get(0);
 
@@ -37,6 +38,7 @@ function Pointer(scope, scene, controller) {
     this.direction = null;
     this.childContainer = null;
     this.childElement = null;
+	this.lastTouch = 0;
 
 	var debugArrow;
 	
@@ -87,8 +89,10 @@ function Pointer(scope, scene, controller) {
 
 		// Gets the touch el (same as new intersected el, but queries a shorter distance)
 		var touchEl = this.getTouchElement();
-        if (touchEl != null)
+        if (touchEl != null && Date.now() - this.lastTouch > scope.touchDelay) {
             touchEl.emit("pointerTouch", { pointer: this });
+			this.lastTouch = Date.now();
+		}
     }
 
     this.getClosestObject = function (indexFinger) {
