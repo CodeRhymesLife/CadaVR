@@ -123,7 +123,7 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
         return grabbedElement;
     }
 
-    controller.use("pointer");
+    controller.use("pointer", { debug: true });
     $(modelSelector).on("stateadded", function (e) {
         if (data.selectedPartElement || e.detail.state != "pointerHovered")
             return;
@@ -182,17 +182,31 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
     dummyRotationObject.position.copy(modelContainer.object3D.getWorldPosition())
     scene.object3D.add(dummyRotationObject);
 
+	var geometry = new THREE.SphereGeometry( 0.01 );
+	var material = new THREE.MeshBasicMaterial( {color: 0xffff00} );
+	var pointerSphere = new THREE.Mesh( geometry, material );
+	scene.object3D.add( pointerSphere );
+
     Leap.loop({ background: true }, {
         hand: function (hand) {
             if (!hand.data("pointer") || isGrabbingPart(hand))
                 return;
+			
+			var pointer = hand.data("pointer");
+			
+			if(pointer.intersectedObj) {
+				pointerSphere.visible = true;
+				pointerSphere.position.copy(pointer.intersectedObj.point);
+			}
+			else
+				pointerSphere.visible = false;
 
-			if(!isGrabbingPart(hand) && isPinchingOrGrabbing(hand) && hand.data("pointer").getTouchElement())
-				grabPart(hand, hand.data("pointer").getTouchElement())
+			if(!isGrabbingPart(hand) && isPinchingOrGrabbing(hand) && pointer.getTouchElement())
+				grabPart(hand, pointer.getTouchElement())
 
             else if (isRotating(hand)) {
                 var beforeRotation = dummyRotationObject.rotation.clone();
-                dummyRotationObject.lookAt(hand.data("pointer").getWorldPosition().clone());
+                dummyRotationObject.lookAt(pointer.getWorldPosition().clone());
                 var afterRotation = dummyRotationObject.rotation.clone();
 
                 // There's probably a much, much, much better way to do this, but it's fucking late.
@@ -202,7 +216,7 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
             }
 			
 			else if (isZooming(hand)) {
-				var diff = hand.data("pointer").getWorldPosition().clone().sub(lastPinchOrGrabLocation.clone());
+				var diff = pointer.getWorldPosition().clone().sub(lastPinchOrGrabLocation.clone());
 				var newScale = modelScaleAtlastPinchOrGrab + diff.z;
 				console.log("new scale: " + newScale)
 				modelContainer.setAttribute("scale", newScale + " " + newScale + " " + newScale)
