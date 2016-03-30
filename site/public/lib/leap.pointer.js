@@ -33,10 +33,8 @@ Leap.plugin('pointer', function(scope){
 
 function Pointer(scope, scene, controller) {
     this.hand = null;
-    this.touchDistance = scope.touchDistance;
     this.position = null;
     this.direction = null;
-    this.intersectedEl = null;
     this.childContainer = null;
     this.childElement = null;
 
@@ -73,26 +71,27 @@ function Pointer(scope, scene, controller) {
     this.detectIntersection = function (hand) {
         var intersectedObj = this.getClosestObject();
 
+		var prevIntersectedEl = this.intersectedObj != null ? this.intersectedObj.object.el : null;
         var newIntersectedEl = intersectedObj != null ? intersectedObj.object.el : null;
-        if (this.intersectedEl != newIntersectedEl && this.intersectedEl != null)
-            this.intersectedEl.removeState("pointerHovered");
+        if (prevIntersectedEl != newIntersectedEl && prevIntersectedEl != null)
+            prevIntersectedEl.removeState("pointerHovered");
 
-        this.intersectedEl = newIntersectedEl;
+		this.intersectedObj = intersectedObj;
 
-        if (!this.intersectedEl)
+        if (!this.intersectedObj)
             return;
 			
-		if(intersectedObj.distance <= scope.hoverDistance)
-			this.intersectedEl.addState("pointerHovered");
+		newIntersectedEl.addState("pointerHovered");
 
-        if (intersectedObj.distance <= this.touchDistance)
-            this.intersectedEl.emit("pointerTouch", { pointer: this, intersectedObj: intersectedObj });
+		// Gets the touch el (same as new intersected el, but queries a shorter distance)
+		var touchEl = this.getTouchElement();
+        if (touchEl != null)
+            touchEl.emit("pointerTouch", { pointer: this });
     }
 
     this.getClosestObject = function (indexFinger) {
         // Detect intersected objects
-        var raycaster = new THREE.Raycaster();
-        raycaster.set(this.position, this.direction);
+        var raycaster = new THREE.Raycaster(this.position, this.direction, 0, scope.hoverDistance);
         var intersectedObjects = raycaster.intersectObjects(scene.object3D.children, true);
         for (var i = 0; i < intersectedObjects.length; ++i) {
             var intersectedObj = intersectedObjects[i];
@@ -138,6 +137,11 @@ function Pointer(scope, scene, controller) {
         this.childElement = null;
         return childElement;
     }
+	
+	this.getTouchElement = function() {
+		return this.intersectedObj != null && this.intersectedObj.distance <= scope.touchDistance ?
+					this.intersectedObj.object.el : null;
+	}
 
     this.hasChild = function () {
         return this.childElement != null;
