@@ -39,6 +39,20 @@ Utils.RotateAroundWorldAxis = function (object, axis, radians) {
     object.object3D.rotation.setFromRotationMatrix(object.object3D.matrix, object.object3D.order);
 }
 
+Utils.showArrowHelper = function (origin, dir, arrowToRemove) {
+	var length = 1;
+	var hex = 0xffff00;
+
+	if (arrowToRemove)
+		Utils.sceneEl.object3D.remove(arrowToRemove)
+
+	var newArrow = new THREE.ArrowHelper(dir, origin, length, hex);
+	Utils.sceneEl.object3D.add(newArrow);
+	return newArrow;
+}
+
+Utils.sceneEl;
+
 var callbacks = [];
 Utils.waitForScene = function (callback) {
     if (sceneReady)
@@ -57,6 +71,7 @@ var checkSceneReady = function () {
 
 	var execSceneReady = function () {
 		sceneReady = true;
+		Utils.sceneEl = $("a-scene").get(0);
         callbacks.forEach(function (cb) { cb(); });
 	}
 	

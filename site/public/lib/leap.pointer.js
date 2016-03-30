@@ -5,7 +5,7 @@ Leap.plugin('pointer', function(scope){
   	//this.use('pinchEvent');
 	
 	scope.detectionInterval = scope.detectionInterval || 10; // Default is 100 milliseconds
-	scope.hoverDistance = scope.hoverDistance || 0.1; // default is one centimeter
+	scope.hoverDistance = scope.hoverDistance || 0.2; // default is one centimeter
 	scope.touchDistance = scope.touchDistance || 0.01; // default is one milimeter
 	scope.handType = scope.handType || "right"; // default hand is the right hand 
 
@@ -38,6 +38,8 @@ function Pointer(scope, scene, controller) {
     this.childContainer = null;
     this.childElement = null;
 
+	var debugArrow;
+	
     this.update = function (hand, detectIntersection) {
         this.hand = hand;
         var indexFinger = this.getIndexFinger();
@@ -48,7 +50,7 @@ function Pointer(scope, scene, controller) {
 
         // Show the debug arrow?
         if (scope.debug)
-            showArrowHelper(this.position, this.direction);
+            debugArrow = Utils.showArrowHelper(this.position, this.direction, debugArrow);
 
         if (detectIntersection)
             this.detectIntersection();
@@ -155,15 +157,5 @@ function Pointer(scope, scene, controller) {
         return handMesh.fingers[1];
     }
 
-    var arrowHelper = null;
-    var showArrowHelper = function (origin, dir) {
-        var length = 1;
-        var hex = 0xffff00;
-
-        if (arrowHelper)
-            scene.object3D.remove(arrowHelper)
-
-        arrowHelper = new THREE.ArrowHelper(dir, origin, length, hex);
-        scene.object3D.add(arrowHelper);
-    }
+    
 }
