@@ -52,6 +52,7 @@ Utils.showArrowHelper = function (origin, dir, arrowToRemove) {
 }
 
 Utils.sceneEl;
+Utils.cameraEl;
 
 var callbacks = [];
 Utils.waitForScene = function (callback) {
@@ -72,6 +73,7 @@ var checkSceneReady = function () {
 	var execSceneReady = function () {
 		sceneReady = true;
 		Utils.sceneEl = $("a-scene").get(0);
+		Utils.cameraEl = $("a-camera").get(0);
         callbacks.forEach(function (cb) { cb(); });
 	}
 	

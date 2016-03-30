@@ -12,22 +12,17 @@ Leap.plugin('pointer', function(scope){
 
     var scene = $("a-scene").get(0);
 
-    var detectCollision = false;
-    setInterval(function () { detectCollision = true }, scope.detectionInterval);
-
     var pointer = new Pointer(scope, scene, controller);
 
     Leap.loop({ background: true }, function (frame) {
-        if (!detectCollision || frame.hands.length <= 0)
+		if (frame.hands.length <= 0)
             return;
 
         frame.hands.forEach(function (hand) {
             if (hand.type == scope.handType) {
-                hand.data("pointer", pointer)
-                pointer.update(hand, detectCollision);
-            }
-
-            detectCollision = false;
+				hand.data("pointer", pointer)
+                pointer.update(hand);
+			}
         })
     });
 });
@@ -42,7 +37,7 @@ function Pointer(scope, scene, controller) {
 
 	var debugArrow;
 	
-    this.update = function (hand, detectIntersection) {
+    this.update = function (hand) {
         this.hand = hand;
         var indexFinger = this.getIndexFinger();
         if (!indexFinger)
@@ -54,8 +49,7 @@ function Pointer(scope, scene, controller) {
         if (scope.debug)
             debugArrow = Utils.showArrowHelper(this.position, this.direction, debugArrow);
 
-        if (detectIntersection)
-            this.detectIntersection();
+        this.detectIntersection();
     };
 
     this.getWorldPosition = function () {

@@ -190,7 +190,7 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
 			else
 				pointerSphere.visible = false;
 
-			if(!isGrabbingPart(hand) && isPinchingOrGrabbing(hand) && pointer.getTouchElement() && pointer.getTouchElement().canGrab)
+			if(actionMode == null && !isGrabbingPart(hand) && isPinchingOrGrabbing(hand) && pointer.getTouchElement() && pointer.getTouchElement().canGrab)
 				grabPart(hand, pointer.getTouchElement())
 
             else if (isRotating(hand)) {
@@ -220,7 +220,7 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
 		return actionMode == "zoom" && !isGrabbingPart(hand) && isPinchingOrGrabbing(hand);
 	}
 	var isPinchingOrGrabbing = function (hand) {
-		return hand.data('pinchEvent.pinching') || hand.data('pinchEvent.pinching');
+		return hand.data('pinchEvent.pinching') || hand.data('pinchEvent.grabbing');
 	}
     var isGrabbingPart = function (hand) {
         return hand.data("pointer") != null && hand.data("pointer").hasChild();
@@ -279,19 +279,45 @@ function GlobalActionsMenu(buttons) {
 		},
 	];
 	
-	var unselectedScale = 0.1;
-	var hoveredScale = 0.12;
-	var selectedScale = 0.15;
+	var unselectedColor = "white";
+	var unselectedScale = 2;
+	var hoveredColor = "yellow";
+	var hoveredScale = 2.5;
+	var selectedColor = "blue";
+	var selectedScale = 3;
+	var spaceBetweenButtons = selectedScale;
 	var self = this;
 	
 	this.init = function () {
-		this.containerEl = $("<a-entity position='0 1.8 -1.5'></a-entity>");
+		var containerEl = $("<a-entity rotation='0 0 180'' position='0 " + -(selectedScale + spaceBetweenButtons) + " 0' visible='false'></a-entity>");
 	
 		for(var buttonIndex = 0; buttonIndex < buttons.length; buttonIndex++) {
-			this.createButton(buttonIndex);
+			this.createButton(containerEl, buttonIndex);
 		}
 		
-		$("a-scene").append(this.containerEl);
+		$("a-scene").append(containerEl);
+		
+		Leap.loop({ background: true }, {
+			hand: function (hand) {
+				if (hand.type != "left")
+					return;
+					
+				if(!hand.data("hasGlobalActions")) {
+					var handMesh = hand.data("riggedHand.mesh");
+					if(!handMesh)
+						return;
+						
+					handMesh.add(containerEl.get(0).object3D);
+						
+					hand.data("hasGlobalActions", true)
+				}
+
+				var visible = !hand.data('pinchEvent.pinching') && !hand.data('pinchEvent.grabbing');
+				containerEl.get(0).setAttribute("visible", visible.toString())
+			},
+		});
+		
+		
 	}
 	
 	this.selectedCallback = null;
@@ -299,37 +325,42 @@ function GlobalActionsMenu(buttons) {
 		this.selectedCallback = callback;
 	}
 	
-	this.createButton = function (buttonIndex) {
+	this.createButton = function (containerEl, buttonIndex) {
 		var button = buttons[buttonIndex];
-		var x = buttonIndex * 0.3;
-		var buttonEl = $("<a-box class='globalAction' position='" + x + " 0 0' scale='" + unselectedScale + " " + unselectedScale + " " + unselectedScale + "' src='" + button.src + "' color='white'></a-box>")
+		var y = buttonIndex * (selectedScale + spaceBetweenButtons);
+		var buttonEl = $("<a-box class='globalAction' position=' 0 " + y + " 0' scale='" + unselectedScale + " " + unselectedScale + " " + unselectedScale + "' src='" + button.src + "' color='white'></a-box>")
 		
-		this.containerEl.append(buttonEl);
+		containerEl.append(buttonEl);
 		
 		buttonEl.on("stateadded", function (e) {
-			if(e.detail.state == "pointerHovered" && !buttonEl.get(0).selected )
+			if(e.detail.state == "pointerHovered" && !buttonEl.get(0).selected ) {
 				buttonEl.get(0).setAttribute("scale", hoveredScale + " " + hoveredScale + " " + hoveredScale);
+				buttonEl.get(0).setAttribute("material", "color", hoveredColor);
+			}
 		})
 		.on("stateremoved", function (e) {
-			if(e.detail.state == "pointerHovered" && !buttonEl.get(0).selected)
+			if(e.detail.state == "pointerHovered" && !buttonEl.get(0).selected) {
 				buttonEl.get(0).setAttribute("scale", unselectedScale + " " + unselectedScale + " " + unselectedScale);
+				buttonEl.get(0).setAttribute("material", "color", unselectedColor);	
+			}
 		})
-		.on("pointerTouch", function (e) {		
+		.on("pointerTouch", function (e) {
+			var wasSelected	= buttonEl.get(0).selected;
 			$(".globalAction").each(function () {
-				if($(this).get(0) != buttonEl.get(0)) {
-					$(this).get(0).selected = false;
-					$(this).get(0).setAttribute("scale", unselectedScale + " " + unselectedScale + " " + unselectedScale);
-				}
+				$(this).get(0).selected = false;
+				$(this).get(0).setAttribute("scale", unselectedScale + " " + unselectedScale + " " + unselectedScale);
+				$(this).get(0).setAttribute("material", "color", unselectedColor);
 			})
 			
-			if(buttonEl.get(0).selected = !buttonEl.get(0).selected) {
+			var newAction = null;
+			if(!wasSelected) {
+				buttonEl.get(0).selected = true;
 				buttonEl.get(0).setAttribute("scale", selectedScale + " " + selectedScale + " " + selectedScale);
-				self.selectedCallback(button.action)
+				buttonEl.get(0).setAttribute("material", "color", selectedColor);
+				newAction = button.action;
 			}
-			else {
-				buttonEl.get(0).setAttribute("scale", unselectedScale + " " + unselectedScale + " " + unselectedScale);
-				self.selectedCallback(null)
-			}			
+			
+			self.selectedCallback(newAction)		
 		})
 	}
 	
