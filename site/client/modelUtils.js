@@ -120,7 +120,7 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
         return grabbedElement;
     }
 
-    controller.use("pointer", { debug: true });
+    controller.use("pointer");
     $(modelSelector).on("stateadded", function (e) {
         if (data.selectedPartElement || e.detail.state != "pointerHovered")
             return;

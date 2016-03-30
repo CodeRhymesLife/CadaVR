@@ -18,6 +18,7 @@ LeapUtils.createController = function () {
     });
 
 	var handContainer = new THREE.Group;
+	handContainer.scale.set(2, 2, 2);
 	scene.add(handContainer);
 	scene.updateMatrixWorld();
     THREE.SceneUtils.attach(handContainer, scene, camera);
@@ -25,7 +26,7 @@ LeapUtils.createController = function () {
     controller.use('riggedHand', {
         parent: handContainer,
         camera: camera,
-        positionScale: 2,
+        positionScale: 1,
         renderFn: null,
         boneColors: function (boneMesh, leapHand) {
             return {

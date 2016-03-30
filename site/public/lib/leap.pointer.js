@@ -5,7 +5,8 @@ Leap.plugin('pointer', function(scope){
   	//this.use('pinchEvent');
 	
 	scope.detectionInterval = scope.detectionInterval || 10; // Default is 100 milliseconds
-	scope.touchDistance = scope.touchDistance || 0.1; // default is one centimeter
+	scope.hoverDistance = scope.hoverDistance || 0.1; // default is one centimeter
+	scope.touchDistance = scope.touchDistance || 0.01; // default is one milimeter
 	scope.handType = scope.handType || "right"; // default hand is the right hand 
 
     var scene = $("a-scene").get(0);
@@ -31,8 +32,6 @@ Leap.plugin('pointer', function(scope){
 });
 
 function Pointer(scope, scene, controller) {
-    var raycaster = new THREE.Raycaster();
-
     this.hand = null;
     this.touchDistance = scope.touchDistance;
     this.position = null;
@@ -80,11 +79,11 @@ function Pointer(scope, scene, controller) {
 
         this.intersectedEl = newIntersectedEl;
 
-        if (this.intersectedEl)
-            this.intersectedEl.addState("pointerHovered");
-
         if (!this.intersectedEl)
             return;
+			
+		if(intersectedObj.distance <= scope.hoverDistance)
+			this.intersectedEl.addState("pointerHovered");
 
         if (intersectedObj.distance <= this.touchDistance)
             this.intersectedEl.emit("pointerTouch", { pointer: this, intersectedObj: intersectedObj });
