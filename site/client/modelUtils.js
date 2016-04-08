@@ -44,7 +44,7 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
         if (element.originalColor == undefined)
             element.originalColor = element.components.material.data.color;
 
-		var newColor = Utils.blendColors(element.originalColor, "#FFFFFF", 0.2);
+		var newColor = Utils.blendColors(element.originalColor, "#FFFFFF", 0.5);
         element.setAttribute("material", "color", newColor);
         data.highlightedPartElement = element
     }
@@ -190,9 +190,7 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
 				pointerSphere.visible = true;
 				var percentDistance = pointer.intersectedObj.distance / pointer.hoverDistance;
 				var newScale = pointerSphereMaxScale - percentDistance * (pointerSphereMaxScale - pointerSphereMinScale)
-				console.log("new pointer sphere scale: " + newScale)
 				pointerSphere.scale.set(newScale, newScale, newScale);
-				//pointerSphere.scale.set(pointerSphereMinScale, pointerSphereMinScale, pointerSphereMinScale);
 				
 				pointerSphere.position.copy(pointer.intersectedObj.point);
 			}
