@@ -44,7 +44,8 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
         if (element.originalColor == undefined)
             element.originalColor = element.components.material.data.color;
 
-        element.setAttribute("material", "color", highlightColor);
+		var newColor = Utils.blendColors(element.originalColor, "#FFFFFF", 0.2);
+        element.setAttribute("material", "color", newColor);
         data.highlightedPartElement = element
     }
 
@@ -171,8 +172,8 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
     dummyRotationObject.position.copy(modelContainer.object3D.getWorldPosition())
     scene.object3D.add(dummyRotationObject);
 
-	var pointerSphereMaxScale = 2;
 	var pointerSphereMinScale = 1;
+	var pointerSphereMaxScale = 4;
 	var geometry = new THREE.SphereGeometry( 0.01 );
 	var material = new THREE.MeshBasicMaterial( {color: 0xffff00} );
 	var pointerSphere = new THREE.Mesh( geometry, material );

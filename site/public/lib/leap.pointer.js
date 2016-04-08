@@ -5,7 +5,7 @@ Leap.plugin('pointer', function(scope){
   	//this.use('pinchEvent');
 	
 	scope.detectionInterval = scope.detectionInterval || 100; // Default is 100 milliseconds
-	scope.hoverDistance = scope.hoverDistance || 0.2; // default is one centimeter
+	scope.hoverDistance = scope.hoverDistance || 0.5; // default is one centimeter
 	scope.touchDistance = scope.touchDistance || 0.05; // default is one milimeter
 	scope.handType = scope.handType || "right"; // default hand is the right hand 
 	scope.touchDelay = scope.touchDelay || 1000; // Time between touches
