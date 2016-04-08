@@ -75,15 +75,22 @@ function Pointer(scope, scene, controller) {
 
 		var prevIntersectedEl = this.intersectedObj != null ? this.intersectedObj.object.el : null;
         var newIntersectedEl = intersectedObj != null ? intersectedObj.object.el : null;
-        if (prevIntersectedEl != newIntersectedEl && prevIntersectedEl != null)
+		var intersectionChanged = prevIntersectedEl != newIntersectedEl && prevIntersectedEl != null;
+        if (intersectionChanged)
             prevIntersectedEl.removeState("pointerHovered");
 
 		this.intersectedObj = intersectedObj;
 
-        if (!this.intersectedObj)
-            return;
-			
-		newIntersectedEl.addState("pointerHovered");
+        if (!this.intersectedObj) {
+			if(intersectionChanged)
+				controller.emit("pointerIntersectionCleared", this)
+			return;
+		}
+		
+		if(intersectionChanged) {
+			controller.emit("pointerIntersection", this);
+			newIntersectedEl.addState("pointerHovered");
+		}
 
 		// Gets the touch el (same as new intersected el, but queries a shorter distance)
 		var touchEl = this.getTouchElement();

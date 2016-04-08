@@ -172,13 +172,6 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
     dummyRotationObject.position.copy(modelContainer.object3D.getWorldPosition())
     scene.object3D.add(dummyRotationObject);
 
-	var pointerSphereMinScale = 1;
-	var pointerSphereMaxScale = 4;
-	var geometry = new THREE.SphereGeometry( 0.01 );
-	var material = new THREE.MeshBasicMaterial( {color: 0xffff00} );
-	var pointerSphere = new THREE.Mesh( geometry, material );
-	scene.object3D.add( pointerSphere );
-
     Leap.loop({ background: true }, {
         hand: function (hand) {
             if (!hand.data("pointer") || isGrabbingPart(hand))
@@ -192,7 +185,6 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
 				var newScale = pointerSphereMaxScale - percentDistance * (pointerSphereMaxScale - pointerSphereMinScale)
 				console.log("new pointer sphere scale: " + newScale)
 				pointerSphere.scale.set(newScale, newScale, newScale);
-				//pointerSphere.scale.set(pointerSphereMinScale, pointerSphereMinScale, pointerSphereMinScale);
 				
 				pointerSphere.position.copy(pointer.intersectedObj.point);
 			}
@@ -221,6 +213,26 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
 			}
         },
     });
+	
+	var pointerSphereMinScale = 1;
+	var pointerSphereMaxScale = 4;
+	var geometry = new THREE.SphereGeometry( 0.01 );
+	var material = new THREE.MeshBasicMaterial( {color: 0xffff00} );
+	var pointerSphere = new THREE.Mesh( geometry, material );
+	scene.object3D.add( pointerSphere );
+	
+	controller.on("pointerIntersection", function (pointer) {
+		pointerSphere.visible = true;
+		var percentDistance = pointer.intersectedObj.distance / pointer.hoverDistance;
+		var newScale = pointerSphereMaxScale - percentDistance * (pointerSphereMaxScale - pointerSphereMinScale)
+		console.log("new pointer sphere scale: " + newScale)
+		pointerSphere.scale.set(newScale, newScale, newScale);
+		
+		pointerSphere.position.copy(pointer.intersectedObj.point);
+	})
+	.on("pointerIntersectionCleared", function (pointer) {
+		pointerSphere.visible = false;
+	});
 
 	var isRotating = function (hand) {
 		return actionMode == "rotate" && !isGrabbingPart(hand) && isPinchingOrGrabbing(hand);
