@@ -60,10 +60,7 @@ function Pointer(scope, scene, controller) {
     };
 
     this.getWorldPosition = function () {
-        var position = new THREE.Vector3();
-        scene.object3D.updateMatrixWorld();
-        position.setFromMatrixPosition(this.getIndexFinger().tip.matrixWorld);
-        return position;
+        return this.getIndexFinger().tip.getWorldPosition();
     }
 
     this.setPointerPositionAndDirection = function (indexFinger) {
