@@ -126,13 +126,13 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
 
     controller.use("pointer", { debug: false });
     $(modelSelector).on("stateadded", function (e) {
-        if (data.selectedPartElement || e.detail.state != "pointerHovered")
+        if (actionMode != null || data.selectedPartElement || e.detail.state != "pointerHovered")
             return;
             
         setHighlightColor($(this).get(0));
     })
     $(modelSelector).on("stateremoved", function (e) {
-        if (data.selectedPartElement || e.detail.state != "pointerHovered")
+        if (actionMode != null || data.selectedPartElement || e.detail.state != "pointerHovered")
             return;
 
         removeHighlightColor();
@@ -142,7 +142,7 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
         return !isGrabbingPart(hand) && !isRotating(hand) && !isZooming(hand);
     }
     $(modelSelector).on("pointerTouch", function (e) {
-        if (!canTouch(e.detail.pointer.hand))
+        if (actionMode != null || !canTouch(e.detail.pointer.hand))
             return;
 
         // If a part is selected deselect it
