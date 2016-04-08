@@ -171,6 +171,8 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
     dummyRotationObject.position.copy(modelContainer.object3D.getWorldPosition())
     scene.object3D.add(dummyRotationObject);
 
+	var pointerSphereMaxScale = 2;
+	var pointerSphereMinScale = 1;
 	var geometry = new THREE.SphereGeometry( 0.01 );
 	var material = new THREE.MeshBasicMaterial( {color: 0xffff00} );
 	var pointerSphere = new THREE.Mesh( geometry, material );
@@ -185,6 +187,12 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
 			
 			if(pointer.intersectedObj) {
 				pointerSphere.visible = true;
+				var percentDistance = pointer.intersectedObj.distance / pointer.hoverDistance;
+				var newScale = pointerSphereMaxScale - percentDistance * (pointerSphereMaxScale - pointerSphereMinScale)
+				console.log("new pointer sphere scale: " + newScale)
+				pointerSphere.scale.set(newScale, newScale, newScale);
+				//pointerSphere.scale.set(pointerSphereMinScale, pointerSphereMinScale, pointerSphereMinScale);
+				
 				pointerSphere.position.copy(pointer.intersectedObj.point);
 			}
 			else

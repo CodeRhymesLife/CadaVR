@@ -4,9 +4,9 @@ Leap.plugin('pointer', function(scope){
 	this.use('handHold');
   	//this.use('pinchEvent');
 	
-	scope.detectionInterval = scope.detectionInterval || 10; // Default is 100 milliseconds
+	scope.detectionInterval = scope.detectionInterval || 100; // Default is 100 milliseconds
 	scope.hoverDistance = scope.hoverDistance || 0.2; // default is one centimeter
-	scope.touchDistance = scope.touchDistance || 0.01; // default is one milimeter
+	scope.touchDistance = scope.touchDistance || 0.05; // default is one milimeter
 	scope.handType = scope.handType || "right"; // default hand is the right hand 
 	scope.touchDelay = scope.touchDelay || 1000; // Time between touches
 
@@ -34,8 +34,11 @@ function Pointer(scope, scene, controller) {
     this.childContainer = null;
     this.childElement = null;
 	this.lastTouch = 0;
+	this.hoverDistance = scope.hoverDistance;
+	this.touchDistance = scope.touchDistance;
 
 	var debugArrow;
+	var detectIntersection = true;
 	
     this.update = function (hand) {
         this.hand = hand;
@@ -49,7 +52,11 @@ function Pointer(scope, scene, controller) {
         if (scope.debug)
             debugArrow = Utils.showArrowHelper(this.position, this.direction, debugArrow);
 
-        this.detectIntersection();
+		if(detectIntersection) {
+        	this.detectIntersection();
+			detectIntersection = false;
+			setTimeout(function() { detectIntersection = true; }, scope.detectionInterval)
+		}
     };
 
     this.getWorldPosition = function () {
