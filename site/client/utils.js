@@ -39,16 +39,18 @@ Utils.RotateAroundWorldAxis = function (object, axis, radians) {
     object.object3D.rotation.setFromRotationMatrix(object.object3D.matrix, object.object3D.order);
 }
 
-Utils.showArrowHelper = function (origin, dir, arrowToRemove) {
+var arrows = {}
+Utils.showArrowHelper = function (origin, dir, arrowName) {
 	var length = 1;
 	var hex = 0xffff00;
 
-	if (arrowToRemove)
-		Utils.sceneEl.object3D.remove(arrowToRemove)
+    var arrow = arrows[arrowName];
+	if (arrow)
+		Utils.sceneEl.object3D.remove(arrow)
 
-	var newArrow = new THREE.ArrowHelper(dir, origin, length, hex);
-	Utils.sceneEl.object3D.add(newArrow);
-	return newArrow;
+	arrow = arrows[arrowName] = new THREE.ArrowHelper(dir, origin, length, hex);
+	Utils.sceneEl.object3D.add(arrow);
+	return arrow;
 }
 
 Utils.blendColors = function (c0, c1, p) {
