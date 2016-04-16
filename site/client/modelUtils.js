@@ -88,6 +88,18 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
         data.selectedPartElement = null;
     }
 
+    var grab = function (element) {
+        var position = element.object3D.getWorldPosition()
+        Utils.sceneEl.object3D.updateMatrixWorld();
+        THREE.SceneUtils.attach(element.object3D, Utils.sceneEl.object3D, controller.frame(0).hands[0].data("riggedHand.mesh"));
+        //element.object3D.position.copy(position);
+    }
+
+    var ungrab = function (element) {
+        element.object3D.parent.updateMatrixWorld();
+        THREE.SceneUtils.detach(element.object3D, element.object3D.parent, Utils.sceneEl.object3D);
+    }
+
     var grabPart = function (hand, elementToGrab) {
         console.log("grabing part")
 
@@ -125,7 +137,7 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
         return grabbedElement;
     }
 
-    controller.use("pointer", { debug: false });
+    //controller.use("pointer", { debug: false });
     $(modelSelector).on("stateadded", function (e) {
         if (actionMode != null || data.selectedPartElement || e.detail.state != "pointerHovered")
             return;
@@ -154,118 +166,24 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
             selectPart(this);
         }
     })
-
-    controller.use('pinchEvent', {
-        pinchThreshold: 0.7,
-        grabThreshold: 0.8,
-    });
-
     
-    var actionMode = null;	
-    var modelContainer = $(modelContainerSelector).get(0);
-	var lastPinchOrGrabLocation = null;
-	var modelScaleAtlastPinchOrGrab = null;
+    controller.use("rigged-hand-touch", { touchDistance: 0.07, debug: false });
+    $(modelSelector).on("stateadded", function (e) {
+        if (e.detail.state != "hand.grabbing")
+            return;
 
-    // Add a dummy rotation object that we can use to rotate the model container
-    // There's probably a much, much, much better way to do this, but it's fucking late.
-    var dummyRotationObject = new THREE.Group
-    dummyRotationObject.position.copy(modelContainer.object3D.getWorldPosition())
-    scene.object3D.add(dummyRotationObject);
-
-	var pointerSphereMinScale = 1;
-	var pointerSphereMaxScale = 4;
-	var geometry = new THREE.SphereGeometry( 0.01 );
-	var material = new THREE.MeshBasicMaterial( {color: 0xffff00} );
-	var pointerSphere = new THREE.Mesh( geometry, material );
-	scene.object3D.add( pointerSphere );
-
-    Leap.loop({ background: true }, {
-        hand: function (hand) {
-            if (!hand.data("pointer") || isGrabbingPart(hand))
-                return;
-			
-			var pointer = hand.data("pointer");
-			
-			if(pointer.intersectedObj) {
-				pointerSphere.visible = true;
-				var percentDistance = pointer.intersectedObj.distance / pointer.hoverDistance;
-				var newScale = pointerSphereMaxScale - percentDistance * (pointerSphereMaxScale - pointerSphereMinScale)
-				pointerSphere.scale.set(newScale, newScale, newScale);
-				
-				pointerSphere.position.copy(pointer.intersectedObj.point);
-			}
-			else
-				pointerSphere.visible = false;
-
-			if(actionMode == null && !isGrabbingPart(hand) && isPinchingOrGrabbing(hand) && pointer.getTouchElement() && pointer.getTouchElement().canGrab)
-				grabPart(hand, pointer.getTouchElement())
-
-            else if (isRotating(hand)) {
-                var beforeRotation = dummyRotationObject.rotation.clone();
-                dummyRotationObject.lookAt(pointer.getWorldPosition().clone());
-                var afterRotation = dummyRotationObject.rotation.clone();
-
-                // There's probably a much, much, much better way to do this, but it's fucking late.
-                Utils.RotateAroundWorldAxis(modelContainer, new THREE.Vector3(1, 0, 0), afterRotation.x - beforeRotation.x)
-                Utils.RotateAroundWorldAxis(modelContainer, new THREE.Vector3(0, 1, 0), afterRotation.y - beforeRotation.y)
-                Utils.RotateAroundWorldAxis(modelContainer, new THREE.Vector3(0, 0, 1), afterRotation.z - beforeRotation.z)
-            }
-			
-			else if (isZooming(hand)) {
-				var diff = pointer.getWorldPosition().clone().sub(lastPinchOrGrabLocation.clone());
-				var newScale = modelScaleAtlastPinchOrGrab + diff.z;
-				console.log("new scale: " + newScale)
-				modelContainer.setAttribute("scale", newScale + " " + newScale + " " + newScale)
-			}
-        },
-    });
-
-	var isRotating = function (hand) {
-		return actionMode == "rotate" && !isGrabbingPart(hand) && isPinchingOrGrabbing(hand);
-	}
-	var isZooming = function (hand) {
-		return actionMode == "zoom" && !isGrabbingPart(hand) && isPinchingOrGrabbing(hand);
-	}
-	var isPinchingOrGrabbing = function (hand) {
-		return hand.data('pinchEvent.pinching') || hand.data('pinchEvent.grabbing');
-	}
-    var isGrabbingPart = function (hand) {
-        return hand.data("pointer") != null && hand.data("pointer").hasChild();
-    }
-	var handlePinchAndGrab = function (action, hand) {
-		// Return unless this is the first aciton and this hand can perform the action
-		if(isPinchingOrGrabbing(hand) || hand.data("pointer") == null)
-			return;
-
-		console.log(action)
-
-		modelScaleAtlastPinchOrGrab = modelContainer.object3D.scale.x;
-		lastPinchOrGrabLocation = hand.data("pointer").getWorldPosition().clone()
-        dummyRotationObject.lookAt(hand.data("pointer").getWorldPosition().clone());
-    };
-    controller.on("pinch", function (hand) {
-		handlePinchAndGrab("pinch", hand);
-	})
-	.on("grab", function (hand) {
-		handlePinchAndGrab("grab", hand)
-	})
-	.on("unpinch", function (hand) {
-		console.log("unpinch");
-		
-		if (isGrabbingPart(hand))
-            setTimeout(function () { ungrabPart(hand) });
-	})
-	.on("ungrab", function (hand) {
-		console.log("ungrab");
-	})
-	.on('handLost', function (hand) {
-        // "Throw awway" the element when the hand is lost"
-        if (isGrabbingPart(hand)) {
-            hand.data("pointer").childElement.setAttribute("visible", "false")
-            hand.data("pointer").childElement.addState("trashed")
-        }
-    });
+        ungrab($(this).get(0))
+        grab($(this).get(0))
+    })
+    
+    $(modelSelector).on("stateremoved", function (e) {
+        if (e.detail.state != "hand.grabbing")
+            return;
+ 
+        ungrab($(this).get(0))
+    })
 	
+    var actionMode = null;
 	var globalActions = new GlobalActionsMenu();
 	globalActions.onSelected(function (action) {
 		actionMode = action;
