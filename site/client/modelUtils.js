@@ -118,13 +118,13 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
         }
     })
     
-    controller.use("rigged-hand-touch", { debug: false });
+    controller.use("rigged-hand-touch", { leftHand: true, rightHand: true, debug: false });
 	
     var actionMode = null;
-	var globalActions = new GlobalActionsMenu();
-	globalActions.onSelected(function (action) {
-		actionMode = action;
-	})
+	//var globalActions = new GlobalActionsMenu();
+	//globalActions.onSelected(function (action) {
+	//	actionMode = action;
+	//})
 
     return data;
 }

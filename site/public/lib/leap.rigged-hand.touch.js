@@ -7,14 +7,17 @@ Leap.plugin('rigged-hand-touch', function(scope){
 	this.use('handHold');
   	//this.use('pinchEvent');
 	
+    scope.leftHand = scope.leftHand || true;
+    scope.rightHand = scope.rightHand || true;
 	scope.detectionInterval = scope.detectionInterval || 100; // Default is 100 milliseconds
-	scope.touchDistance = scope.touchDistance || 0.1; // default is one milimeter
+	scope.touchDistance = scope.touchDistance || 0.1; // default is 10 centimeters
 	scope.handType = scope.handType || "right"; // default hand is the right hand 
     scope.debug = scope.debug || false;
 
     var scene = $("a-scene").get(0);
 
-    var toucherHand = new ToucherHand("right", scope, scene, controller);
+    var rightHand = new ToucherHand("right", scope, scene, controller);
+    var leftHand = new ToucherHand("left", scope, scene, controller);
 
     Leap.loop({ background: true }, function (frame) {
 		if (frame.hands.length <= 0)
@@ -24,9 +27,10 @@ Leap.plugin('rigged-hand-touch', function(scope){
             if(!hand.data("riggedHand.mesh"))
                 return;
 
-            if (hand.type == toucherHand.type) {
-                toucherHand.update(hand);
-			}
+            if (scope.rightHand && hand.type == "right")
+                rightHand.update(hand);
+            else if (scope.leftHand && hand.type == "left")
+                leftHand.update(hand);
         })
     });
 });
@@ -205,6 +209,7 @@ function ToucherFingerTip (index, name, scope, scene, controller) {
 
             if (intersectedObj.object.el === undefined) { continue; }
             if (!intersectedObj.object.visible) { continue; }
+            if (intersectedObj.object.el == Utils.cameraEl) { continue; }
 
             return intersectedObj
         }
