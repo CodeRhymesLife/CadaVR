@@ -119,21 +119,21 @@ function setupHeart(controller) {
 
     $(".heartContainer .model")
     .on("stateadded", function (e) {
-        if (modelData.selectedPartElement == null && e.detail.state == "pointerHovered") {
+        if (modelData.selectedPartElement == null && e.originalEvent.detail.state == "pointerHovered") {
             // Update the HUD
             var organNameElement = $(modelData.highlightedPartElement).data("partInfo").organNameElement.get(0);
             updateHUDOrganName(organNameElement)
             organNameElement.setAttribute("visible", "true");
         }
-        else if (e.detail.state == "selected")
+        else if (e.originalEvent.detail.state == "selected")
             showDescription(modelData.selectedPartElement)
-        else if (e.detail.state == "trashed")
+        else if (e.originalEvent.detail.state == "trashed")
             $(this).data("partInfo").organNameElement.get(0).setAttribute("visible", "false");
     })
     .on("stateremoved", function (e) {
-        if (modelData.selectedPartElement == null && e.detail.state == "pointerHovered") 
+        if (modelData.selectedPartElement == null && e.originalEvent.detail.state == "pointerHovered") 
             $(this).data("partInfo").organNameElement.get(0).setAttribute("visible", "false");
-        else if(e.detail.state == "selected")
+        else if(e.originalEvent.detail.state == "selected")
             hideDescription();
     })
 }

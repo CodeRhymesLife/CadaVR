@@ -40,14 +40,14 @@ if (Meteor.isClient) {
 		// Non-components don't fire events, so to make syncing generic
 		// I'm creating a new event
 		$( "body" ).on("componentchanged", "[sync]", function (e) {
-			$( this ).get(0).emit("attrchanged", e.detail);
+			$( this ).get(0).emit("attrchanged", e.originalEvent.detail);
 		});
 		
 		// Sync any object with the sync attribute set
 		$( "body" ).on("attrchanged", "[sync]", function (e) {
 			var name = $( this ).attr( "sync" );
-			var attributeName = e.detail.name;
-			var newData = e.detail.newData;
+			var attributeName = e.originalEvent.detail.name;
+			var newData = e.originalEvent.detail.newData;
 			Meteor.call("addEvent", name, attributeName, newData );
 		});
 		

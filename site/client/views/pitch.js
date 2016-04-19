@@ -76,14 +76,14 @@ function loadPitch () {
 		},
 	}	
 	$("body").on("attrchanged", ".slideShow .slides", function (e) {
-		if(e.detail.name != "src")
+		if(e.originalEvent.detail.name != "src")
 			return;
 		
-		var newData = e.detail.newData;
+		var newData = e.originalEvent.detail.newData;
 		if(srcChangeHandlers[newData])
 			srcChangeHandlers[newData].newDataHandler();
 		
-		var oldData = e.detail.oldData;
+		var oldData = e.originalEvent.detail.oldData;
 		if(srcChangeHandlers[oldData])
 			srcChangeHandlers[oldData].oldDataHandler();
 	});
@@ -100,7 +100,7 @@ function loadPitch () {
 	// Play the audio when the audio clip's play attribute changes
 	// This is mainly to get things working remotely
 	$("body").on("attrchanged", ".audioClip", function (e) {
-		if(e.detail.name != "play")
+		if(e.originalEvent.detail.name != "play")
 			return;
 
 		// Play this audio clip

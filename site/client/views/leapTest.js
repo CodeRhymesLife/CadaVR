@@ -6,7 +6,7 @@ Template.leapTest.onRendered(function () {
     });
 
     $("a-box").on("stateadded", function (e) {
-        if (e.detail.state != "hand.grabbing")
+        if (e.originalEvent.detail.state != "hand.grabbing")
             return;
 
         $("a-box").get(0).setAttribute("material", "color", getRandomColor());
@@ -15,7 +15,7 @@ Template.leapTest.onRendered(function () {
     })
     
     $("a-box").on("stateremoved", function (e) {
-        if (e.detail.state != "hand.grabbing")
+        if (e.originalEvent.detail.state != "hand.grabbing")
             return;
 
         $("a-box").get(0).setAttribute("material", "color", getRandomColor());

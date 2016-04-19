@@ -115,9 +115,9 @@ function attachLookEvents() {
         })
 	}
 	$(cameraEl).on("lookingLeft", function (e) {
-		rotateCards(e.detail.timeDelta, -cardMoveSpeed);
+		rotateCards(e.originalEvent.detail.timeDelta, -cardMoveSpeed);
     })
 	.on("lookingRight", function (e) {
-		rotateCards(e.detail.timeDelta, cardMoveSpeed);
+		rotateCards(e.originalEvent.detail.timeDelta, cardMoveSpeed);
     })
 }

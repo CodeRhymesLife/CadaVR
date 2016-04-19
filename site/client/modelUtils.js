@@ -15,7 +15,7 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
         $(modelContainerSelector).append(part)
 
         $(part).on("model-loaded", function (e) {
-            e.detail.model.traverse(function (child) {
+            e.originalEvent.detail.model.traverse(function (child) {
                 child.el = e.target
             });
 
@@ -139,13 +139,13 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
 
     //controller.use("pointer", { debug: false });
     $(modelSelector).on("stateadded", function (e) {
-        if (actionMode != null || data.selectedPartElement || e.detail.state != "pointerHovered")
+        if (actionMode != null || data.selectedPartElement || e.originalEvent.detail.state != "pointerHovered")
             return;
             
         setHighlightColor($(this).get(0));
     })
     $(modelSelector).on("stateremoved", function (e) {
-        if (actionMode != null || data.selectedPartElement || e.detail.state != "pointerHovered")
+        if (actionMode != null || data.selectedPartElement || e.originalEvent.detail.state != "pointerHovered")
             return;
 
         removeHighlightColor();
@@ -155,7 +155,7 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
         return !isGrabbingPart(hand) && !isRotating(hand) && !isZooming(hand);
     }
     $(modelSelector).on("pointerTouch", function (e) {
-        if (actionMode != null || !canTouch(e.detail.pointer.hand))
+        if (actionMode != null || !canTouch(e.originalEvent.detail.pointer.hand))
             return;
 
         // If a part is selected deselect it
@@ -169,7 +169,7 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
     
     controller.use("rigged-hand-touch", { touchDistance: 0.07, debug: false });
     $(modelSelector).on("stateadded", function (e) {
-        if (e.detail.state != "hand.grabbing")
+        if (e.originalEvent.detail.state != "hand.grabbing")
             return;
 
         ungrab($(this).get(0))
@@ -177,7 +177,7 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
     })
     
     $(modelSelector).on("stateremoved", function (e) {
-        if (e.detail.state != "hand.grabbing")
+        if (e.originalEvent.detail.state != "hand.grabbing")
             return;
  
         ungrab($(this).get(0))
@@ -258,13 +258,13 @@ function GlobalActionsMenu(buttons) {
 		containerEl.append(buttonEl);
 		
 		buttonEl.on("stateadded", function (e) {
-			if(e.detail.state == "pointerHovered" && !buttonEl.get(0).selected ) {
+			if(e.originalEvent.detail.state == "pointerHovered" && !buttonEl.get(0).selected ) {
 				buttonEl.get(0).setAttribute("scale", hoveredScale + " " + hoveredScale + " " + hoveredScale);
 				buttonEl.get(0).setAttribute("material", "color", hoveredColor);
 			}
 		})
 		.on("stateremoved", function (e) {
-			if(e.detail.state == "pointerHovered" && !buttonEl.get(0).selected) {
+			if(e.originalEvent.detail.state == "pointerHovered" && !buttonEl.get(0).selected) {
 				buttonEl.get(0).setAttribute("scale", unselectedScale + " " + unselectedScale + " " + unselectedScale);
 				buttonEl.get(0).setAttribute("material", "color", unselectedColor);	
 			}
