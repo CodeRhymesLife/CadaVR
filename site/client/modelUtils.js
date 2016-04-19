@@ -88,55 +88,6 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
         data.selectedPartElement = null;
     }
 
-    var grab = function (element) {
-        var position = element.object3D.getWorldPosition()
-        Utils.sceneEl.object3D.updateMatrixWorld();
-        THREE.SceneUtils.attach(element.object3D, Utils.sceneEl.object3D, controller.frame(0).hands[0].data("riggedHand.mesh"));
-        //element.object3D.position.copy(position);
-    }
-
-    var ungrab = function (element) {
-        element.object3D.parent.updateMatrixWorld();
-        THREE.SceneUtils.detach(element.object3D, element.object3D.parent, Utils.sceneEl.object3D);
-    }
-
-    var grabPart = function (hand, elementToGrab) {
-        console.log("grabing part")
-
-        scene.object3D.updateMatrixWorld();
-        var originalRotation = elementToGrab.object3D.getWorldRotation();
-
-        var grabbedElement = hand.data("pointer").attachChild(elementToGrab);
-
-        grabbedElement.setAttribute("position", "0 0 0");
-
-        grabbedElement.setAttribute("rotation", "0 0 0");
-        Utils.RotateAroundWorldAxis(grabbedElement, new THREE.Vector3(1, 0, 0), originalRotation.x)
-        Utils.RotateAroundWorldAxis(grabbedElement, new THREE.Vector3(0, 1, 0), originalRotation.y)
-        Utils.RotateAroundWorldAxis(grabbedElement, new THREE.Vector3(0, 0, 1), originalRotation.z)
-
-        var scale = Utils.getScaleForMaxDimension(grabbedElement, 0.1)
-        grabbedElement.setAttribute("scale", scale + " " + scale + " " + scale);
-
-        return grabbedElement;
-    }
-
-    var ungrabPart = function (hand) {
-        console.log("ungrabing part")
-
-        deselectPart();
-        
-        var grabbedElement = hand.data("pointer").detachChild($(modelContainerSelector).get(0));
-
-        grabbedElement.setAttribute("position", "0 0 0");
-        grabbedElement.setAttribute("rotation", "0 0 0");
-
-        var scale = grabbedElement.originalScale;
-        grabbedElement.setAttribute("scale", scale + " " + scale + " " + scale);
-
-        return grabbedElement;
-    }
-
     //controller.use("pointer", { debug: false });
     $(modelSelector).on("stateadded", function (e) {
         if (actionMode != null || data.selectedPartElement || e.originalEvent.detail.state != "pointerHovered")
@@ -167,21 +118,7 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
         }
     })
     
-    controller.use("rigged-hand-touch", { touchDistance: 0.07, debug: false });
-    $(modelSelector).on("stateadded", function (e) {
-        if (e.originalEvent.detail.state != "hand.grabbing")
-            return;
-
-        ungrab($(this).get(0))
-        grab($(this).get(0))
-    })
-    
-    $(modelSelector).on("stateremoved", function (e) {
-        if (e.originalEvent.detail.state != "hand.grabbing")
-            return;
- 
-        ungrab($(this).get(0))
-    })
+    controller.use("rigged-hand-touch", { debug: false });
 	
     var actionMode = null;
 	var globalActions = new GlobalActionsMenu();
