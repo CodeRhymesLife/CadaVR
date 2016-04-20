@@ -16,8 +16,8 @@ Leap.plugin('rigged-hand-touch', function(scope){
 
     var scene = $("a-scene").get(0);
 
-    var rightHand = new ToucherHand("right", scope, scene, controller);
-    var leftHand = new ToucherHand("left", scope, scene, controller);
+    var rightHand = new ToucherHand("right", TouchInfo.rightHand, scope, scene, controller);
+    var leftHand = new ToucherHand("left", TouchInfo.leftHand, scope, scene, controller);
 
     Leap.loop({ background: true }, function (frame) {
 		if (frame.hands.length <= 0)
@@ -35,14 +35,43 @@ Leap.plugin('rigged-hand-touch', function(scope){
     });
 });
 
-function ToucherHand (type, scope, scene, controller) {
+function TouchInfo () {
+    var touchables = [];
+    var getTouchObjectFuncs = {};
+    
+    this.getTouchables = function () {
+        return touchables;
+    };
+    
+    this.add = function (object, getTouchObject) {
+        getTouchObjectFuncs[object] = getTouchObject;
+        touchables.push(object);
+    };
+    
+    this.remove = function (object) {
+        var index = touchables.indexOf(object);
+        if(index != -1) {
+            touchables.splice(index, 1);
+            delete getTouchObjectFuncs[object];
+        }
+    };
+    
+    this.getTouchObject = function (object) {
+        return getTouchObjectFuncs[object] ? getTouchObjectFuncs[object](object) : object;
+    }
+}
+
+TouchInfo.leftHand = new TouchInfo();
+TouchInfo.rightHand = new TouchInfo();
+
+function ToucherHand (type, touchInfo, scope, scene, controller) {
     this.hand = null;
     this.grabbedObj = null;
     this.type = type;
     this.nextUpdate = scope.detectionInterval;
     
-    var createFingerTip = function (index, name) { return new ToucherFingerTip(index, name, scope, scene, controller); }
-    var thumb = new ToucherThumb(scope, scene, controller);
+    var createFingerTip = function (index, name) { return new ToucherFingerTip(index, name, touchInfo, scope, scene, controller); }
+    var thumb = new ToucherThumb(touchInfo, scope, scene, controller);
     var fingers = [
         createFingerTip(1, "index"),
         createFingerTip(2, "middle"),
@@ -96,19 +125,8 @@ function ToucherHand (type, scope, scene, controller) {
                 touchFingerTip.detectIntersection();
                 
                 // If this finger is touching the same item as the thumb, grab it
-                if(touchFingerTip.intersectedObj == thumb.intersectedObj) {
-                    
-                    // Grab the element
-                    // If all fingers are extended grab the parent (if this object has a parent)
-                    // Otherwise, grab the object that was selected
-                    var fingersExtended = true;
-                    this.hand.fingers.forEach(function (finger) { fingersExtended = fingersExtended && finger.extended })
-                    
-                    var objToGrab = thumb.intersectedObj;
-                    //if(fingersExtended && objToGrab.parent && objToGrab.parent.type != "Scene" )
-                    //    objToGrab = objToGrab.parent;
-                    
-                    this.grab(objToGrab)
+                if(touchFingerTip.intersectedObj == thumb.intersectedObj) {                    
+                    this.grab(touchInfo.getTouchObject(thumb.intersectedObj))
                     break;
                 }
             }
@@ -116,12 +134,11 @@ function ToucherHand (type, scope, scene, controller) {
     }
     
     this.grab = function (obj) {
-        console.log("ToucherHand grabbing element")
+        console.log("ToucherHand grabbing element type: " + obj.type)
         
         obj.parent.updateMatrixWorld();
         THREE.SceneUtils.detach(obj, obj.parent, Utils.sceneEl.object3D);
-        
-        var position = obj.getWorldPosition()
+
         Utils.sceneEl.object3D.updateMatrixWorld();
         THREE.SceneUtils.attach(obj, Utils.sceneEl.object3D, this.hand.data("riggedHand.mesh"));
         
@@ -153,7 +170,7 @@ function ToucherHand (type, scope, scene, controller) {
     }
 }
 
-function ToucherFingerTip (index, name, scope, scene, controller) {
+function ToucherFingerTip (index, name, touchInfo, scope, scene, controller) {
     this.index = index;
     this.name = name;
     this.hand = null;
@@ -198,7 +215,7 @@ function ToucherFingerTip (index, name, scope, scene, controller) {
             debugArrow = Utils.showArrowHelper(raycasterPisition, this.direction, this.hand.type + "-" + this.name + "-arrow");
         
         var raycaster = new THREE.Raycaster(raycasterPisition, this.direction, 0, scope.touchDistance * 2);
-        var intersectedInfoArr = raycaster.intersectObjects(scene.object3D.children, true);
+        var intersectedInfoArr = raycaster.intersectObjects(touchInfo.getTouchables(), true);
         for (var i = 0; i < intersectedInfoArr.length; ++i) {
             var intersectedInfo = intersectedInfoArr[i];
 
@@ -209,15 +226,15 @@ function ToucherFingerTip (index, name, scope, scene, controller) {
             if (!intersectedInfo.object.visible) { continue; }
             if (intersectedInfo.object.el == Utils.cameraEl) { continue; }
 
-            return intersectedInfo
+            return intersectedInfo;
         }
 
         return null;
     }
 }
 
-function ToucherThumb (scope, scene, controller) {
-    ToucherFingerTip.call(this, 0, "thumb", scope, scene, controller)
+function ToucherThumb (touchInfo, scope, scene, controller) {
+    ToucherFingerTip.call(this, 0, "thumb", touchInfo, scope, scene, controller)
     
     var waitingForGrab = false;
     
