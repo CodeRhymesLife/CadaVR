@@ -219,12 +219,7 @@ function ToucherFingerTip (index, name, touchInfo, scope, scene, controller) {
         for (var i = 0; i < intersectedInfoArr.length; ++i) {
             var intersectedInfo = intersectedInfoArr[i];
 
-            while (intersectedInfo.object.parent && intersectedInfo.object.el === undefined) {
-                intersectedInfo.object = intersectedInfo.object.parent;
-            }
-
             if (!intersectedInfo.object.visible) { continue; }
-            if (intersectedInfo.object.el == Utils.cameraEl) { continue; }
 
             return intersectedInfo;
         }
