@@ -44,7 +44,7 @@ function TouchInfo () {
     };
     
     this.add = function (object, getTouchObject) {
-        getTouchObjectFuncs[object] = getTouchObject;
+        getTouchObjectFuncs[object.uuid] = getTouchObject;
         touchables.push(object);
     };
     
@@ -52,12 +52,12 @@ function TouchInfo () {
         var index = touchables.indexOf(object);
         if(index != -1) {
             touchables.splice(index, 1);
-            delete getTouchObjectFuncs[object];
+            delete getTouchObjectFuncs[object.uuid];
         }
     };
     
     this.getTouchObject = function (object) {
-        return getTouchObjectFuncs[object] ? getTouchObjectFuncs[object](object) : object;
+        return getTouchObjectFuncs[object.uuid] ? getTouchObjectFuncs[object.uuid](object) : object;
     }
 }
 
