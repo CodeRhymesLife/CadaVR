@@ -97,7 +97,18 @@ function ToucherHand (type, scope, scene, controller) {
                 
                 // If this finger is touching the same item as the thumb, grab it
                 if(touchFingerTip.intersectedEl == thumb.intersectedEl) {
-                    this.grab(thumb.intersectedEl)
+                    
+                    // Grab the element
+                    // If all fingers are extended grab the parent (if this object has a parent)
+                    // Otherwise, grab the object that was selected
+                    var fingersExtended = true;
+                    this.hand.fingers.forEach(function (finger) { fingersExtended = fingersExtended && finger.extended })
+                    
+                    var elementToGrab = thumb.intersectedEl;
+                    if(fingersExtended && thumb.intersectedEl.object3D.parent.el)
+                        elementToGrab = thumb.intersectedEl.object3D.parent.el;
+                    
+                    this.grab(elementToGrab)
                     break;
                 }
             }
