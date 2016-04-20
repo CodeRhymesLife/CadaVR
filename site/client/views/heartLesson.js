@@ -105,6 +105,12 @@ Template.heartLesson.onRendered(function () {
         setupVisuals(cameraEl);
         CameraUtils.setupLookEvents();
         setupHUD(sceneEl);
+        
+        var pin = new Pin();
+        pin.position.set(0, 1.8, -1);
+        pin.rotation.set(0, 0, -90);
+        Utils.sceneEl.object3D.add(pin);
+        setupTouchEvents(pin);
     });
 });
 
@@ -221,6 +227,30 @@ function setupHUD(sceneEl) {
 	var hud = $(".hud").get(0);
 	hud.object3D.parent.updateMatrixWorld();
 	THREE.SceneUtils.attach( hud.object3D, sceneEl.object3D, sceneEl.camera.el.object3D );
+}
+
+function setupTouchEvents(pin) {
+    controller.use("rigged-hand-touch", { leftHand: true, rightHand: true, debug: false });
+    
+    $(".heartContainer .model").on("model-loaded", function (e) {
+        // Right hand grabs parts
+        TouchInfo.rightHand.add( $(this).get(0).object3D.getObjectByProperty("type", "Mesh"), function (mesh) {
+            return mesh.el.object3D;
+        })
+        
+        // Left hand grabs the whole organ
+        TouchInfo.leftHand.add( $(this).get(0).object3D.getObjectByProperty("type", "Mesh"), function (mesh) {
+            return $(".heartContainer").get(0).object3D;
+        })
+    });
+    
+    TouchInfo.rightHand.add( pin.sphere, function (mesh) {
+        return pin;
+    })
+    
+    TouchInfo.rightHand.add( pin.cylinder, function (mesh) {
+        return pin;
+    })
 }
 
 function updateHUDOrganName (textObject) {

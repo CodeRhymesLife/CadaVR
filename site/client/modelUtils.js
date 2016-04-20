@@ -25,20 +25,8 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
                 $(modelSelector).each(function () {
                     $(this).get(0).setAttribute("scale", scale + " " + scale + " " + scale)
                     $(this).get(0).originalScale = scale;
-                    
-                    // Right hand grabs parts
-                    TouchInfo.rightHand.add( $(this).get(0).object3D.getObjectByProperty("type", "Mesh"), function (mesh) {
-                        return mesh.el.object3D;
-                    })
-                    
-                    // Left hand grabs the whole organ
-                    TouchInfo.leftHand.add( $(this).get(0).object3D.getObjectByProperty("type", "Mesh"), function (mesh) {
-                        return $(modelContainerSelector).get(0).object3D;
-                    } )
                 });
-
                 
-
                 $(modelContainerSelector).get(0).emit("models-loaded");
             }  
         })
@@ -129,8 +117,6 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
             selectPart(this);
         }
     })
-    
-    controller.use("rigged-hand-touch", { leftHand: true, rightHand: true, debug: false });
 	
     var actionMode = null;
 	//var globalActions = new GlobalActionsMenu();
