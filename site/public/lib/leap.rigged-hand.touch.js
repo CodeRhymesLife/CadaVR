@@ -37,7 +37,7 @@ Leap.plugin('rigged-hand-touch', function(scope){
 
 function ToucherHand (type, scope, scene, controller) {
     this.hand = null;
-    this.grabbedElement = null;
+    this.grabbedObj = null;
     this.type = type;
     this.nextUpdate = scope.detectionInterval;
     
@@ -96,7 +96,7 @@ function ToucherHand (type, scope, scene, controller) {
                 touchFingerTip.detectIntersection();
                 
                 // If this finger is touching the same item as the thumb, grab it
-                if(touchFingerTip.intersectedEl == thumb.intersectedEl) {
+                if(touchFingerTip.intersectedObj == thumb.intersectedObj) {
                     
                     // Grab the element
                     // If all fingers are extended grab the parent (if this object has a parent)
@@ -104,30 +104,32 @@ function ToucherHand (type, scope, scene, controller) {
                     var fingersExtended = true;
                     this.hand.fingers.forEach(function (finger) { fingersExtended = fingersExtended && finger.extended })
                     
-                    var elementToGrab = thumb.intersectedEl;
-                    if(fingersExtended && thumb.intersectedEl.object3D.parent.el)
-                        elementToGrab = thumb.intersectedEl.object3D.parent.el;
+                    var objToGrab = thumb.intersectedObj;
+                    //if(fingersExtended && objToGrab.parent && objToGrab.parent.type != "Scene" )
+                    //    objToGrab = objToGrab.parent;
                     
-                    this.grab(elementToGrab)
+                    this.grab(objToGrab)
                     break;
                 }
             }
         }
     }
     
-    this.grab = function (element) {
+    this.grab = function (obj) {
         console.log("ToucherHand grabbing element")
         
-        element.object3D.parent.updateMatrixWorld();
-        THREE.SceneUtils.detach(element.object3D, element.object3D.parent, Utils.sceneEl.object3D);
+        obj.parent.updateMatrixWorld();
+        THREE.SceneUtils.detach(obj, obj.parent, Utils.sceneEl.object3D);
         
-        var position = element.object3D.getWorldPosition()
+        var position = obj.getWorldPosition()
         Utils.sceneEl.object3D.updateMatrixWorld();
-        THREE.SceneUtils.attach(element.object3D, Utils.sceneEl.object3D, this.hand.data("riggedHand.mesh"));
+        THREE.SceneUtils.attach(obj, Utils.sceneEl.object3D, this.hand.data("riggedHand.mesh"));
         
-        this.grabbedElement = element;
+        this.grabbedObj = obj;
         thumb.grab();
-        this.grabbedElement.addState("hand.grabbing");
+        
+        if(this.grabbedObj.el)
+            this.grabbedObj.el.addState("hand.grabbing");
     }
     
     this.ungrab = function () {
@@ -136,16 +138,18 @@ function ToucherHand (type, scope, scene, controller) {
 
         console.log("ToucherHand ungrabbing element")
 
-        this.grabbedElement.object3D.parent.updateMatrixWorld();
-        THREE.SceneUtils.detach(this.grabbedElement.object3D, this.grabbedElement.object3D.parent, Utils.sceneEl.object3D);
+        this.grabbedObj.parent.updateMatrixWorld();
+        THREE.SceneUtils.detach(this.grabbedObj, this.grabbedObj.parent, Utils.sceneEl.object3D);
         
-        this.grabbedElement.removeState("hand.grabbing");
+        if(this.grabbedObj.el)
+            this.grabbedObj.el.removeState("hand.grabbing");
+
         thumb.ungrab();
-        this.grabbedElement = null;
+        this.grabbedObj = null;
     }
     
     this.isGrabbing = function () {
-        return this.grabbedElement != null;
+        return this.grabbedObj != null;
     }
 }
 
@@ -156,8 +160,8 @@ function ToucherFingerTip (index, name, scope, scene, controller) {
     this.finger = null;
     this.position = null;
     this.direction = null;
+    this.intersectedInfo = null;
     this.intersectedObj = null;
-    this.intersectedEl = null;
 
     this.update = function (hand) {
         this.hand = hand;
@@ -179,23 +183,10 @@ function ToucherFingerTip (index, name, scope, scene, controller) {
     }
     
     this.detectIntersection = function () {        
-        var intersectedObj = this.getClosestObject();
+        this.intersectedInfo = this.getClosestObject();
+        this.intersectedObj = this.intersectedInfo != null ? this.intersectedInfo.object : null;
 
-		var prevIntersectedEl = this.intersectedEl;
-        var newIntersectedEl = intersectedObj != null ? intersectedObj.object.el : null;
-        if (prevIntersectedEl != newIntersectedEl && prevIntersectedEl != null) {
-            //prevIntersectedEl.removeState(this.name + ".finger.touching");
-            //controller.emit(this.name + ".finger.touchCleared", { finger: this })
-        }
-
-		this.intersectedObj = intersectedObj;
-        this.intersectedEl = newIntersectedEl;
-
-        if (!this.intersectedObj)
-            return false;
-		
-        this.intersectedEl = this.intersectedObj.object.el;
-		return true;
+		return this.intersectedInfo != null;
     }
 
     this.getClosestObject = function () {
@@ -207,22 +198,18 @@ function ToucherFingerTip (index, name, scope, scene, controller) {
             debugArrow = Utils.showArrowHelper(raycasterPisition, this.direction, this.hand.type + "-" + this.name + "-arrow");
         
         var raycaster = new THREE.Raycaster(raycasterPisition, this.direction, 0, scope.touchDistance * 2);
-        var intersectedObjects = raycaster.intersectObjects(scene.object3D.children, true);
-        for (var i = 0; i < intersectedObjects.length; ++i) {
-            var intersectedObj = intersectedObjects[i];
+        var intersectedInfoArr = raycaster.intersectObjects(scene.object3D.children, true);
+        for (var i = 0; i < intersectedInfoArr.length; ++i) {
+            var intersectedInfo = intersectedInfoArr[i];
 
-            while (intersectedObj.object.parent && intersectedObj.object.el === undefined) {
-                intersectedObj.object = intersectedObj.object.parent;
+            while (intersectedInfo.object.parent && intersectedInfo.object.el === undefined) {
+                intersectedInfo.object = intersectedInfo.object.parent;
             }
 
-            // If the intersected object is the cursor itself
-            // or the object is further than the max distance
+            if (!intersectedInfo.object.visible) { continue; }
+            if (intersectedInfo.object.el == Utils.cameraEl) { continue; }
 
-            if (intersectedObj.object.el === undefined) { continue; }
-            if (!intersectedObj.object.visible) { continue; }
-            if (intersectedObj.object.el == Utils.cameraEl) { continue; }
-
-            return intersectedObj
+            return intersectedInfo
         }
 
         return null;
@@ -240,8 +227,8 @@ function ToucherThumb (scope, scene, controller) {
         if(waitingForGrab)
             return true;
 
-        console.log("thumb distance to grab position: " + this.grabPosition.distanceTo(this.getLocalHandPosition()))
-        return this.grabPosition && this.grabPosition.distanceTo(this.getLocalHandPosition()) < 0.7;
+        console.log("thumb distance to grab position: " + this.grabPosition.distanceTo(this.getLocalThumbTipPosition()))
+        return this.grabPosition && this.grabPosition.distanceTo(this.getLocalThumbTipPosition()) < 0.7;
     }
     
     this.grab = function () {
@@ -249,7 +236,7 @@ function ToucherThumb (scope, scene, controller) {
         
         // Delay recording the users grab position so they have time to adjust the position of their hand
         setTimeout(function () {
-            self.grabPosition = self.getLocalHandPosition();
+            self.grabPosition = self.getLocalThumbTipPosition();
             waitingForGrab = false;    
         }, 500);
         waitingForGrab = true;
@@ -259,7 +246,7 @@ function ToucherThumb (scope, scene, controller) {
         this.grabPosition = null;
     }
     
-    this.getLocalHandPosition = function () {
+    this.getLocalThumbTipPosition = function () {
         return this.finger.worldToLocal(this.position.clone());
     }
 }
