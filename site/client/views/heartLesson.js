@@ -230,7 +230,7 @@ function setupHUD(sceneEl) {
 }
 
 function setupTouchEvents(pin) {
-    controller.use("rigged-hand-touch", { leftHand: true, rightHand: true, debug: false });
+    controller.use("leap-motion-hand-grabbing", { leftHand: true, rightHand: true, debug: false });
     
     $(".heartContainer .model").on("model-loaded", function (e) {
         // Right hand grabs parts
