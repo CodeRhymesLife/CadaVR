@@ -11,7 +11,7 @@ Leap.plugin('rigged-hand-touch', function(scope){
     scope.rightHand = scope.rightHand || true;
 	scope.detectionInterval = scope.detectionInterval || 100; // Default is 100 milliseconds
 	scope.touchDistance = scope.touchDistance || 0.1; // default is 10 centimeters
-	scope.handType = scope.handType || "right"; // default hand is the right hand 
+    scope.ungrabDeltaStrength = scope.ungrabDeltaStrength || 0.3; // Change in grab stregth required to ungrab an object
     scope.debug = scope.debug || false;
 
     var scene = $("a-scene").get(0);
@@ -67,11 +67,12 @@ TouchInfo.rightHand = new TouchInfo();
 function ToucherHand (type, touchInfo, scope, scene, controller) {
     this.hand = null;
     this.grabbedObj = null;
+    this.initialHoldStrength = null;
     this.type = type;
     this.nextUpdate = scope.detectionInterval;
     
     var createFingerTip = function (index, name) { return new ToucherFingerTip(index, name, touchInfo, scope, scene, controller); }
-    var thumb = new ToucherThumb(touchInfo, scope, scene, controller);
+    var thumb = createFingerTip(0, "thumb");
     var fingers = [
         createFingerTip(1, "index"),
         createFingerTip(2, "middle"),
@@ -101,17 +102,30 @@ function ToucherHand (type, touchInfo, scope, scene, controller) {
         this.nextUpdate = delay;
     }
     
+    var ungrabConfidence = 0;
     this.checkGrab = function () {
         if(!this.isGrabbing())
             return;
 
-        thumb.update( this.hand );
-        if(!thumb.isWithinGrabDistance()) {
-            this.ungrab();
-            
-            // Wait half a second before the next update
-            this.setNextUpdate(500)
+        if(this.initialHoldStrength == null) {
+            ungrabConfidence = 0;
+            return;
         }
+            
+
+        if(Math.abs(this.initialHoldStrength - this.hand.pinchStrength) > scope.ungrabDeltaStrength &&
+            Math.abs(this.initialHoldStrength - this.hand.grabStrength) > scope.ungrabDeltaStrength) {
+            ungrabConfidence++;
+            this.setNextUpdate(50);
+            
+            if(ungrabConfidence > 3) {
+                ungrabConfidence = 0;
+                this.ungrab();
+            
+                // Wait half a second before the next update
+                this.setNextUpdate(1000)
+            }
+        }   
     }
     
     
@@ -134,7 +148,7 @@ function ToucherHand (type, touchInfo, scope, scene, controller) {
     }
     
     this.grab = function (obj) {
-        console.log("ToucherHand grabbing element type: " + obj.type)
+        console.log("ToucherHand grabbing element type '" + obj.type + "' with grab strength '" + this.hand.pinchStrength + "'")
         
         obj.parent.updateMatrixWorld();
         THREE.SceneUtils.detach(obj, obj.parent, Utils.sceneEl.object3D);
@@ -143,7 +157,10 @@ function ToucherHand (type, touchInfo, scope, scene, controller) {
         THREE.SceneUtils.attach(obj, Utils.sceneEl.object3D, this.hand.data("riggedHand.mesh"));
         
         this.grabbedObj = obj;
-        thumb.grab();
+        
+        // Delay setting the grabstregth to give the user a moment to adjust their hands
+        var self = this;
+        setTimeout(function () { self.initialHoldStrength = Math.max(self.hand.pinchStrength, self.hand.grabStrength); }, 1000);
         
         if(this.grabbedObj.el)
             this.grabbedObj.el.addState("hand.grabbing");
@@ -153,7 +170,7 @@ function ToucherHand (type, touchInfo, scope, scene, controller) {
         if(!this.isGrabbing())
             return;
 
-        console.log("ToucherHand ungrabbing element")
+        console.log("ToucherHand ungrabbing element type '" + this.grabbedObj.type + "' with grab strength '" + this.hand.pinchStrength + "'")
 
         this.grabbedObj.parent.updateMatrixWorld();
         THREE.SceneUtils.detach(this.grabbedObj, this.grabbedObj.parent, Utils.sceneEl.object3D);
@@ -161,7 +178,7 @@ function ToucherHand (type, touchInfo, scope, scene, controller) {
         if(this.grabbedObj.el)
             this.grabbedObj.el.removeState("hand.grabbing");
 
-        thumb.ungrab();
+        this.initialHoldStrength = null;
         this.grabbedObj = null;
     }
     
@@ -225,40 +242,5 @@ function ToucherFingerTip (index, name, touchInfo, scope, scene, controller) {
         }
 
         return null;
-    }
-}
-
-function ToucherThumb (touchInfo, scope, scene, controller) {
-    ToucherFingerTip.call(this, 0, "thumb", touchInfo, scope, scene, controller)
-    
-    var waitingForGrab = false;
-    
-    this.grabPosition = null;
-    
-    this.isWithinGrabDistance = function () {
-        if(waitingForGrab)
-            return true;
-
-        console.log("thumb distance to grab position: " + this.grabPosition.distanceTo(this.getLocalThumbTipPosition()))
-        return this.grabPosition && this.grabPosition.distanceTo(this.getLocalThumbTipPosition()) < 0.7;
-    }
-    
-    this.grab = function () {
-        self = this;
-        
-        // Delay recording the users grab position so they have time to adjust the position of their hand
-        setTimeout(function () {
-            self.grabPosition = self.getLocalThumbTipPosition();
-            waitingForGrab = false;    
-        }, 500);
-        waitingForGrab = true;
-    }
-    
-    this.ungrab = function () {
-        this.grabPosition = null;
-    }
-    
-    this.getLocalThumbTipPosition = function () {
-        return this.finger.worldToLocal(this.position.clone());
     }
 }
