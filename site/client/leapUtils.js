@@ -19,6 +19,7 @@ LeapUtils.createController = function () {
 
 	var handContainer = new THREE.Group;
 	handContainer.scale.set(2, 2, 2);
+    handContainer.position.set(0, -0.8, 0);
 	scene.add(handContainer);
 	scene.updateMatrixWorld();
     THREE.SceneUtils.attach(handContainer, scene, camera);
