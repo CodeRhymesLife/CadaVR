@@ -222,8 +222,8 @@ function setupVisuals(cameraEl) {
 		2960
 	);
     
-    // We'll show everything after the heard is created
-    $(".curvedBackgroundContainer").get(0).setAttribute("visible", "false")
+    // We'll show everything after the heart is positioned
+    $(".curvedBackgroundContainer").get(0).setAttribute("position", "0 10 0")
 }
 
 function setupHUD(sceneEl) {
@@ -276,21 +276,17 @@ function setupTouchEvents(pin) {
         return pin;
     })
     
-    $(".heartContainer").on("stateadded", function (e) {
+    var showBackground = function (e) {
        if(e.originalEvent.detail.state != "hand.grabbing")
             return;
         
-        $(".lungs, .skeleton").each(function () {
-            $(this).get(0).setAttribute("material", "opacity", "1")
-        })
-    });
+        $(".curvedBackgroundContainer").get(0).emit("fadeIn");
+        
+        // Detach event
+        $(this).off("stateadded", showBackground);
+    }
     
-    $(".heartContainer").on("stateremoved", function (e) {
-       if(e.originalEvent.detail.state != "hand.grabbing")
-            return;
-        
-        $(".curvedBackgroundContainer").get(0).setAttribute("visible", "true")
-    });
+    $(".heartContainer").on("stateadded", showBackground);
 }
 
 function updateHUDOrganName (textObject) {
