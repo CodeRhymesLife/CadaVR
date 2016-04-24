@@ -221,6 +221,9 @@ function setupVisuals(cameraEl) {
 		1418,
 		2960
 	);
+    
+    // We'll show everything after the heard is created
+    $(".curvedBackgroundContainer").get(0).setAttribute("visible", "false")
 }
 
 function setupHUD(sceneEl) {
@@ -274,11 +277,19 @@ function setupTouchEvents(pin) {
     })
     
     $(".heartContainer").on("stateadded", function (e) {
-       if(e.originalEvent.detail.state == "hand.grabbing") {
-           $(".lungs, .skeleton").each(function () {
-               $(this).get(0).setAttribute("material", "opacity", "1")
-           })
-       } 
+       if(e.originalEvent.detail.state != "hand.grabbing")
+            return;
+        
+        $(".lungs, .skeleton").each(function () {
+            $(this).get(0).setAttribute("material", "opacity", "1")
+        })
+    });
+    
+    $(".heartContainer").on("stateremoved", function (e) {
+       if(e.originalEvent.detail.state != "hand.grabbing")
+            return;
+        
+        $(".curvedBackgroundContainer").get(0).setAttribute("visible", "true")
     });
 }
 
