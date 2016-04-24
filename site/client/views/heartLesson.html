@@ -2,11 +2,11 @@
     <a-entity class='desk' position="0 0 -0.7" scale="2 0.5 2" rotation="0 -90 0" obj-model='obj: url(models\desk\desk.obj); mtl: url(models\desk\desk.mtl);'></a-entity>
     
     <a-entity class="skeletonContainer" position="0 0.6 -0.7" rotation="-90 0 96" scale="0.002 0.002 0.002">
-        <a-entity position="-5 450 -20" material='color: pink;' obj-model='obj: url(models\lungs\Lungs.obj);'></a-entity>
-        <a-entity material='color: #E3DAC9;' obj-model='obj: url(models\skeleton\Skeleton.obj);'></a-entity>
+        <a-entity class="lungs" position="-5 450 -20" material='color: pink; opacity: 0.3;' obj-model='obj: url(models\lungs\Lungs.obj);'></a-entity>
+        <a-entity class="skeleton" material='color: #E3DAC9; opacity: 0.3;' obj-model='obj: url(models\skeleton\Skeleton.obj);'></a-entity>
     </a-entity>
     
-    <a-entity class="heartContainer" position="0 1 -1"></a-entity>
+    <a-entity class="heartContainer" rotation="-90 90 0" position="-0.8 0.63 -0.67"></a-entity>
 
 	<!-- HUD (this object is moved as a child of the camera after the scene is rendered) -->
 	<a-entity class="hud" position="0 1.8 -0.6">

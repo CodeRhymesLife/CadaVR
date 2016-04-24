@@ -272,6 +272,14 @@ function setupTouchEvents(pin) {
     TouchInfo.rightHand.add( pin.cylinder, function (mesh) {
         return pin;
     })
+    
+    $(".heartContainer").on("stateadded", function (e) {
+       if(e.originalEvent.detail.state == "hand.grabbing") {
+           $(".lungs, .skeleton").each(function () {
+               $(this).get(0).setAttribute("material", "opacity", "1")
+           })
+       } 
+    });
 }
 
 function updateHUDOrganName (textObject) {
