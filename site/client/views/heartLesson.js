@@ -231,16 +231,37 @@ function setupHUD(sceneEl) {
 
 function setupTouchEvents(pin) {
     controller.use("leap-motion-hand-grabbing", { leftHand: true, rightHand: true, debug: false });
+    controller.use("leap-motion-hand-resizing");
     
     $(".heartContainer .model").on("model-loaded", function (e) {
         // Right hand grabs parts
-        TouchInfo.rightHand.add( $(this).get(0).object3D.getObjectByProperty("type", "Mesh"), function (mesh) {
-            return mesh.el.object3D;
-        })
+        TouchInfo.rightHand.add( $(this).get(0).object3D,
+            function (mesh, part) {
+                if(TouchInfo.leftHand.toucherHand.isGrabbing()) {
+                    var parent = part.parent;
+                    while(parent && parent != TouchInfo.leftHand.toucherHand.grabbedObj)
+                        parent = parent.parent;
+                        
+                    if(parent)
+                        return TouchInfo.leftHand.toucherHand.grabbedObj;
+                }
+                
+                return part;
+            } );
         
-        // Left hand grabs the whole organ
-        TouchInfo.leftHand.add( $(this).get(0).object3D.getObjectByProperty("type", "Mesh"), function (mesh) {
-            return $(".heartContainer").get(0).object3D;
+        // Left hand can grab the whole organ
+        TouchInfo.leftHand.add( $(this).get(0).object3D, function (mesh, part) {
+            
+            var container = $(".heartContainer").get(0).object3D;
+            var parent = part.parent;
+            while(parent && parent != container)
+                parent = parent.parent;
+        
+            // If we walked all the way up the tree and didn't find the container, grab the box
+            if(!parent)
+                return part;
+        
+            return container;
         })
     });
     

@@ -2,9 +2,6 @@
 Leap.plugin('leap-motion-hand-grabbing', function(scope){
 
     var controller = this;
-
-	this.use('handHold');
-  	//this.use('pinchEvent');
 	
     scope.leftHand = scope.leftHand || true;
     scope.rightHand = scope.rightHand || true;
@@ -15,7 +12,7 @@ Leap.plugin('leap-motion-hand-grabbing', function(scope){
 
     var rightHand = new ToucherHand("right", TouchInfo.rightHand, scope, controller);
     var leftHand = new ToucherHand("left", TouchInfo.leftHand, scope, controller);
-
+	
     Leap.loop({ background: true }, function (frame) {
 		if (frame.hands.length <= 0)
             return;
@@ -34,27 +31,35 @@ Leap.plugin('leap-motion-hand-grabbing', function(scope){
 
 function TouchInfo () {
     var touchables = [];
-    var getTouchObjectFuncs = {};
+    var getTouchObjectInfo = {};
     
+	this.toucherHand = null;
+	
     this.getTouchables = function () {
         return touchables;
     };
     
     this.add = function (object, getTouchObject) {
-        getTouchObjectFuncs[object.uuid] = getTouchObject;
-        touchables.push(object);
+		var mesh = object.getObjectByProperty("type", "Mesh");
+        getTouchObjectInfo[mesh.uuid] = {
+			object: object,
+			getTouchObject: getTouchObject,
+		};
+        touchables.push(mesh);
     };
     
     this.remove = function (object) {
-        var index = touchables.indexOf(object);
+		var mesh = object.getObjectByProperty("type", "Mesh");
+        var index = touchables.indexOf(mesh);
         if(index != -1) {
             touchables.splice(index, 1);
-            delete getTouchObjectFuncs[object.uuid];
+            delete getTouchObjectInfo[mesh.uuid];
         }
     };
     
-    this.getTouchObject = function (object) {
-        return getTouchObjectFuncs[object.uuid] ? getTouchObjectFuncs[object.uuid](object) : object;
+    this.getTouchObject = function (mesh) {
+		var info = getTouchObjectInfo[mesh.uuid];
+        return info.getTouchObject ? info.getTouchObject(mesh, info.object) : info.object;
     }
 }
 
@@ -68,6 +73,8 @@ function ToucherHand (type, touchInfo, scope, controller) {
     this.type = type;
     this.nextUpdate = scope.detectionInterval;
     
+	touchInfo.toucherHand = this;
+	
     var scene = document.querySelector("a-scene").object3D;
     
     var createFingerTip = function (index, name) { return new ToucherFingerTip(index, name, touchInfo, scope, controller); }
@@ -81,6 +88,8 @@ function ToucherHand (type, touchInfo, scope, controller) {
     
     var detectIntersection = true;
     this.update = function (hand) {
+		hand.data("toucherHand", this);
+		
         if(!detectIntersection)
             return;
 
