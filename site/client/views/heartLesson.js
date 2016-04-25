@@ -223,7 +223,7 @@ function setupVisuals(cameraEl) {
 	);
     
     // We'll show everything after the heart is positioned
-    $(".curvedBackgroundContainer").get(0).setAttribute("position", "0 10 0")
+    $(".curvedBackgroundContainer").get(0).setAttribute("position", "0 10 0");
 }
 
 function setupHUD(sceneEl) {

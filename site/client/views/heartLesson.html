@@ -1,11 +1,15 @@
 <template name="heartLesson">
     <a-assets>
-        <a-mixin id="skeleton" material='color: #E3DAC9; opacity: 0.3;' obj-model='obj: url(models\skeleton\Skeleton.obj);'></a-mixin>
-        <a-mixin id="lungs" position="-5 450 -20" material='color: pink; opacity: 0.3;' obj-model='obj: url(models\lungs\Lungs.obj);'></a-mixin>
+        <a-mixin id="skeleton" material='color: #E3DAC9;' obj-model='obj: url(models\skeleton\Skeleton.obj);'></a-mixin>
+        <a-mixin id="lungs" position="-5 450 -20" material='color: pink;' obj-model='obj: url(models\lungs\Lungs.obj);'></a-mixin>
     </a-assets>
     
-    <a-entity position="0 0 -0.8">
-        {{> cadaver}}
+    <a-light type="point" position="0.5 0.5 0" distance="5" decay="1" intensity="0.7"></a-light>
+    <a-light type="point" position="0.5 2 0" distance="5" decay="1" intensity="0.7"></a-light>
+    <a-light type="point" position="-0.5 0.5 0" distance="5" decay="1" intensity="0.7"></a-light>
+    <a-light type="point" position="-0.5 2 0" distance="5" decay="1" intensity="0.7"></a-light>
+    <a-entity class="mainCadaver" position="0 0 -0.8">
+        {{> cadaver "0.1"}}
         
         <a-entity class="heartContainer" rotation="-90 90 0" position="-0.8 0.63 -0.17"></a-entity>
     </a-entity>
@@ -32,23 +36,35 @@
 	</a-entity>
 </template>
 
+<template name="cadaverLight">
+    <!-- Light on ceiling -->
+    <a-entity position="0 3.5 0">
+        <a-cylinder radius="0.1" height="0.05" material="color: white"></a-cylinder>
+        <a-sphere radius="0.05" material="color: yellow"></a-sphere>
+        <a-light type="point" position="0 -0.2 0" distance="50" decay="10" intensity="{{this}}"></a-light>
+    </a-entity>
+</template>
+
 <template name="cadaver">
-    <a-entity class="cadaver" position="0 0.35">
-        <a-entity class='table' scale="1.5 0.6 2" rotation="0 -90 0" obj-model='obj: url(models\table\table.obj);' material="src: url(models\table\metal.jpg);"></a-entity>
-    
-        <a-entity class="skeletonContainer" position="0 0.25 -0.2" rotation="-90 0 96" scale="0.002 0.002 0.002">
-            <a-entity class="lungs" mixin="lungs"></a-entity>
-            <a-entity class="skeleton" mixin="skeleton"></a-entity>
+    <a-entity class="cadaver">
+        {{> cadaverLight "0.1"}}
+        <a-entity position="0 0.35 0">
+            <a-entity class='table' scale="1.5 0.6 2" rotation="0 -90 0" obj-model='obj: url(models\table\table.obj);' material="src: url(models\table\metal.jpg);"></a-entity>
+        
+            <a-entity class="skeletonContainer" position="0 0.25 -0.2" rotation="-90 0 96" scale="0.002 0.002 0.002">
+                <a-entity class="lungs" mixin="lungs" material="opacity: {{this}}"></a-entity>
+                <a-entity class="skeleton" mixin="skeleton" material="opacity: {{this}}"></a-entity>
+            </a-entity>
         </a-entity>
     </a-entity>
 </template>
 
 <template name="cadaverRow">
     <a-entity>
-        {{> cadaver}}
+        {{> cadaver "1"}}
     </a-entity>
     
     <a-entity position="0 0 -2">
-        {{> cadaver}}
+        {{> cadaver "1"}}
     </a-entity>
 </template>
