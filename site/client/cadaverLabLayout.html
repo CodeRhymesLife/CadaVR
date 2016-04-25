@@ -1,29 +1,33 @@
 <template name="cadaverLabLayout">
 	<a-scene>
 		<a-assets>
-			<a-mixin id="wall" geometry="primitive: plane; width: 20; height: 5;" material="src: url(images/wall.jpg); repeat: 10 2.5"></a-mixin>
-			<a-mixin id="floorAndCeiling" geometry="primitive: plane; width: 20; height: 20;"></a-mixin>
+			<a-mixin id="wall" geometry="primitive: plane; width: 10; height: 4;" material="src: url(images/wall.jpg); repeat: 5 2"></a-mixin>
+			<a-mixin id="floorAndCeiling" geometry="primitive: plane; width: 10; height: 10;"></a-mixin>
 		</a-assets>
 		
         <a-camera position="0 1 0" near="0.001"></a-camera>
 		
-		<!-- Floor -->
-		<a-entity mixin="floorAndCeiling" rotation="-90 0 0" material="src: url(images/woodenFloor.jpg); repeat: 10 10"></a-entity>
+		<!-- Room -->
+		<a-entity position="0 0 -4">
+			<!-- Floor -->
+			<a-entity mixin="floorAndCeiling" rotation="-90 0 0" material="src: url(images/woodenFloor.jpg); repeat: 10 10"></a-entity>
+			
+			<!-- Left Wall -->
+			<a-entity mixin="wall" position="5 2 0" rotation="0 -90 0"></a-entity>
+			
+			<!-- Right Wall -->
+			<a-entity mixin="wall" position="-5 2 0" rotation="0 90 0"></a-entity>
+			
+			<!-- Front Wall -->
+			<a-entity mixin="wall" position="0 2 -5"></a-entity>
+			
+			<!-- Back Wall -->
+			<a-entity mixin="wall" position="0 2 5" rotation="0 180 0"></a-entity>
+			
+			<!-- Ceiling -->
+			<a-entity mixin="floorAndCeiling" position="0 4 0" rotation="90 0 0" material="src: url(images/wall.jpg); repeat: 5 5"></a-entity>
+		</a-entity>
 		
-		<!-- Left Wall -->
-		<a-entity mixin="wall" position="10 2.5 0" rotation="0 -90 0"></a-entity>
-		
-		<!-- Right Wall -->
-		<a-entity mixin="wall" position="-10 2.5 0" rotation="0 90 0"></a-entity>
-		
-		<!-- Front Wall -->
-		<a-entity mixin="wall" position="0 2.5 -10"></a-entity>
-		
-		<!-- Back Wall -->
-		<a-entity mixin="wall" position="0 2.5 10" rotation="0 180 0"></a-entity>
-		
-		<!-- Ceiling -->
-		<a-entity mixin="floorAndCeiling" position="0 5 0" rotation="90 0 0" material="src: url(images/wall.jpg); repeat: 10 10"></a-entity>
 		
 		<a-light type="directional" intensity="0.65" position="1 1 1"></a-light>
 		<a-light type="directional" intensity="0.65" position="-1 1 1"></a-light>
