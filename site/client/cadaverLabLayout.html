@@ -1,0 +1,50 @@
+<template name="cadaverLabLayout">
+	<a-scene>
+		<a-assets>
+			<a-mixin id="wall" geometry="primitive: plane; width: 20; height: 5;" material="src: url(images/wall.jpg); repeat: 10 2.5"></a-mixin>
+			<a-mixin id="floorAndCeiling" geometry="primitive: plane; width: 20; height: 20;"></a-mixin>
+		</a-assets>
+		
+        <a-camera position="0 1 0" near="0.001"></a-camera>
+		
+		<!-- Floor -->
+		<a-entity mixin="floorAndCeiling" rotation="-90 0 0" material="src: url(images/woodenFloor.jpg); repeat: 10 10"></a-entity>
+		
+		<!-- Left Wall -->
+		<a-entity mixin="wall" position="10 2.5 0" rotation="0 -90 0"></a-entity>
+		
+		<!-- Right Wall -->
+		<a-entity mixin="wall" position="-10 2.5 0" rotation="0 90 0"></a-entity>
+		
+		<!-- Front Wall -->
+		<a-entity mixin="wall" position="0 2.5 -10"></a-entity>
+		
+		<!-- Back Wall -->
+		<a-entity mixin="wall" position="0 2.5 10" rotation="0 180 0"></a-entity>
+		
+		<!-- Ceiling -->
+		<a-entity mixin="floorAndCeiling" position="0 5 0" rotation="90 0 0" material="src: url(images/wall.jpg); repeat: 10 10"></a-entity>
+		
+		<a-light type="directional" intensity="0.65" position="1 1 1"></a-light>
+		<a-light type="directional" intensity="0.65" position="-1 1 1"></a-light>
+		<a-light type="directional" intensity="0.65" position="0 -5 1"></a-light>
+
+		<a-entity class="curvedBackgroundContainer" position="0 1.5 0">
+			<!-- Background -->
+			<a-cylinder radius="4.1" height="4" side="back" open-ended="true" color="#FFF" opacity="0.5"></a-cylinder>
+			
+			<!-- 
+				Other items will be added here dynamically, once the page loads.
+				See heartLesson.js for more info
+			-->
+			
+			<a-animation attribute="position"
+				begin="fadeIn"
+				dur="2000"
+				fill="forwards"
+				to="0 1.5 0"></a-animation>
+		</a-entity>
+	
+		{{> yield}}
+	</a-scene>
+</template>

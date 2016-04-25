@@ -11,6 +11,10 @@ if(Meteor.isClient) {
 		"caseViews": function () {
 			return CaseViews;
 		},
+		
+		"cadaverLabViews": function () {
+			return CadaverLabViews;
+		},
 	});
 
 	Template.index.onRendered(function () {

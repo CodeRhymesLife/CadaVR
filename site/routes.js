@@ -23,12 +23,15 @@ Views = [
 FinalDemoViews = [
 	"curvedMenu",
 	"finalDemo",
-	"heartLesson",
 ]
 
 CaseViews = [
 	"congenitalHeartCase",
 	"liverTransplantCase",
+]
+
+CadaverLabViews = [
+	"heartLesson",
 ]
 
 Views.forEach( function (page) {
@@ -53,6 +56,15 @@ CaseViews.forEach( function (page) {
     Router.route('/' + page,
         function () {
 		    this.layout('casesLayout');
+		    this.render(page);
+        },
+        { name: page });
+});
+
+CadaverLabViews.forEach( function (page) {
+    Router.route('/' + page,
+        function () {
+		    this.layout('cadaverLabLayout');
 		    this.render(page);
         },
         { name: page });
