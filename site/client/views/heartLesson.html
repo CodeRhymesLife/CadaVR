@@ -1,12 +1,28 @@
 <template name="heartLesson">
-    <a-entity class='table' position="0 0.35 -0.8" scale="1.5 0.6 2" rotation="0 -90 0" obj-model='obj: url(models\table\table.obj);' material="src: url(models\table\metal.jpg);"></a-entity>
+    <a-assets>
+        <a-mixin id="skeleton" material='color: #E3DAC9; opacity: 0.3;' obj-model='obj: url(models\skeleton\Skeleton.obj);'></a-mixin>
+        <a-mixin id="lungs" position="-5 450 -20" material='color: pink; opacity: 0.3;' obj-model='obj: url(models\lungs\Lungs.obj);'></a-mixin>
+    </a-assets>
     
-    <a-entity class="skeletonContainer" position="0 0.6 -1" rotation="-90 0 96" scale="0.002 0.002 0.002">
-        <a-entity class="lungs" position="-5 450 -20" material='color: pink; opacity: 0.3;' obj-model='obj: url(models\lungs\Lungs.obj);'></a-entity>
-        <a-entity class="skeleton" material='color: #E3DAC9; opacity: 0.3;' obj-model='obj: url(models\skeleton\Skeleton.obj);'></a-entity>
+    <a-entity position="0 0 -0.8">
+        {{> cadaver}}
+        
+        <a-entity class="heartContainer" rotation="-90 90 0" position="-0.8 0.63 -0.17"></a-entity>
     </a-entity>
     
-    <a-entity class="heartContainer" rotation="-90 90 0" position="-0.8 0.63 -0.97"></a-entity>
+    <a-entity position="0 0 -4">
+        <!-- Left row -->
+        <a-entity position="-3 0 0">
+            {{> cadaverRow}}
+        </a-entity>
+        
+        <!-- Right row -->
+        <a-entity position="3 0 0">
+            {{> cadaverRow}}
+        </a-entity>
+        
+    </a-entity>
+   
 
 	<!-- HUD (this object is moved as a child of the camera after the scene is rendered) -->
 	<a-entity class="hud" position="0 1.8 -0.6">
@@ -14,4 +30,25 @@
               <!-- Organ names added dynamically for perf reasons -->
         </a-entity>
 	</a-entity>
+</template>
+
+<template name="cadaver">
+    <a-entity class="cadaver" position="0 0.35">
+        <a-entity class='table' scale="1.5 0.6 2" rotation="0 -90 0" obj-model='obj: url(models\table\table.obj);' material="src: url(models\table\metal.jpg);"></a-entity>
+    
+        <a-entity class="skeletonContainer" position="0 0.25 -0.2" rotation="-90 0 96" scale="0.002 0.002 0.002">
+            <a-entity class="lungs" mixin="lungs"></a-entity>
+            <a-entity class="skeleton" mixin="skeleton"></a-entity>
+        </a-entity>
+    </a-entity>
+</template>
+
+<template name="cadaverRow">
+    <a-entity>
+        {{> cadaver}}
+    </a-entity>
+    
+    <a-entity position="0 0 -2">
+        {{> cadaver}}
+    </a-entity>
 </template>
