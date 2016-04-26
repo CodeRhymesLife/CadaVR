@@ -169,9 +169,11 @@ function ToucherHand (type, touchInfo, scope, controller) {
         // Delay setting the grabstregth to give the user a moment to adjust their hands
         var self = this;
         setTimeout(function () { self.initialHoldStrength = Math.max(self.hand.pinchStrength, self.hand.grabStrength); }, 1000);
-        
+		
         if(this.grabbedObj.el)
             this.grabbedObj.el.addState("hand.grabbing");
+		
+		controller.emit("hand.grabbing.start", this)
     }
     
     this.ungrab = function () {
@@ -188,6 +190,8 @@ function ToucherHand (type, touchInfo, scope, controller) {
 
         this.initialHoldStrength = null;
         this.grabbedObj = null;
+		
+		controller.emit("hand.grabbing.end", this)
     }
     
     this.isGrabbing = function () {

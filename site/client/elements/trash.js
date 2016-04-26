@@ -2,9 +2,22 @@ Trash = function (element, debug) {
     var position = element.object3D.getWorldPosition();
     var direction = new THREE.Vector3(0, 1, 0);
     var detectionDistance = 0.8;
+
+    var key = null;
+    this.enable = function () {
+        this.disable();
+            
+        var self = this;
+        key = setInterval(function () { self.check() }, 500);
+    }
     
-    var self = this;
-    setInterval(function () { self.check() }, 500);
+    this.disable = function () {
+        // Do a final check before we stop checking
+        this.check()
+        
+        if(key)
+            clearInterval(key);
+    }
     
     this.check = function () {
         var intersectedObjInfo = this.getClosestObject();

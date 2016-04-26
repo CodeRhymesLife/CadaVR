@@ -112,11 +112,22 @@ Template.heartLesson.onRendered(function () {
         Utils.sceneEl.object3D.add(pin);
         
         setupTouchEvents(pin);
-        
-        var trash = new Trash($(".trash").get(0), true);
+
+        setupTrash(controller)
         setupTasks()
     });
 });
+
+function setupTrash(controller) {
+    var trash = new Trash($(".trash").get(0), false);
+    controller.on("hand.grabbing.start", function (toucherHand) {
+        trash.enable();
+    });
+    
+    controller.on("hand.grabbing.end", function (toucherHand) {
+        trash.disable();
+    });
+}
 
 function setupTasks() {
     var tasks = [
