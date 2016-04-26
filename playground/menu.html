@@ -55,7 +55,19 @@
 				var lineOfTextTemplate = "<a-entity position='0 %OFFSET% 0' text='text: %TEXT%' scale='0.1 0.1 0.1' material='color: black'></a-entity>";
 
 				var currentTask = 0;
-				this.moveToTask = function (taskToMoveTo) {
+				
+				this.prev = function () {
+					moveToTask(currentTask - 1)
+				}
+				
+				this.next = function () {
+					moveToTask(currentTask + 1)
+				}
+				
+				var moveToTask = function (taskToMoveTo) {
+					if(taskToMoveTo < 0 || taskToMoveTo >= tasks.length)
+						return;
+					
 					var previousTask = currentTask;
 					$(selector + " .taskTitle" + previousTask + " .background").get(0).setAttribute("material", "opacity", "0.1");
 					$(selector + " .taskDescription" + previousTask).get(0).setAttribute("visible", "false");
@@ -112,7 +124,7 @@
 				}
 				
 				init();
-				this.moveToTask(0);
+				moveToTask(0);
 			}
 			
 			window.onload = function () {
@@ -122,12 +134,35 @@
 						description: "Use your left hand to pick up the heart, then drop it above the table",
 					},
 					{
-						title: "Pick up the heart",
-						description: "Use your left hand to pick up the heart, then drop it above the table",
+						title: "Resize the heart",
+						description: "To enter resize mode, grab the heart with your left hand then grab the heart with your right hand. Once in resize mode, make the heart as big as you can.",
+					},
+					{
+						title: "Remove the wall of the heart",
+						description: "Use your right hand to grab the wall of the heart. Place the wall of the heart in the trash.",
+					},
+					{
+						title: "Pin the pulmonary valves",
+						description: "Grab the yellow pin. Place the pin in the pulmonary valves.",
 					},
 				];
 				
-				var taskMenu = new TasksMenu(".taskMenu", "This is a test", tasks);
+				var taskMenu = new TasksMenu(".taskMenu", "Heart Lesson 1", tasks);
+				
+				$(document).keydown(function(e) {
+					switch(e.which) {
+						case 38: // up
+							taskMenu.prev();
+							break;
+
+						case 40: // down
+							taskMenu.next();
+							break;
+
+						default: return; // exit this handler for other keys
+					}
+					e.preventDefault(); // prevent the default action (scroll / move caret)
+				});
 			}
 		</script>
 	</head>
