@@ -9,7 +9,7 @@ ModelUtils.load = function (partsInfo, modelContainerSelector, controller, maxDi
     var folder = partsInfo.folder;
     var loadedCount = 0;
     partsInfo.parts.forEach(function (partInfo) {
-        var part = $("<a-entity class='model' material='color: " + partInfo.color + ";' obj-model='obj: url(" + folder +  partInfo.file + ");'></a-entity>");
+        var part = $("<a-entity class='model' name='" + partInfo.name + "' material='color: " + partInfo.color + ";' obj-model='obj: url(" + folder +  partInfo.file + ");'></a-entity>");
 		part.get(0).canGrab = true;
         part.data("partInfo", partInfo);
         $(modelContainerSelector).append(part)

@@ -40,8 +40,8 @@ Utils.RotateAroundWorldAxis = function (object, axis, radians) {
 }
 
 var arrows = {}
-Utils.showArrowHelper = function (origin, dir, arrowName) {
-	var length = 1;
+Utils.showArrowHelper = function (origin, dir, arrowName, length) {
+	length = length || 1;
 	var hex = 0xffff00;
 
     var arrow = arrows[arrowName];

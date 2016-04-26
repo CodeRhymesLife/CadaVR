@@ -112,6 +112,8 @@ Template.heartLesson.onRendered(function () {
         Utils.sceneEl.object3D.add(pin);
         
         setupTouchEvents(pin);
+        
+        var trash = new Trash($(".trash").get(0), true);
         setupTasks()
     });
 });
@@ -128,7 +130,7 @@ function setupTasks() {
         },
         {
             title: "Remove the wall of the heart",
-            description: "Use your right hand to grab the wall of the heart. Place the wall of the heart in the trash.",
+            description: "Use your right hand to grab the wall of the heart and place it in the trash.",
         },
         {
             title: "Pin the pulmonary valves",
@@ -164,8 +166,17 @@ function setupTasks() {
         if(maxDimension > 1) {
             taskMenu.next();
             $(".heartContainer").off("stateremoved", taskTwoEventHander);
+            $(".model[name='Wall of heart']").on("stateadded", taskThreeEventHandler);
         }
     };
+    
+    var taskThreeEventHandler = function (e) {
+        if(e.originalEvent.detail.state != "trashed")
+            return;
+            
+        taskMenu.next();
+        $(".model[name='Wall of heart']").off("stateadded", taskThreeEventHandler);
+    }
 }
 
 function setupHeart(controller) {
