@@ -305,7 +305,13 @@ function setupTasks(pin) {
         },
     ];
     
-    var taskMenu = new TasksMenu(".taskMenu", "Heart Lesson 1", tasks);
+    var taskMenu = new TasksMenu(".taskMenu", {
+        title: "Heart Lesson 1",
+        tasks: tasks,
+        onTaskComplete: function () {
+            
+        }
+    });
     taskMenu.rootEl.setAttribute("scale", "2 2 2");
     taskMenu.rootEl.setAttribute("position", "0 2 -3");
 }

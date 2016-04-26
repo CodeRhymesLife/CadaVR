@@ -38,7 +38,7 @@ var taskDescriptionTemplate = "<a-entity class='%CLASSNAME%' position='-0.5 0.13
 
 var lineOfTextTemplate = "<a-entity position='0 %OFFSET% 0' text='text: %TEXT%' scale='0.1 0.1 0.1' material='color: black'></a-entity>";
 
-TasksMenu = function (selector, title, tasks) {
+TasksMenu = function (selector, opts) {
     var currentTask = 0;
     
     this.getCurrentTask = function () {
@@ -50,35 +50,50 @@ TasksMenu = function (selector, title, tasks) {
     }
     
     var moveToTask = function (taskToMoveTo) {
-        if(taskToMoveTo < 0 || taskToMoveTo >= tasks.length)
+        if(taskToMoveTo < 0 || taskToMoveTo >= opts.tasks.length)
             return;
         
         if(taskToMoveTo != currentTask) {
             var previousTask = currentTask;
-            
-            if(tasks[previousTask].taskComplete)
-                tasks[previousTask].taskComplete();
-                
-            $(selector + " .taskTitle" + previousTask + " .background").get(0).setAttribute("material", "opacity", "0.1");
-            $(selector + " .taskTitle" + previousTask + " .background").get(0).setAttribute("material", "color", "green");
-            $(selector + " .taskDescription" + previousTask).get(0).setAttribute("visible", "false");
+            completeTask(previousTask)
         }
 
-        currentTask = taskToMoveTo;
-        if(tasks[currentTask].taskBegin)
-                tasks[currentTask].taskBegin();
+        beginTask(taskToMoveTo);
+    }
+    
+    var completeTask = function (task) {
+        if(opts.tasks[task].taskComplete)
+            opts.tasks[task].taskComplete();
+            
+        if(opts.taskComplete)
+            opts.taskComplete();
+            
+        $(selector + " .taskTitle" + task + " .background").get(0).setAttribute("material", "opacity", "0.1");
+        $(selector + " .taskTitle" + task + " .background").get(0).setAttribute("material", "color", "green");
+        $(selector + " .taskDescription" + task).get(0).setAttribute("visible", "false");
+    }
+    
+    var beginTask = function (task) {
+        currentTask = task;
+        
+        if(opts.tasks[currentTask].taskBegin)
+                opts.tasks[currentTask].taskBegin();
+                
+        if(opts.taskBegin)
+            opts.taskBegin();
+                
         $(selector + " .taskTitle" + currentTask + " .background").get(0).setAttribute("material", "opacity", "0.5");
         $(selector + " .taskDescription" + currentTask).get(0).setAttribute("visible", "true");
     }
 
     this.init = function () {
-        var menuHtml = menuTemplate.replace("%MENUTITLE%", title);
+        var menuHtml = menuTemplate.replace("%MENUTITLE%", opts.title);
         
         // Loop over each task and create visuals for its title and description
         var taskTitlesHtml = "";
         var taskDescriptionsHtml = "";
-        for(var taskIndex = 0; taskIndex < tasks.length; taskIndex++) {
-            var task = tasks[taskIndex];
+        for(var taskIndex = 0; taskIndex < opts.tasks.length; taskIndex++) {
+            var task = opts.tasks[taskIndex];
             
             // Create visual for task title
             taskTitlesHtml += taskTitleTemplate.replace("%CLASSNAME%", "taskTitle" + taskIndex).replace("%OFFSET%", taskIndex * -0.2).replace("%TEXT%", task.title);
