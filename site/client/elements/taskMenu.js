@@ -55,12 +55,18 @@ TasksMenu = function (selector, title, tasks) {
         
         if(taskToMoveTo != currentTask) {
             var previousTask = currentTask;
+            
+            if(tasks[previousTask].taskComplete)
+                tasks[previousTask].taskComplete();
+                
             $(selector + " .taskTitle" + previousTask + " .background").get(0).setAttribute("material", "opacity", "0.1");
             $(selector + " .taskTitle" + previousTask + " .background").get(0).setAttribute("material", "color", "green");
             $(selector + " .taskDescription" + previousTask).get(0).setAttribute("visible", "false");
         }
 
         currentTask = taskToMoveTo;
+        if(tasks[currentTask].taskBegin)
+                tasks[currentTask].taskBegin();
         $(selector + " .taskTitle" + currentTask + " .background").get(0).setAttribute("material", "opacity", "0.5");
         $(selector + " .taskDescription" + currentTask).get(0).setAttribute("visible", "true");
     }
