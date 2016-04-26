@@ -1,0 +1,225 @@
+﻿<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<script   src="https://code.jquery.com/jquery-2.2.3.js"   integrity="sha256-laXWtGydpwqJ8JA+X9x2miwmaiKhn8tVmOVEigRNtP4="   crossorigin="anonymous"></script>
+		<script src="../site/public/lib/js.cookie.js"></script>
+		<script src="../site/public/lib/aframe-v0.2.0-rc1/aframe.js"></script>
+		<script src="../site/public/lib/aframe-text-component.js"></script>
+		<script src="../site/public/lib/leap-0.6.4.js"></script>
+		<script src="../site/public/lib/leap-plugins-0.1.11.js"></script>
+		<script src="../site/public/lib/leap.rigged-hand-0.1.7.js"></script>
+		<script src="../site/public/lib/leap-motion-hand-grabbing.js"></script>
+		<script src="../site/public/lib/leap-motion-hand-resizing.js"></script>
+		<script src="../site/public/lib/leap.pinchEvent.js"></script>
+		<script src="../site/public/lib/leap.pointer.js"></script>
+		
+		<script>
+			function TasksMenu (selector, title, tasks) {
+				var menuTemplate = "<a-entity class='taskMenu' position='0 1.5 -3'>" +
+							"<!-- Background -->" +
+							"<a-plane material='color: white; opacity: 0.3' scale='1.5 1 1'></a-plane>" +
+							
+							"<!-- Title -->" +
+							"<a-entity class='menuTitle' position='-1.3 0.7 0' text='text: Hello, World!' scale='0.3 0.3 0.3' material='color: black'></a-entity>" +
+							
+							"<a-entity position='0 0 0.01'>" +
+								
+								"<!-- Tasks -->" +
+								"<a-entity class='taskTitlesContainer' position='-0.65 0.4 0'>" +
+								"</a-entity>" +
+								
+								"<!-- Task Description -->" +
+								"<a-entity position='0.65 0.25 0'>" +
+									"<!-- Background -->" +
+									"<a-plane material='color: white; opacity: 0.5' scale='0.65 0.7 0' position='0 -0.45 0'></a-plane>" +
+									
+									"<!-- Text -->" +
+									"<a-entity class='taskDescriptionsContainer'>" +
+									"</a-entity>" +
+								"</a-entity>" +
+							"</a-entity>" +
+							
+						"</a-entity>";
+				var taskNameTemplate = "<a-entity class='%CLASSNAME%' position='0 %OFFSET% 0' class='task1'>" +
+							"<!-- Background -->" +
+							"<a-plane class='background' material='color: white; opacity: 0.1' scale='0.65 0.1 0'></a-plane>" +
+							
+							"<!-- Title -->" +
+							"<a-entity class='title' position='-0.33 -0.02 0' text='text: %TEXT%' scale='0.1 0.1 0.1' material='color: black'></a-entity>" +
+						"</a-entity>";
+						
+				var taskDescriptionTemplate = "<a-entity class='%CLASSNAME%' position='-0.5 0.13 0' visible='false'>%TEXTHTML%</a-entity>";
+				var lineOfTextTemplate = "<a-entity position='0 %OFFSET% 0' text='text: %TEXT%' scale='0.1 0.1 0.1' material='color: black'></a-entity>";
+
+				var currentTask = 0;
+				this.moveToTask = function (taskToMoveTo) {
+					var previousTask = currentTask;
+					$(selector + " .taskTitle" + previousTask + " .background").get(0).setAttribute("material", "opacity", "0.1");
+					$(selector + " .taskDescription" + previousTask).get(0).setAttribute("visible", "false");
+					
+					currentTask = taskToMoveTo;
+					$(selector + " .taskTitle" + currentTask + " .background").get(0).setAttribute("material", "opacity", "0.5");
+					$(selector + " .taskDescription" + currentTask).get(0).setAttribute("visible", "true");
+				}
+
+				var init = function () {
+					$(selector + " .menuTitle").get(0).setAttribute("text", "text", title);
+
+					var taskTitlesContainer = $(selector + " .taskTitlesContainer");
+					var taskDescriptionsContainer = $(selector + " .taskDescriptionsContainer");
+					
+					// Loop over each task and create visuals for its title and description
+					for(var taskIndex = 0; taskIndex < tasks.length; taskIndex++) {
+						var task = tasks[taskIndex];
+						
+						// Create visual for task title
+						taskTitlesContainer.append(taskNameTemplate.replace("%CLASSNAME%", "taskTitle" + taskIndex).replace("%OFFSET%", taskIndex * -0.2).replace("%TEXT%", task.title))
+						
+						// Create lines for the description
+						var maxCharactersPerLine = 35;
+						var wordsInDescription = task.description.split(' ');
+						var lines = [];
+						var line = "";
+						for(var wordIndex = 0; wordIndex < wordsInDescription.length; wordIndex++) {
+							var word = wordsInDescription[wordIndex];
+							if(line.length + word.length < maxCharactersPerLine)
+								line += " " + word;
+							else {
+								lines.push(line);
+								line = "" + word;
+							}
+						}
+						
+						// Push the last line
+						if(line.length > 0)
+							lines.push(line);
+						
+						// Create the visuals for each line
+						var textHtml = "";
+						for(var lineIndex = 0; lineIndex < lines.length; lineIndex++) {
+							var line = lines[lineIndex];
+							textHtml += lineOfTextTemplate.replace("%OFFSET%", lineIndex * -0.15).replace("%TEXT%", line)
+						}
+						
+						// Create visual for the entire description
+						taskDescriptionsContainer.append( taskDescriptionTemplate.replace("%CLASSNAME%", "taskDescription" + taskIndex).replace("%TEXTHTML%", textHtml) );
+					}
+				}
+				
+				init();
+				this.moveToTask(0);
+			}
+			
+			window.onload = function () {
+				var tasks = [
+					{
+						title: "Pick up the heart",
+						description: "Use your left hand to pick up the heart, then drop it above the table",
+					},
+					{
+						title: "Pick up the heart",
+						description: "Use your left hand to pick up the heart, then drop it above the table",
+					},
+				];
+				
+				var taskMenu = new TasksMenu(".taskMenu", "This is a test", tasks);
+				
+			}
+		</script>
+	</head>
+
+	<body>
+		<a-scene>
+			<a-assets>
+				<a-mixin id="wall" geometry="primitive: plane; width: 10; height: 4;" material="color: white"></a-mixin>
+				<a-mixin id="floorAndCeiling" geometry="primitive: plane; width: 10; height: 10;"></a-mixin>
+			</a-assets>
+			
+			<a-camera position="0 1 0" near="0.001"></a-camera>
+			
+			<!-- Room -->
+			<a-entity position="0 0 -4">
+				<!-- Floor -->
+				<a-entity mixin="floorAndCeiling" rotation="-90 0 0" material="color: white"></a-entity>
+				
+				<!-- Left Wall -->
+				<a-entity mixin="wall" position="5 2 0" rotation="0 -90 0"></a-entity>
+				
+				<!-- Right Wall -->
+				<a-entity mixin="wall" position="-5 2 0" rotation="0 90 0"></a-entity>
+				
+				<!-- Front Wall -->
+				<a-entity mixin="wall" position="0 2 -5"></a-entity>
+				
+				<!-- Back Wall -->
+				<a-entity mixin="wall" position="0 2 5" rotation="0 180 0"></a-entity>
+				
+				<!-- Ceiling -->
+				<a-entity mixin="floorAndCeiling" position="0 4 0" rotation="90 0 0" material="color: white"></a-entity>
+			</a-entity>
+			
+			<!-- Lights -->
+			<a-light type="point" position="0.5 0.5 0" distance="5" decay="1" intensity="0.7"></a-light>
+			<a-light type="point" position="0.5 2 0" distance="5" decay="1" intensity="0.7"></a-light>
+			<a-light type="point" position="-0.5 0.5 0" distance="5" decay="1" intensity="0.7"></a-light>
+			<a-light type="point" position="-0.5 2 0" distance="5" decay="1" intensity="0.7"></a-light>
+			
+			<a-entity position="0 0 -4">
+				<!-- Left row -->
+				<a-entity position="-3 0 0">
+					<a-light type="point" position="0 3.3 0" distance="50" decay="10" intensity="0.1"></a-light>
+					<a-light type="point" position="0 3.3 -2" distance="50" decay="10" intensity="0.1"></a-light>
+				</a-entity>
+				
+				<!-- Right row -->
+				<a-entity position="3 0 0">
+					<a-light type="point" position="0 3.3 0" distance="50" decay="10" intensity="0.1"></a-light>
+					<a-light type="point" position="0 3.3 -2" distance="50" decay="10" intensity="0.1"></a-light>
+				</a-entity>
+			</a-entity>
+
+			<a-entity class="curvedBackgroundContainer" position="0 1.5 0">
+				<!-- Background -->
+				<a-cylinder radius="4.1" height="4" side="back" open-ended="true" color="#FFF" opacity="0.5"></a-cylinder>
+				
+				<!-- 
+					Other items will be added here dynamically, once the page loads.
+					See heartLesson.js for more info
+				-->
+				
+				<a-animation attribute="position"
+					begin="fadeIn"
+					dur="2000"
+					fill="forwards"
+					to="0 1.5 0"></a-animation>
+			</a-entity>
+			
+			<a-entity class="taskMenu" position="0 1.5 -3">
+				<!-- Background -->
+				<a-plane material="color: white; opacity: 0.3" scale="1.5 1 1"></a-plane>
+				
+				<!-- Title -->
+				<a-entity class="menuTitle" position="-1.3 0.7 0" text="text: Hello, World!" scale="0.3 0.3 0.3" material="color: black"></a-entity>
+				
+				<a-entity position="0 0 0.01">
+					
+					<!-- Tasks -->
+					<a-entity class="taskTitlesContainer" position="-0.65 0.4 0">
+					</a-entity>
+					
+					<!-- Task Description -->
+					<a-entity position="0.65 0.25 0">
+						<!-- Background -->
+						<a-plane material="color: white; opacity: 0.5" scale="0.65 0.7 0" position="0 -0.45 0"></a-plane>
+						
+						<!-- Text -->
+						<a-entity class="taskDescriptionsContainer">
+						</a-entity>
+					</a-entity>
+				</a-entity>
+				
+			</a-entity>
+		</a-scene>
+	</body>
+</html>
