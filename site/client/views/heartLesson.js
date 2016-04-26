@@ -139,16 +139,33 @@ function setupTasks() {
     var taskMenu = new TasksMenu(".taskMenu", "Heart Lesson 1", tasks);
     
     var taskOneEventHander = function (e) {
-       if(e.originalEvent.detail.state != "hand.grabbing")
+        if(e.originalEvent.detail.state != "hand.grabbing")
             return;
             
-       if(TouchInfo.leftHand.toucherHand.isGrabbing())
+        if(TouchInfo.leftHand.toucherHand.isGrabbing()) {
             taskMenu.next();
-       
-       $(".heartContainer").off("stateadded", taskOneEventHander);
+            $(".heartContainer").on("stateremoved", taskTwoEventHander);
+        }
+
+        $(".heartContainer").off("stateadded", taskOneEventHander);
     };
-    
     $(".heartContainer").on("stateadded", taskOneEventHander);
+    
+    var taskTwoEventHander = function (e) {
+        if(e.originalEvent.detail.state != "hand.grabbing")
+            return;
+
+        if(!TouchInfo.leftHand.toucherHand.isGrabbing())
+            return;
+
+        var box = new THREE.Box3().setFromObject(TouchInfo.leftHand.toucherHand.grabbedObj);
+        var boxSize = box.size();
+        var maxDimension = Math.max(boxSize.x, Math.max(boxSize.y, boxSize.z));
+        if(maxDimension > 1) {
+            taskMenu.next();
+            $(".heartContainer").off("stateremoved", taskTwoEventHander);
+        }
+    };
 }
 
 function setupHeart(controller) {
