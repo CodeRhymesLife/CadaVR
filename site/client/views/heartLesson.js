@@ -106,11 +106,7 @@ Template.heartLesson.onRendered(function () {
         CameraUtils.setupLookEvents();
         setupHUD(sceneEl);
         
-        var pin = new Pin(true);
-        pin.enable();
-        pin.position.set(0, 1.8, -1);
-        pin.rotation.set(0, 0, -90);
-        Utils.sceneEl.object3D.add(pin);
+        var pin = setupThePin()
         
         setupTouchEvents(pin);
 
@@ -118,78 +114,6 @@ Template.heartLesson.onRendered(function () {
         setupTasks()
     });
 });
-
-function setupTrash(controller) {
-    var trash = new Trash($(".trash").get(0), false);
-    controller.on("hand.grabbing.start", function (toucherHand) {
-        trash.enable();
-    });
-    
-    controller.on("hand.grabbing.end", function (toucherHand) {
-        trash.disable();
-    });
-}
-
-function setupTasks() {
-    var tasks = [
-        {
-            title: "Pick up the heart",
-            description: "Use your left hand to pick up the heart, then drop it above the table",
-        },
-        {
-            title: "Resize the heart",
-            description: "To enter resize mode, grab the heart with your left hand then grab the heart with your right hand. Once in resize mode, make the heart as big as you can.",
-        },
-        {
-            title: "Remove the wall of the heart",
-            description: "Use your right hand to grab the wall of the heart and place it in the trash.",
-        },
-        {
-            title: "Pin the pulmonary valves",
-            description: "Grab the yellow pin. Place the pin in the pulmonary valves.",
-        },
-    ];
-    
-    var taskMenu = new TasksMenu(".taskMenu", "Heart Lesson 1", tasks);
-    
-    var taskOneEventHander = function (e) {
-        if(e.originalEvent.detail.state != "hand.grabbing")
-            return;
-            
-        if(TouchInfo.leftHand.toucherHand.isGrabbing()) {
-            taskMenu.next();
-            $(".heartContainer").on("stateremoved", taskTwoEventHander);
-        }
-
-        $(".heartContainer").off("stateadded", taskOneEventHander);
-    };
-    $(".heartContainer").on("stateadded", taskOneEventHander);
-    
-    var taskTwoEventHander = function (e) {
-        if(e.originalEvent.detail.state != "hand.grabbing")
-            return;
-
-        if(!TouchInfo.leftHand.toucherHand.isGrabbing())
-            return;
-
-        var box = new THREE.Box3().setFromObject(TouchInfo.leftHand.toucherHand.grabbedObj);
-        var boxSize = box.size();
-        var maxDimension = Math.max(boxSize.x, Math.max(boxSize.y, boxSize.z));
-        if(maxDimension > 1) {
-            taskMenu.next();
-            $(".heartContainer").off("stateremoved", taskTwoEventHander);
-            $(".model[name='Wall of heart']").on("stateadded", taskThreeEventHandler);
-        }
-    };
-    
-    var taskThreeEventHandler = function (e) {
-        if(e.originalEvent.detail.state != "trashed")
-            return;
-            
-        taskMenu.next();
-        $(".model[name='Wall of heart']").off("stateadded", taskThreeEventHandler);
-    }
-}
 
 function setupHeart(controller) {
     var modelData = ModelUtils.load(heartPartsInfo, ".heartContainer", controller, 0.2);
@@ -306,6 +230,15 @@ function setupHUD(sceneEl) {
 	THREE.SceneUtils.attach( hud.object3D, sceneEl.object3D, sceneEl.camera.el.object3D );
 }
 
+function setupThePin() {
+    var pin = new Pin(true);
+    pin.rootEl.setAttribute("position", "0 1.8 -1");
+    pin.rootEl.setAttribute("rotation", "0 0 -90");
+    pin.enable();
+    
+    return pin;
+}
+
 function setupTouchEvents(pin) {
     controller.use("leap-motion-hand-grabbing", { leftHand: true, rightHand: true, debug: false });
     controller.use("leap-motion-hand-resizing");
@@ -342,13 +275,80 @@ function setupTouchEvents(pin) {
         })
     });
     
-    TouchInfo.rightHand.add( pin.sphere, function (mesh) {
-        return pin;
-    })
+    TouchInfo.rightHand.add( pin.rootEl.object3D );
+    TouchInfo.leftHand.add( pin.rootEl.object3D );
+}
+
+function setupTrash(controller) {
+    var trash = new Trash($(".trash").get(0), false);
+    controller.on("hand.grabbing.start", function (toucherHand) {
+        trash.enable();
+    });
     
-    TouchInfo.rightHand.add( pin.cylinder, function (mesh) {
-        return pin;
-    })
+    controller.on("hand.grabbing.end", function (toucherHand) {
+        trash.disable();
+    });
+}
+
+function setupTasks() {
+    var tasks = [
+        {
+            title: "Pick up the heart",
+            description: "Use your left hand to pick up the heart, then drop it above the table",
+        },
+        {
+            title: "Resize the heart",
+            description: "To enter resize mode, grab the heart with your left hand then grab the heart with your right hand. Once in resize mode, make the heart as big as you can.",
+        },
+        {
+            title: "Remove the wall of the heart",
+            description: "Use your right hand to grab the wall of the heart and place it in the trash.",
+        },
+        {
+            title: "Pin the pulmonary valves",
+            description: "Grab the yellow pin. Place the pin in the pulmonary valves.",
+        },
+    ];
+    
+    var taskMenu = new TasksMenu(".taskMenu", "Heart Lesson 1", tasks);
+    
+    var taskOneEventHander = function (e) {
+        if(e.originalEvent.detail.state != "hand.grabbing")
+            return;
+            
+        if(TouchInfo.leftHand.toucherHand.isGrabbing()) {
+            taskMenu.next();
+            $(".heartContainer").on("stateremoved", taskTwoEventHander);
+        }
+
+        $(".heartContainer").off("stateadded", taskOneEventHander);
+    };
+    $(".heartContainer").on("stateadded", taskOneEventHander);
+    
+    var taskTwoEventHander = function (e) {
+        if(e.originalEvent.detail.state != "hand.grabbing")
+            return;
+
+        if(!TouchInfo.leftHand.toucherHand.isGrabbing())
+            return;
+
+        var box = new THREE.Box3().setFromObject(TouchInfo.leftHand.toucherHand.grabbedObj);
+        var boxSize = box.size();
+        var maxDimension = Math.max(boxSize.x, Math.max(boxSize.y, boxSize.z));
+        if(maxDimension > 1) {
+            taskMenu.next();
+            $(".heartContainer").off("stateremoved", taskTwoEventHander);
+            $(".model[name='Wall of heart']").on("stateadded", taskThreeEventHandler);
+        }
+    };
+    
+    var taskThreeEventHandler = function (e) {
+        if(e.originalEvent.detail.state != "trashed")
+            return;
+            
+        taskMenu.next();
+        $(".model[name='Wall of heart']").off("stateadded", taskThreeEventHandler);
+    }
 }
 
 function updateHUDOrganName (textObject) {

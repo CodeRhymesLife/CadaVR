@@ -1,21 +1,23 @@
-Pin = function (debug) {
-    THREE.Group.call(this)
+Pin = function (debug) { 
+    
+    var root = $("<a-entity scale='0.1 0.1 0.1'></a-entity>").get(0);
+    $("a-scene").append(root);
+
+    this.rootEl = $(root).get(0);
     
     var sphereGeometry = new THREE.SphereGeometry(0.5);
     var sphereMaterial = new THREE.MeshBasicMaterial({ color: 0xFFFF00 });
     this.sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
     
-    var cylingerLengthScale = 2;
-    var cylinderGeometry = new THREE.CylinderGeometry(0.1, 0.1, cylingerLengthScale);
+    var cylinderLengthScale = 2;
+    var cylinderGeometry = new THREE.CylinderGeometry(0.1, 0.1, cylinderLengthScale);
     var cylinderMaterial = new THREE.MeshBasicMaterial({ color: 0x808080 });
     this.cylinder = new THREE.Mesh(cylinderGeometry, cylinderMaterial);
-    this.cylinder.position.set(0, -cylingerLengthScale/2, 0);
+    this.cylinder.position.set(0, -cylinderLengthScale/2, 0);
     
-    this.add(this.sphere);
-    this.add(this.cylinder);
-    
-    this.scale.multiplyScalar(0.05);
-    
+    this.rootEl.object3D.add(this.sphere);
+    this.rootEl.object3D.add(this.cylinder);
+
     var key = null;
     this.enable = function () {
         this.disable();
@@ -43,8 +45,9 @@ Pin = function (debug) {
         }    
     }
     
-    var cylingerLength = this.scale.x * cylingerLengthScale;
-    this.getClosestObject = function () {        
+    this.getClosestObject = function () {
+        var cylingerLength = 0.2;
+         
         var matrix = new THREE.Matrix4();
         matrix.extractRotation( this.cylinder.matrixWorld );
         var direction = new THREE.Vector3( 0, -1, 0 );
