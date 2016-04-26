@@ -110,9 +110,46 @@ Template.heartLesson.onRendered(function () {
         pin.position.set(0, 1.8, -1);
         pin.rotation.set(0, 0, -90);
         Utils.sceneEl.object3D.add(pin);
+        
         setupTouchEvents(pin);
+        setupTasks()
     });
 });
+
+function setupTasks() {
+    var tasks = [
+        {
+            title: "Pick up the heart",
+            description: "Use your left hand to pick up the heart, then drop it above the table",
+        },
+        {
+            title: "Resize the heart",
+            description: "To enter resize mode, grab the heart with your left hand then grab the heart with your right hand. Once in resize mode, make the heart as big as you can.",
+        },
+        {
+            title: "Remove the wall of the heart",
+            description: "Use your right hand to grab the wall of the heart. Place the wall of the heart in the trash.",
+        },
+        {
+            title: "Pin the pulmonary valves",
+            description: "Grab the yellow pin. Place the pin in the pulmonary valves.",
+        },
+    ];
+    
+    var taskMenu = new TasksMenu(".taskMenu", "Heart Lesson 1", tasks);
+    
+    var taskOneEventHander = function (e) {
+       if(e.originalEvent.detail.state != "hand.grabbing")
+            return;
+            
+       if(TouchInfo.leftHand.toucherHand.isGrabbing())
+            taskMenu.next();
+       
+       $(".heartContainer").off("stateadded", taskOneEventHander);
+    };
+    
+    $(".heartContainer").on("stateadded", taskOneEventHander);
+}
 
 function setupHeart(controller) {
     var modelData = ModelUtils.load(heartPartsInfo, ".heartContainer", controller, 0.2);
@@ -221,9 +258,6 @@ function setupVisuals(cameraEl) {
 		1418,
 		2960
 	);
-    
-    // We'll show everything after the heart is positioned
-    $(".curvedBackgroundContainer").get(0).setAttribute("position", "0 10 0");
 }
 
 function setupHUD(sceneEl) {
@@ -275,18 +309,6 @@ function setupTouchEvents(pin) {
     TouchInfo.rightHand.add( pin.cylinder, function (mesh) {
         return pin;
     })
-    
-    var showBackground = function (e) {
-       if(e.originalEvent.detail.state != "hand.grabbing")
-            return;
-        
-        $(".curvedBackgroundContainer").get(0).emit("fadeIn");
-        
-        // Detach event
-        $(this).off("stateadded", showBackground);
-    }
-    
-    $(".heartContainer").on("stateadded", showBackground);
 }
 
 function updateHUDOrganName (textObject) {
