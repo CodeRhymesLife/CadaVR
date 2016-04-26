@@ -102,8 +102,6 @@ Template.heartLesson.onRendered(function () {
         var controller = LeapUtils.createController();
 
         setupHeart(controller);
-        setupVisuals(cameraEl);
-        CameraUtils.setupLookEvents();
         setupHUD(sceneEl);
         
         var pin = setupThePin()
@@ -143,85 +141,6 @@ function setupHeart(controller) {
         else if(e.originalEvent.detail.state == "selected")
             hideDescription();
     })
-}
-
-function setupVisuals(cameraEl) {
-    // Top
-    /*
-    DisplayUtils.addCurvedImageToContainer(
-		"heartLessonCurvedImageContainer",
-        "taskHeader",
-		"images/heartLesson/taskCard.png",
-		"0 1.95 0",
-		"0 26 0",
-		0.5,
-		1746,
-		246
-	);*/
-
-    // Left
-    DisplayUtils.addCurvedImageToContainer(
-		"heartLessonCurvedImageContainer",
-        "taskDescription",
-		"images/heartLesson/mainCard.png",
-		"0 -0.1 0",
-		"0 217 0",
-		4,
-		1674,
-		2204
-	);
-    DisplayUtils.addCurvedImageToContainer(
-		"heartLessonCurvedImageContainer",
-        "quizIcon taskIcon",
-		"images/heartLesson/quizIcon.png",
-		"0 0.9 -0.01",
-		"0 214 0",
-		0.5,
-		400,
-		400
-	);
-    DisplayUtils.addCurvedImageToContainer(
-		"heartLessonCurvedImageContainer",
-        "soundIcon taskIcon",
-		"images/heartLesson/soundIcon.png",
-		"0 0.3 -0.01",
-		"0 214 0",
-		0.5,
-		400,
-		400
-	);
-    DisplayUtils.addCurvedImageToContainer(
-		"heartLessonCurvedImageContainer",
-        "simIcon taskIcon",
-		"images/heartLesson/simIcon.png",
-		"0 -0.3 -0.01",
-		"0 214 0",
-		0.5,
-		400,
-		400
-	);
-    $(cameraEl).on("lookingLeftStart", function () {
-        $(".taskIcon").each(function () {
-			$(this).get(0).emit("slideRight");
-		});
-    })
-    .on("lookingLeftEnd", function () {
-		$(".taskIcon").each(function () {
-			$(this).get(0).emit("slideLeft");
-		});
-    });
-
-    // Right
-    DisplayUtils.addCurvedImageToContainer(
-		"heartLessonCurvedImageContainer",
-        "bodyImage",
-		"images/heartLesson/body.png",
-		"0 0 0",
-		"0 124 0",
-		3.8,
-		1418,
-		2960
-	);
 }
 
 function setupHUD(sceneEl) {
@@ -319,7 +238,7 @@ function setupTasks(pin) {
         },
         {
             title: "Pin the pulmonary valve",
-            description: "Grab the yellow pin. Place the pin in the pulmonary valves.",
+            description: "Grab the yellow pin. Place the pin in the pulmonary valve.",
         },
         {
             title: "Done",
@@ -328,6 +247,8 @@ function setupTasks(pin) {
     ];
     
     var taskMenu = new TasksMenu(".taskMenu", "Heart Lesson 1", tasks);
+    taskMenu.rootEl.setAttribute("scale", "2 2 2");
+    taskMenu.rootEl.setAttribute("position", "0 2 -3");
     
     var taskOneEventHander = function (e) {
         if(e.originalEvent.detail.state != "hand.grabbing")

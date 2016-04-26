@@ -66,7 +66,7 @@ TasksMenu = function (selector, title, tasks) {
         $(selector + " .taskDescription" + currentTask).get(0).setAttribute("visible", "true");
     }
 
-    var init = function () {
+    this.init = function () {
         var menuHtml = menuTemplate.replace("%MENUTITLE%", title);
         
         // Loop over each task and create visuals for its title and description
@@ -109,9 +109,10 @@ TasksMenu = function (selector, title, tasks) {
         }
         
         menuHtml = menuHtml.replace("%TASKTITLESHTML%", taskTitlesHtml).replace("%TASKDESCRIPTIONSHTML%", taskDescriptionsHtml);
-        $("a-scene").append(menuHtml);
+        this.rootEl = $(menuHtml).get(0);
+        $("a-scene").append(this.rootEl);
     }
     
-    init();
+    this.init();
     moveToTask(0);
 }
