@@ -45,10 +45,6 @@ TasksMenu = function (selector, title, tasks) {
         return currentTask;
     }
     
-    this.prev = function () {
-        moveToTask(currentTask - 1)
-    }
-    
     this.next = function () {
         moveToTask(currentTask + 1)
     }
@@ -57,10 +53,13 @@ TasksMenu = function (selector, title, tasks) {
         if(taskToMoveTo < 0 || taskToMoveTo >= tasks.length)
             return;
         
-        var previousTask = currentTask;
-        $(selector + " .taskTitle" + previousTask + " .background").get(0).setAttribute("material", "opacity", "0.1");
-        $(selector + " .taskDescription" + previousTask).get(0).setAttribute("visible", "false");
-        
+        if(taskToMoveTo != currentTask) {
+            var previousTask = currentTask;
+            $(selector + " .taskTitle" + previousTask + " .background").get(0).setAttribute("material", "opacity", "0.1");
+            $(selector + " .taskTitle" + previousTask + " .background").get(0).setAttribute("material", "color", "green");
+            $(selector + " .taskDescription" + previousTask).get(0).setAttribute("visible", "false");
+        }
+
         currentTask = taskToMoveTo;
         $(selector + " .taskTitle" + currentTask + " .background").get(0).setAttribute("material", "opacity", "0.5");
         $(selector + " .taskDescription" + currentTask).get(0).setAttribute("visible", "true");
