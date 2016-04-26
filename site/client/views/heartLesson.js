@@ -106,7 +106,8 @@ Template.heartLesson.onRendered(function () {
         CameraUtils.setupLookEvents();
         setupHUD(sceneEl);
         
-        var pin = new Pin();
+        var pin = new Pin(true);
+        pin.enable();
         pin.position.set(0, 1.8, -1);
         pin.rotation.set(0, 0, -90);
         Utils.sceneEl.object3D.add(pin);
