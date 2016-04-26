@@ -234,7 +234,20 @@ function setupThePin() {
     var pin = new Pin(true);
     pin.rootEl.setAttribute("position", "0 1.8 -1");
     pin.rootEl.setAttribute("rotation", "0 0 -90");
-    pin.enable();
+    
+    $(pin.rootEl).on("stateadded", function (e) {
+        if(e.originalEvent.detail.state != "hand.grabbing")
+            return;
+
+        pin.enable();
+    });
+    
+    $(pin.rootEl).on("stateremoved", function (e) {
+        if(e.originalEvent.detail.state != "hand.grabbing")
+            return;
+
+        pin.disable();
+    });
     
     return pin;
 }
@@ -290,7 +303,7 @@ function setupTrash(controller) {
     });
 }
 
-function setupTasks() {
+function setupTasks(pin) {
     var tasks = [
         {
             title: "Pick up the heart",
@@ -298,15 +311,19 @@ function setupTasks() {
         },
         {
             title: "Resize the heart",
-            description: "To enter resize mode, grab the heart with your left hand then grab the heart with your right hand. Once in resize mode, make the heart as big as you can.",
+            description: "To enter resize mode, grab the heart with your left hand then grab the heart with your right hand. Once in resize mode, make the heart as big as you can, then let go with both hands.",
         },
         {
             title: "Remove the wall of the heart",
             description: "Use your right hand to grab the wall of the heart and place it in the trash.",
         },
         {
-            title: "Pin the pulmonary valves",
+            title: "Pin the pulmonary valve",
             description: "Grab the yellow pin. Place the pin in the pulmonary valves.",
+        },
+        {
+            title: "Done",
+            description: "Congratulations, you finished the heart lesson!",
         },
     ];
     
@@ -348,6 +365,15 @@ function setupTasks() {
             
         taskMenu.next();
         $(".model[name='Wall of heart']").off("stateadded", taskThreeEventHandler);
+        $(".model[name='Pulmonary valve']").on("stateadded", taskFourEventHandler);
+    }
+    
+    var taskFourEventHandler = function (e) {
+        if(e.originalEvent.detail.state != "pinned")
+            return;
+            
+        taskMenu.next();
+        $(".model[name='Pulmonary valve']").off("stateadded", taskThreeEventHandler);
     }
 }
 

@@ -40,9 +40,7 @@ Pin = function (debug) {
             return;
             
         var intersectedObj = intersectedObjInfo.object;
-        if(!intersectedObj.el.is("hand.grabbing")) {
-            intersectedObj.el.addState("pinned");
-        }    
+        intersectedObj.el.addState("pinned");   
     }
     
     this.getClosestObject = function () {
