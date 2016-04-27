@@ -104,9 +104,7 @@ Template.heartLesson.onRendered(function () {
         setupHeart(controller);
         setupHUD(sceneEl);
         
-        var pin = setupThePin()
-        
-        setupTouchEvents(pin);
+        setupTouchEvents();
 
         setupTrash(controller)
         setupTasks()
@@ -151,22 +149,32 @@ function setupHUD(sceneEl) {
 
 function setupThePin() {
     var pin = new Pin(false);
-    pin.rootEl.setAttribute("position", "0 1.8 -1");
-    pin.rootEl.setAttribute("rotation", "0 0 -90");
     
-    $(pin.rootEl).on("stateadded", function (e) {
-        if(e.originalEvent.detail.state != "hand.grabbing")
-            return;
+    // For some reason Firefox doesnt go from html -> threejs quick enough
+    // so we need to delay initializing the pin
+    setTimeout(function () {
+        pin.init();
+        pin.rootEl.setAttribute("position", "0 1.8 -1");
+        pin.rootEl.setAttribute("rotation", "0 0 -90");
+        
+        $(pin.rootEl).on("stateadded", function (e) {
+            if(e.originalEvent.detail.state != "hand.grabbing")
+                return;
 
-        pin.enable();
-    });
+            pin.enable();
+        });
+        
+        $(pin.rootEl).on("stateremoved", function (e) {
+            if(e.originalEvent.detail.state != "hand.grabbing")
+                return;
+
+            pin.disable();
+        });
+        
+        TouchInfo.rightHand.add( pin.rootEl.object3D );
+        TouchInfo.leftHand.add( pin.rootEl.object3D );
+    }, 500)
     
-    $(pin.rootEl).on("stateremoved", function (e) {
-        if(e.originalEvent.detail.state != "hand.grabbing")
-            return;
-
-        pin.disable();
-    });
     
     return pin;
 }
@@ -206,9 +214,6 @@ function setupTouchEvents(pin) {
             return container;
         })
     });
-    
-    TouchInfo.rightHand.add( pin.rootEl.object3D );
-    TouchInfo.leftHand.add( pin.rootEl.object3D );
 }
 
 function setupTrash(controller) {
@@ -284,6 +289,8 @@ function setupTasks(pin) {
             title: "Pin the pulmonary valve",
             description: "Grab the yellow pin. Place the pin in the pulmonary valve.",
             taskBegin: function() { 
+                var pin = setupThePin();
+                
                 $(".model[name='Pulmonary valve']").on("stateadded", this.taskFourEventHandler);
             },
             taskComplete: function() {
@@ -299,8 +306,7 @@ function setupTasks(pin) {
         {
             title: "Done",
             description: "Congratulations, you finished the heart lesson!",
-            taskBegin: function() { 
-                
+            taskComplete: function() { 
             },
         },
     ];

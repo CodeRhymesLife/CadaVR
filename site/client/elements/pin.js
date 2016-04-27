@@ -1,22 +1,24 @@
 Pin = function (debug) { 
     
-    var root = $("<a-entity scale='0.1 0.1 0.1'></a-entity>").get(0);
+    var root = $("<a-entity scale='0.1 0.1 0.1'></a-entity>");
     $("a-scene").append(root);
 
     this.rootEl = $(root).get(0);
-    
-    var sphereGeometry = new THREE.SphereGeometry(0.5);
-    var sphereMaterial = new THREE.MeshBasicMaterial({ color: 0xFFFF00 });
-    this.sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
-    
-    var cylinderLengthScale = 2;
-    var cylinderGeometry = new THREE.CylinderGeometry(0.1, 0.1, cylinderLengthScale);
-    var cylinderMaterial = new THREE.MeshBasicMaterial({ color: 0x808080 });
-    this.cylinder = new THREE.Mesh(cylinderGeometry, cylinderMaterial);
-    this.cylinder.position.set(0, -cylinderLengthScale/2, 0);
-    
-    this.rootEl.object3D.add(this.sphere);
-    this.rootEl.object3D.add(this.cylinder);
+
+    this.init = function () {
+        var sphereGeometry = new THREE.SphereGeometry(0.5);
+        var sphereMaterial = new THREE.MeshBasicMaterial({ color: 0xFFFF00 });
+        this.sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+        
+        var cylinderLengthScale = 2;
+        var cylinderGeometry = new THREE.CylinderGeometry(0.1, 0.1, cylinderLengthScale);
+        var cylinderMaterial = new THREE.MeshBasicMaterial({ color: 0x808080 });
+        this.cylinder = new THREE.Mesh(cylinderGeometry, cylinderMaterial);
+        this.cylinder.position.set(0, -cylinderLengthScale/2, 0);
+        
+        this.rootEl.object3D.add(this.sphere);
+        this.rootEl.object3D.add(this.cylinder);
+    }
 
     var key = null;
     this.enable = function () {
