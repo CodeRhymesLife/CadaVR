@@ -32,6 +32,7 @@ CaseViews = [
 
 CadaverLabViews = [
 	"heartLesson",
+	"playground",
 ]
 
 Views.forEach( function (page) {
