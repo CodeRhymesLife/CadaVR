@@ -1,27 +1,54 @@
 # CadaVR
-A virtual reality medical educational environment that leverages structural models of anatomy, natrual input, and mathematical models of physiology to help students learn.
+A virtual reality medical educational environment that leverages structural models of anatomy, natural input, and mathematical models of physiology to help students learn.
 
 ### Live Demo
-[![CadaVR Promotional Video](http://img.youtube.com/vi/eYyuEjhD-k8/0.jpg)](http://www.youtube.com/watch?v=eYyuEjhD-k8 "CadaVR")
+[![CadaVR Promotional Video](https://img.youtube.com/vi/eYyuEjhD-k8/0.jpg)](https://www.youtube.com/watch?v=eYyuEjhD-k8 "CadaVR")
 
-## Server Setup
-    1. Install nodejs - https://nodejs.org/en/download/
-    2. Install meteor: https://www.meteor.com/install
-    3. Deploy to local server:
-        a. Go to the CadaVR git dir
-        b. Go to the site dir: Run "cd site"
-        c. Deploy to local server: Run "meteor"
-    4. Deploy to meteor.com:
-        a. Go to the CadaVR git dir
-        b. Go to the site dir: Run "cd site"
-        c. Deploy to meteor.com: Run "meteor deploy ryancadavr.meteor.com"
-        a. Or replace the url with a custom url, e.g.: <yourname>cadavr.meteor.com
+## Local Development and Production Server Instructions
+
+1. Install [Node.js](https://nodejs.org/en/download/).
+2. Install [Meteor](https://www.meteor.com/install).
+3. Clone this repo:
+    ```
+    git@github.com:drryanjames/CadaVR.git
+    ```
+
+4. Deploy to a local server on your machine:
+
+    1. Open the directory of your Git checkout of the CadaVR project.
+    2. Open the [`site`](site/) directory, and run this command:
+        ```
+        cd site
+        ```
+
+    3. To deploy to your local server, run this command:
+        ```
+        meteor
+        ```
+
+5. Deploy to [meteor.com](https://www.meteor.com/):
+    1. Open the directory of your Git checkout of the CadaVR project.
+    2. Open the [`site`](site/) directory, and run this command:
+        ```
+        cd site
+        ```
+
+    3. To deploy to your local server, run this command:
+        ```
+        meteor deploy ryancadavr.meteor.com
+        ```
+
+        Or replace the URL with a custom one, such as `<yourname>-cadavr.meteor.com`.
         
-## Running the Leap Motion
-To run the leap service so other machines can access the leap device, run the following command:
+## Running the [Leap Motion](https://www.leapmotion.com/) Service
+To run the Leap Motion service so that other machines can access the Leap device, run the following command:
 
-Windows:
+### Windows
+```
 LeapSvc --websockets_allow_remote=true --websockets_enabled=true --run
+```
 
-Mac & Linux:
+### Mac & Linux
+```
 leapd --websockets_allow_remote=true --websockets_enabled=true --run
+```
